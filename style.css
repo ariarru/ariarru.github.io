@@ -1,0 +1,45 @@
+body{
+    margin:0px;
+}
+header{
+    background-color: #2AB74D;
+    height: 25px;
+    padding: 10px;
+    color: white;
+}
+
+.logo{
+    float:left;
+    background-color: transparent;
+    font-size: 18pt;
+}
+
+.logo:hover{
+    color: 7D2EC7;
+}
+.menu{
+    float: right;
+    display: flex;
+    flex-direction: row;
+    padding:0px 5px;
+    text-align: center;
+
+}
+.menu-section{
+
+}
+
+.menuBtn{
+    background-color: transparent;
+    font-size: 16px;
+    border-color: transparent;
+    font-family: sans-serif;
+    color: white;
+    line-height: 25px;
+    padding: 0px 5px;
+}
+
+.menuBtn:hover{
+    background-color: #92E6A7;
+    color: black;
+}
