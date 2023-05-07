@@ -1,8 +1,9 @@
 body{
     margin:0px;
+    overflow: hidden;
 }
 header{
-    background-color: #2AB74D;
+    background-color: #008000;
     height: 25px;
     padding: 10px;
     color: white;
@@ -12,20 +13,15 @@ header{
     float:left;
     background-color: transparent;
     font-size: 18pt;
+    margin-top:-8px;
 }
 
-.logo:hover{
-    color: 7D2EC7;
-}
 .menu{
     float: right;
     display: flex;
     flex-direction: row;
     padding:0px 5px;
     text-align: center;
-
-}
-.menu-section{
 
 }
 
@@ -42,4 +38,55 @@ header{
 .menuBtn:hover{
     background-color: #92E6A7;
     color: black;
+}
+
+.container{
+    background-color: #464646;
+    width:100%;
+    height: 95vh;
+    position:relative;
+    overflow: unset;
+}
+.container::-webkit-scrollbar { 
+    display: none; 
+}
+.container section{
+    margin:0px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    position:absolute;
+    inset:0;
+    width:400%;
+}
+
+.carouselBtn{
+    position:absolute;
+    top:50%;
+    height: 100px;
+    width:40px;
+    background-color: #006400;
+    opacity: 50%;
+    border: none;
+}
+.carouselBtn:hover{
+    opacity:100%;
+}
+.prev{
+    float:left;
+    left:0px;
+}
+.next{
+    float:right;
+    right:0px;
+}
+.slide {
+    width:100%;
+    height:100%;
+}
+
+.slide img{
+    object-fit: cover;
+    height: 100%;
+    overflow:hidden;
 }
