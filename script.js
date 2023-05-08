@@ -1,14 +1,15 @@
-const slides = document.getElementsByClassName('slide');
-const next = document.getElementById('nextBtn');
-const prev = document.getElementById('prevBtn');
-console.log(slides.length);
-for(var i=0; i<slides.length; i++){
-    let container = document.getElementsByClassName('container').clientWidth;
-    console.log(container);
-    next.addEventListener('click', function() {
-        slides.item(i).scrollLeft += container;
-    });
-    prev.addEventListener('click', function() {
-        slides.item(i).scrollLeft -= container;
-    });
-}
+const slides = document.querySelectorAll(".slide");
+const next = document.getElementById("nextBtn");
+const prev = document.getElementById("prevBtn");
+
+const container = document.querySelector("#slides-container");
+const slideWidth = slides.item(0).clientWidth;
+
+next.addEventListener("click", () => {
+    container.scrollLeft += slideWidth;
+});
+
+prev.addEventListener("click", () => {
+    
+    container.scrollLeft -= slideWidth;
+});

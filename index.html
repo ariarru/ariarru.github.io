@@ -4,7 +4,7 @@
     <link href="style.css" rel="stylesheet">
     <title>Maneskin Fanpage</title>
     <meta charset="utf-8">
-    <script src="script.js"></script>
+    
    </head>
    <body>
       <header>
@@ -39,13 +39,16 @@
          </div>
       </header>
       <div class="container">
-         
-         <section>
-            <div class="slide"> <img src="images/img1.jpeg" width="100%" heigth="800px"/> </div>
-           <div class="slide"> <img src="images/img2.jpg" width="100%" heigth="800px"/></div>
-            <div class="slide"> <img src="images/img3.jpg" width="100%" heigth="800px"/></div>
-            <div class="slide"> <img src="images/img4.webp" width="100%" heigth="800px"/></div>
-            
+         <section id="slides-container">
+            <input type="radio" name="image" id="img1" checked>
+            <input type="radio" name="image" id="img2">
+            <input type="radio" name="image" id="img3">
+            <input type="radio" name="image" id="img4">
+
+            <div class="slide m1"> <img src="images/img1.jpeg" width="1400px" heigth="700px" /> </div>
+           <div class="slide m2"> <img src="images/img2.jpg" width="1000px" heigth="700px" /></div>
+            <div class="slide m3"> <img src="images/img3.jpg" width="1000px" heigth="700px" /></div>
+            <div class="slide m4"> <img src="images/img4.webp" width="1000px" heigth="700px" /></div>
          </section>
          <button class="carouselBtn prev" id="prevBtn">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -53,13 +56,23 @@
                11.3l8.425-8.425q.35-.35.875-.35t.9.375q.375.375.375.875t-.375.875L3.55 12l7.35 
                7.35q.35.35.35.863t-.375.887q-.375.375-.875.375t-.875-.375Z"/></svg>
          </button>
-         <button class="carouselBtn next" id="netxBtn">
+         <button class="carouselBtn next" id="nextBtn">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                <g transform="translate(24 0) scale(-1 1)"><path fill="white" d="M9.125 21.1L.7 
                   12.7q-.15-.15-.213-.325T.425 12q0-.2.063-.375T.7 
                   11.3l8.425-8.425q.35-.35.875-.35t.9.375q.375.375.375.875t-.375.875L3.55 
                   12l7.35 7.35q.35.35.35.863t-.375.887q-.375.375-.875.375t-.875-.375Z"/></g></svg>
          </button>
+         
+         <div class="dots">
+            <label for="img1"></label>
+            <label for="img2"></label>
+            <label for="img3"></label>
+            <label for="img4"></label>
+        </div>
       </div>
+
+      
+      <script src="script.js"></script>
    </body>
 </html>
