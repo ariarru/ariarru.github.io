@@ -1,11 +1,16 @@
 body{
     margin:0px;
+    
 }
 header{
     background-color: #008000;
     height: 25px;
     padding: 10px;
     color: white;
+    position:fixed;
+    top:0px;
+    width:100%;
+    z-index: 10;
 }
 
 .logo{
@@ -44,6 +49,7 @@ header{
     width:100vw;
     height: 95vh;
     position:absolute;
+    top:26px;
 }
 
 .container section{
@@ -148,6 +154,8 @@ header{
     text-align:left;
     z-index: 1;
     text-decoration: none;
+    display: flex;
+    flex-direction: column;
 }
 
 a{
@@ -215,123 +223,467 @@ a{
     }
 }
 
-  .carousel {
-    position: relative;
+.carousel {
+  position: relative;
+}
+  
+.carousel-inner {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.carousel-item {
+  position: relative;
+  display: none;
+  align-items: center;
+  width: 100%;
+  @include transition($carousel-transition);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.carousel-item.active,
+.carousel-item-next,
+.carousel-item-prev {
+  display: block;
+}
+  
+.carousel-item-next,
+.carousel-item-prev {
+  position: absolute;
+  top: 0;
+}
+  
+.carousel-item-next.carousel-item-left,
+.carousel-item-prev.carousel-item-right {
+transform: translateX(0);
+
+  @supports (transform-style: preserve-3d) {
+    transform: translate3d(0, 0, 0);
   }
-  
-  .carousel-inner {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
+}
+
+.carousel-item-next,
+.active.carousel-item-right {
+  transform: translateX(100%);
+
+  @supports (transform-style: preserve-3d) {
+    transform: translate3d(100%, 0, 0);
   }
-  
-  .carousel-item {
-    position: relative;
-    display: none;
-    align-items: center;
-    width: 100%;
-    @include transition($carousel-transition);
-    backface-visibility: hidden;
-    perspective: 1000px;
+}
+
+.carousel-item-prev,
+.active.carousel-item-left {
+  transform: translateX(-100%);
+
+  @supports (transform-style: preserve-3d) {
+    transform: translate3d(-100%, 0, 0);
   }
+}
+
   
-  .carousel-item.active,
-  .carousel-item-next,
-  .carousel-item-prev {
-    display: block;
-  }
-  
-  .carousel-item-next,
-  .carousel-item-prev {
-    position: absolute;
-    top: 0;
-  }
-  
-  .carousel-item-next.carousel-item-left,
-  .carousel-item-prev.carousel-item-right {
-    transform: translateX(0);
-  
-    @supports (transform-style: preserve-3d) {
-      transform: translate3d(0, 0, 0);
-    }
-  }
-  
-  .carousel-item-next,
-  .active.carousel-item-right {
-    transform: translateX(100%);
-  
-    @supports (transform-style: preserve-3d) {
-      transform: translate3d(100%, 0, 0);
-    }
-  }
-  
-  .carousel-item-prev,
-  .active.carousel-item-left {
-    transform: translateX(-100%);
-  
-    @supports (transform-style: preserve-3d) {
-      transform: translate3d(-100%, 0, 0);
-    }
-  }
-  
-  
-  .carousel-control-prev,
-  .carousel-control-next {
-    display: flex;
-    align-items: center;
-    justify-content: center; 
-    width: $carousel-control-width;
+.carousel-control-prev,
+.carousel-control-next {
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  width: $carousel-control-width;
+  color: $carousel-control-color;
+  text-align: center;
+  opacity: $carousel-control-opacity;
+
+
+  @include hover-focus {
     color: $carousel-control-color;
-    text-align: center;
-    opacity: $carousel-control-opacity;
+    text-decoration: none;
+    outline: 0;
+    opacity: .9;
+  }
+}
+.carousel-control-prev {
+  left: 0;
+  @if $enable-gradients {
+    background: linear-gradient(90deg, rgba(0, 0, 0, .25), rgba(0, 0, 0, .001));
+  }
+}
+.carousel-control-next {
+  right: 0;
+  @if $enable-gradients {
+    background: linear-gradient(270deg, rgba(0, 0, 0, .25), rgba(0, 0, 0, .001));
+  }
+}
 
-
-    @include hover-focus {
-      color: $carousel-control-color;
-      text-decoration: none;
-      outline: 0;
-      opacity: .9;
-    }
-  }
-  .carousel-control-prev {
-    left: 0;
-    @if $enable-gradients {
-      background: linear-gradient(90deg, rgba(0, 0, 0, .25), rgba(0, 0, 0, .001));
-    }
-  }
-  .carousel-control-next {
-    right: 0;
-    @if $enable-gradients {
-      background: linear-gradient(270deg, rgba(0, 0, 0, .25), rgba(0, 0, 0, .001));
-    }
-  }
-
-  .carousel-control-prev-icon,
-  .carousel-control-next-icon {
-    display: inline-block;
-    width: $carousel-control-icon-width;
-    height: $carousel-control-icon-width;
-    background: transparent no-repeat center center;
-    background-size: 100% 100%;
-  }
-  .carousel-control-prev-icon {
-    background-image: $carousel-control-prev-icon-bg;
-  }
-  .carousel-control-next-icon {
-    background-image: $carousel-control-next-icon-bg;
-  }
-
-.scritta{
-    left: 33.333vw;
-    position:relative;
-    top:-8vh;
-    width:200px;
-    height: 200px;
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  display: inline-block;
+  width: $carousel-control-icon-width;
+  height: $carousel-control-icon-width;
+  background: transparent no-repeat center center;
+  background-size: 100% 100%;
+}
+.carousel-control-prev-icon {
+  background-image: $carousel-control-prev-icon-bg;
+}
+.carousel-control-next-icon {
+  background-image: $carousel-control-next-icon-bg;
 }
 
 .content{
-    position: relative;
-    display: block;
-    top: 95vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  top: 95vh;
+  width:100%;
+  background-image: url("images/sfondo.jpeg");
+  object-fit: cover;
+  min-height: 100vh;
 }
-  
+
+.scritta{
+    position: absolute;
+    top: -77px;
+    width:200px;
+    height: 200px;
+    margin:auto;
+}
+
+.infos{
+  position:relative;
+  top: 15vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 120vh;
+}
+
+.artisti{
+  display: grid;
+  grid-template-columns: 2fr 2fr 2fr 2fr;
+  background-color: rgba(32, 32, 32, 0.8);
+  border: 2px solid black;
+}
+.card{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding:15px;
+  font-size: 12pt;
+  color:white;
+  font-family: sans-serif;
+  background-color: rgba(32, 32, 32, 0.4);
+  border: 2px solid black;
+}
+.card > img {
+  border-radius: 90px;
+  object-fit: cover;
+}
+
+.card >img:hover{
+  transform: scale(1.1);
+  box-shadow: 0px 5px 15px rgb(83, 83, 83);
+}
+
+.card > p{
+  letter-spacing: 0.1rem;
+  font-size: 18pt;
+  color:white;
+  font-weight: 500;
+  font-family: sans-serif;
+  margin:5px 10px;
+}
+.card span{
+  width:250px;
+  text-align: center;
+  margin: 5px 0px;
+}
+#role{
+  font-weight: 600;
+}
+.card span:not(#role){
+  text-align: left;
+  font-size: 10pt;
+}
+
+.footer{
+  background-color: #212224;
+  color: white;
+  font-size: 10pt;
+  height: 50px;
+  width:100%;
+  z-index: 10;
+  text-align: center;
+  font-family: sans-serif;
+  font-weight: 300;
+  position: absolute;
+top: 220vh;
+}
+
+.storyline{
+  background-color: rgba(0,0,0,0.8);
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 40px;
+  width: 90%;
+  height: fit-content;
+  align-items: center;
+  text-align: center;
+}
+
+.storyline hr{
+  height: 100%;
+  position:absolute;
+  border: 1px solid white;
+  left: 50%;
+}
+
+.story{
+  display: flex;
+  flex-direction: row;
+  color:white;
+  font-family: sans-serif;
+  align-items: center;
+  padding: 15px;
+  background-color: rgb(227, 227, 227, 0.7);
+}
+
+
+/* Spotify music card made by: csozi | Website: www.csozi.hu*/
+
+.spoty {
+  position: relative;
+  width: 250px;
+  height: 120px;
+  background: #191414;
+  border-radius: 10px;
+  padding: 10px;
+  font-family: sans-serif;
+}
+
+.top {
+  position: relative;
+  width: 100%;
+  display: flex;
+  gap: 10px;
+}
+
+.pfp {
+  position: relative;
+  top: 5px;
+  left: 5px;
+  height: 40px;
+  width: 40px;
+  background-color: #d2d2d2;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.title-1 {
+  color: white;
+  font-size: 25px;
+  font-weight: bolder;
+  margin: 5px 0px 0px 0px;
+}
+
+.title-2 {
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  margin: 0px;
+}
+
+.time {
+  width: 90%;
+  background-color: #5e5e5e;
+  height: 6px;
+  border-radius: 3px;
+  position: absolute;
+  left: 5%;
+  bottom: 35px;
+}
+
+.elapsed {
+  width: 42%;
+  background-color: #1db954;
+  height: 100%;
+  border-radius: 3px;
+}
+
+.controls {
+  color: white;
+  display: flex;
+  position: absolute;
+  bottom: 50px;
+  left: 0;
+  width: 100%;
+  justify-content: center;
+}
+
+.volume {
+  height: 100%;
+  width: 48px;
+}
+
+.air {
+  height: 100%;
+  width: 48px;
+}
+
+.controls svg {
+  cursor: pointer;
+  transition: 0.1s;
+}
+
+.controls svg:hover {
+  color: #1db954;
+}
+
+.volume {
+  opacity: 0;
+  position: relative;
+  transition: 0.2s;
+}
+
+.volume .slider {
+  height: 4px;
+  background-color: #5e5e5e;
+  width: 80%;
+  border-radius: 2px;
+  margin-top: 8px;
+  margin-left: 10%;
+}
+
+.volume .slider .green {
+  background-color: #1db954;
+  height: 100%;
+  width: 80%;
+  border-radius: 3px;
+}
+
+.volume .circle {
+  background-color: white;
+  height: 6px;
+  width: 6px;
+  border-radius: 3px;
+  position: absolute;
+  right: 20%;
+  top: 60%;
+}
+
+.volume_button:hover ~ .volume {
+  opacity: 1;
+}
+
+.timetext {
+  color: white;
+  font-size: 8px;
+  position: absolute;
+}
+
+.time_now {
+  bottom: 11px;
+  left: 10px;
+}
+
+.time_full {
+  bottom: 11px;
+  right: 10px;
+}
+
+.playing {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  gap: 1px;
+  width: 30px;
+  height: 20px;
+}
+
+.greenline {
+  background-color: #1db954;
+  height: 20px;
+  width: 2px;
+  position: relative;
+  transform-origin: bottom;
+}
+
+.line-1 {
+  animation: infinite playing 1s ease-in-out;
+  animation-delay: 0.2s;
+}
+
+.line-2 {
+  animation: infinite playing 1s ease-in-out;
+  animation-delay: 0.5s;
+}
+
+.line-3 {
+  animation: infinite playing 1s ease-in-out;
+  animation-delay: 0.6s;
+}
+
+.line-4 {
+  animation: infinite playing 1s ease-in-out;
+  animation-delay: 0s;
+}
+
+.line-5 {
+  animation: infinite playing 1s ease-in-out;
+  animation-delay: 0.4s;
+}
+
+@keyframes playing {
+  0% {
+    transform: scaleY(0.1);
+  }
+
+  33% {
+    transform: scaleY(0.6);
+  }
+
+  66% {
+    transform: scaleY(0.9);
+  }
+
+  100% {
+    transform: scaleY(0.1);
+  }
+}
+
+.left{
+  grid-column:1;
+  grid-row: 1;
+}
+.right{
+  grid-column:2;
+  grid-row: 2;
+  position: relative;
+  justify-content: flex-start;
+}
+
+.last{
+  grid-column:1;
+  grid-row: 3;
+  justify-content: flex-end;
+  cursor: pointer;
+}
+
+.story span{
+  margin: 10px;
+  letter-spacing: 0.2rem;
+  text-transform: uppercase;
+}
+
+a{
+  text-decoration: none;
+  color:inherit;
+}
+
+#mainBody{
+  height: fit-content;
+}
