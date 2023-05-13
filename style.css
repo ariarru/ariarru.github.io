@@ -373,10 +373,10 @@ transform: translateX(0);
   width:100%;
   z-index: 10;
   text-align: center;
+  padding-top:10px;
   font-family: sans-serif;
   font-weight: 300;
   position: absolute;
-top: 220vh;
 }
 
 .storyline{
@@ -641,6 +641,14 @@ top: 220vh;
 a{
   text-decoration: none;
   color:inherit;
+  cursor: pointer;
+}
+
+.insta{
+  justify-content: center;
+display: flex;
+align-items: center;
+flex-direction: row;
 }
 
 #mainBody{
@@ -648,7 +656,9 @@ a{
 }
 
 .testata{
-  background-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,1)); 
+  background-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,1)), 
+  url("images/sfondo2.jpeg"); 
+  background-size: cover;
   display: block;
   width:100%;
   height:300px;
@@ -712,11 +722,8 @@ li > svg{
   padding-right:20px;
   width: 100%;
   justify-content: center;
+  align-items: baseline;
 }
 
-.insta{
-  justify-content: center;
-display: flex;
-align-items: center;
-flex-direction: row;
-}
+
+
