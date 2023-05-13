@@ -1,15 +1,11 @@
-const slides = document.querySelectorAll(".slide");
-const next = document.getElementById("nextBtn");
-const prev = document.getElementById("prevBtn");
-
-const container = document.querySelector("#slides-container");
-const slideWidth = slides.item(0).clientWidth;
-
-next.addEventListener("click", () => {
-    container.scrollLeft += slideWidth;
-});
-
-prev.addEventListener("click", () => {
-    
-    container.scrollLeft -= slideWidth;
-});
+function home(){
+    window.location.replace("https://ariarru.github.io");
+ }
+ function documentation(){
+    window.location.replace("https://ariarru.github.io/documentazione.html");
+ }
+ function  gallery(){}
+ function ticket(){
+    window.open("https://www.ticketone.it/search/?affiliate=ITT&searchterm=maneskin");
+ }
+ function story(){}

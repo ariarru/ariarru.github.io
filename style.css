@@ -158,6 +158,10 @@ header{
     flex-direction: column;
 }
 
+.news h2{
+  margin-top: 0px;
+}
+
 a{
     text-decoration: none;
 }
@@ -686,7 +690,7 @@ a{
 }
 
 #mainBody{
-  height: fit-content;
+  height: 200%;
 }
 
 .testata{
@@ -711,7 +715,7 @@ a{
   align-items: center;
   justify-content: center;
   text-align: left;
-  width:95%;
+  width:97%;
   font-family: sans-serif;
   padding:20px;
   font-size: 14pt;
@@ -729,8 +733,29 @@ a{
   font-weight: 600;
 }
 
+.documentazione a:hover{
+  color:#7209b7;
+}
+.documentazione a:visited{
+  color:#002589;
+  font-weight: 300;
+}
+
+
 .documentazione hr{
   width:95%;
   border: 2px solid #006400;
   border-radius: 10px;
+}
+
+li > svg{
+  margin:2px;
+}
+
+.strutturaArticle{
+  display:flex; 
+  flex-direction: row;
+  padding-right:20px;
+  width: 100%;
+  justify-content: center;
 }

@@ -2,15 +2,18 @@
 <html>
    <head>
     <link href="style.css" rel="stylesheet">
-    <title>Maneskin Fanpage</title>
+    <title>Maneskin Fanpage - Documentazione</title>
     <meta charset="utf-8">
+    <script src="script.js"></script>
     </head>
 
     <body>
 
         <header>
             <div class="logo">
-               <img src="images/Maneskin_logo.svg" width="130px" height="40px"/>
+               <a onclick="home()" style="cursor: pointer;">
+                  <img src="images/Maneskin_logo.svg" width="130px" height="40px"/>
+               </a>
             </div>
             <div class="menu">
                <div class="menu-section">
@@ -59,21 +62,32 @@
                      cercando di avvicinare i fan (ovvero gli utenti che visitano il sito) alle star. <br>
                      Il sito vuole essere un luogo di raccolta per ogni genere di informazione che possa riguardare l'attività dei M&aring;neskin, 
                      al fine di rappresentare un punto di ritrovo per gli utenti. </p>
-                  <p>Il target principale sono quindi persone che ricercano informazioni relativamente ai M&aring;neskin, che queste riguardino un concerto, la loro storia, curiosità o inverviste.</p>
+                  <p>Il target principale sono quindi persone che ricercano informazioni relativamente ai M&aring;neskin, che queste riguardino un concerto, la loro storia, curiosità o interviste.</p>
                   <p>Nei vari social esistono fanpage dei M&aring;neskin, provenienti da varie parti del mondo:</p> 
                   <ul style="list-style-type: circle;">
-                     <li>YouTube: <a href="https://www.youtube.com/c/ManeskinFanpage?app=desktop">M&aring;neskin Fanpage</a></li>
-                     <li> metti link russo</li>
+                     <li><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><g id="feYoutube0" fill="none" 
+                        fill-rule="evenodd" stroke="none" stroke-width="1"><g id="feYoutube1" fill="currentColor"><path id="feYoutube2" d="M9.935 
+                           14.628v-5.62l5.403 2.82l-5.403 2.8ZM21.8 8.035s-.195-1.379-.795-1.986c-.76-.796-1.613-.8-2.004-.847C16.203 5 12.004 5 
+                           12.004 5h-.008s-4.198 0-6.997.202c-.391.047-1.243.05-2.004.847c-.6.607-.795 1.986-.795 1.986S2 9.653 2 11.272v1.517c0 
+                           1.618.2 3.237.2 3.237s.195 1.378.795 1.985c.76.797 1.76.771 2.205.855c1.6.153 6.8.2 6.8.2s4.203-.006 7.001-.208c.391-.047 
+                           1.244-.05 2.004-.847c.6-.607.795-1.985.795-1.985s.2-1.619.2-3.237v-1.517c0-1.619-.2-3.237-.2-3.237Z"/></g></g></svg>
+                        YouTube: <a href="https://www.youtube.com/c/ManeskinFanpage?app=desktop">M&aring;neskin Fanpage</a></li>
+                     <li> <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" 
+                        d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 
+                        2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 
+                        1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 
+                        5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3Z"/></svg> 
+                        Instagram : <a href="https://www.instagram.com/rus.maneskin/?hl=en">@rus.maneskin</a></li>
                   </ul>
-                  <p>In particolare è molto noto un account sulle varie piattaforme:</p>
+                  <p>In particolare è molto noto un account italiano sulle varie piattaforme:</p>
                   <ul style="list-style-type: circle;">
-                     <li><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="currentColor" 
+                     <li><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" 
                         d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 
                         2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 
                         1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 
                         5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3Z"/></svg> 
                         Instagram: </li>
-                     <li><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20"><path fill="currentColor" 
+                     <li><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path fill="currentColor" 
                         fill-rule="evenodd" d="M20 3.894a8.299 8.299 0 0 1-2.357.636a4.062 4.062 0 0 0 1.804-2.234a8.298 8.298 0 0 1-2.605.98A4.13 4.13 
                         0 0 0 13.847 2c-2.266 0-4.103 1.808-4.103 4.04c0 .316.036.624.106.92a11.71 11.71 0 0 1-8.457-4.22a3.974 3.974 0 0 0-.556 2.03a4.02 
                         4.02 0 0 0 1.826 3.362a4.143 4.143 0 0 1-1.859-.505v.05c0 1.957 1.414 3.59 3.29 3.961a4.189 4.189 0 0 1-1.852.07c.522 1.604 2.037 
@@ -89,6 +103,34 @@
                </article>
                <article id="struttura-layout">
                   <h2>Struttura e Layout</h2>
+                  <div class="strutturaArticle">
+                     <figure>
+                        <img src="layout1.JPG" height="auto" width="300px">
+                        <figcaption>
+                           <span>Fig. 1 - Layout pagina index</span>
+                        </figcaption>
+                     </figure>
+                     <p>
+                        Questo è il layout della pagina index del sito, visualizzato in modo integrale. 
+                        La pagina è progettata per colpire visivamente l'utente con un carosello di immagini, cliccabili, che permettono di navigare nel sito nelle main sections.
+                        <br>Scorrendo poi verso il basso è possibile visualizzare la sezione 'artisti' che introduce all'utente l'argomento del sito in maniera testuale e non solo grafica.
+                        <br>Scorrendo ancora è possibile vedere un ulteriore piccolo elenco delle attivit&aacute; recenti del sito.
+                     </p>
+                  </div>
+                  <div class="strutturaArticle">
+                     <figure>
+                        <img src="layout2.jpg" height="auto" width="300px">
+                        <figcaption>
+                           <span>Fig. 2 - Layout della documentazione</span>
+                        </figcaption>
+                     </figure>
+                     <figure>
+                        <img src="architettura.jpg" height="435px" width="auto">
+                        <figcaption>
+                           <span>Fig. 3 - Architettura del sito</span>
+                        </figcaption>
+                     </figure>
+                  </div>
                </article>
                <article id="linguaggi-strumenti">
                   <h2>Linguaggi e Strumenti</h2>
@@ -125,10 +167,10 @@
                      Altre fasce demografiche possono essere raggiunte tramite l'indicizzazione di Google e l'uso di varie tipologie di Social Media.<br>
                      
                   </p>
-                  <p>L’obiettivo che il sito si prefigge è quello di raccontare il gruppo die M&aring;neskin, cercando di portare nuovi utenti ad interessarsi a questo gruppo. <br>
+                  <p>L’obiettivo che il sito si prefigge è quello di raccontare il gruppo dei M&aring;neskin, cercando di portare nuovi utenti ad interessarsi a questo gruppo. <br>
                      La pagina Instagram del sito si propone di sponsorizzare il sito cercando di ampliare la gamma di utenti interessati. <br>
                      Il sito è destinato a una pluralità di utenti: sarà una piattaforma utile per i follower già esistenti che avranno la possibilità di approfondire la conoscenza della band con contenuti nuovi. 
-                     Questi utenti verranno raggiunti principalmente tramite i canali sociali già esistenti. L’utente casuale, che capita sul sito dalla navigazione web e non dai social,  
+                     Questi utenti verranno raggiunti principalmente tramite i canali social già esistenti. L’utente casuale, che capita sul sito dalla navigazione web e non dai social,  
                      ha la possibilità di spostarsi su varie piattaforme che permettono sia di ottenere informazioni per i concerti, sia di visualizzare le interviste.<br>
                      Un utente tipo del sito ritroverebbe tutte le informazioni e i link utili in una sola pagina.
                   </p>
