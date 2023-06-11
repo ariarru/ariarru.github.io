@@ -576,6 +576,7 @@ section p{
   border:1px solid #CAD3DB;
   position:absolute;
   right:10px;
+  top:1em;
   display:none;
 }
 
