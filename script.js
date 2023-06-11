@@ -63,9 +63,21 @@ function expandSection(button) {
       });
    }
 
-   /*TODO: fai documentazione
-   carica su github
-   pagina instagram */
+   //audio
+   var allAudio = document.querySelectorAll(".audio");
+   allAudio.forEach(function(audio){
+      if (!audio.paused) {
+         audio.pause();
+       }
+   });
+
+   const myAudio = button.parentNode.querySelector(".audio");
+   console.log(myAudio);
+   if (myAudio.paused) {
+      myAudio.play();
+   }
+
+   
  }
 
  function reduceSection(button){
@@ -86,6 +98,11 @@ function expandSection(button) {
       bottoni.forEach(function(element) {
          element.style.display = "none";
       });
+   }
+   const myAudio = button.parentNode.querySelector(".audio");
+   console.log(myAudio);
+   if (myAudio) {
+      myAudio.pause();
    }
 
  }

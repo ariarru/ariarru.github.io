@@ -480,6 +480,7 @@ section p{
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;
+  padding-bottom:30px;
 }
 
 .left{
@@ -563,9 +564,8 @@ section p{
 }
 
 #helptxt{
-  padding:20px 10px;
+  padding:10px;
   color:black;
-  font-size: 12pt;
   font-family: 'Kanit', sans-serif;
   background-color: rgba(202, 211, 219, 0.5);
   border:1px solid #CAD3DB;
