@@ -165,7 +165,7 @@ a{
 }
 
 section p{
-  font-family: 'Kanit', sans-serif;
+  font-family: sans-serif;
   font-size: 30pt;
   letter-spacing: 0.1em;
   font-weight: 500;
@@ -194,7 +194,7 @@ section p{
   display: block;
 }
 .text p{
-  font-family: 'Kanit', sans-serif;
+  font-family: sans-serif;
   font-size:12pt;
   padding:10px 0px;
   text-align: left;
@@ -412,7 +412,7 @@ section p{
   font-size: 14pt;
   text-decoration: underline;
   padding: 5px 10px 0px 5px;
-  font-family: 'Kanit', sans-serif;
+  font-family: sans-serif;
   font-weight: 100;
   letter-spacing: 0.1em;
   border-radius: 12px 12px 0px 0px;
@@ -571,7 +571,7 @@ section p{
 #helptxt{
   padding:10px;
   color:black;
-  font-family: 'Kanit', sans-serif;
+  font-family: sans-serif;
   background-color: rgba(202, 211, 219, 0.5);
   border:1px solid #CAD3DB;
   position:absolute;
