@@ -106,4 +106,18 @@ function expandSection(button) {
    }
 
  }
+
+ function menuOpen(topic){
+   var content = topic.nextElementSibling;
+   content.classList.toggle('open');
+
+   if(topic.style.backgroundColor != 'rgb(7, 112, 176)'){
+      topic.style.backgroundColor = '#0770B0';
+      topic.style.color='white';
+   } else {
+      topic.style.backgroundColor = 'transparent';
+      topic.style.color='black';
+   }
+ }
+ 
  

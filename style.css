@@ -443,7 +443,7 @@ section p{
 .card{
   padding:25px;
   border-radius: 20px;
-  background-color: #CFEAF2;
+  background-color: #F2F2F2;
   display: flex;
   flex-direction: column;
   width: 400px;
@@ -479,7 +479,7 @@ section p{
 }
 
 .img-background{
-  background-image: url("images/img6.jpg");
+  background-image: url("images/underwater.jpg");
   background-color: #cccccc;
   background-position: center;
   background-repeat: no-repeat;
@@ -586,4 +586,86 @@ section p{
 
 #helpbtn:hover .help{
   grid-column: 3/5;
+}
+
+.main-doc{
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  width:100%;
+}
+.main-doc ul{
+  list-style-type: none;
+  margin:10px;
+  width:50%;
+  padding:10px;
+}
+
+.abs{
+  width:80%;
+  margin: 20px 0px 20px 0px;
+  margin-left: 10%;
+  font-family: sans-serif;
+}
+.content {
+  display: none;
+  font-family: sans-serif;
+  margin:20px;
+  margin-bottom:40px;
+}
+
+.content.open {
+  display: block;
+}
+
+.content p{
+  margin-bottom: 0px;
+}
+
+.content ul{
+  list-style-type: disc;
+  width: fit-content;
+  margin-top: 0px;
+}
+.topic svg{
+  transform: rotate(-90deg);
+  float:right;
+}
+
+.topic{
+  background-color:transparent;
+  border:none;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  text-align: left;
+  align-items: center;
+  color:black;
+}
+.topic:hover{
+  cursor:pointer;
+  background-color: #0770B0;
+  color:white;
+}
+.topic p{
+  width: 65em;
+  font-size: 12pt;
+  margin:3px 0px;
+  font-family: 'Kanit', sans-serif;
+}
+
+.bigger{
+  font-size:16pt;
+  font-family: 'Kanit-bold', sans-serif;
+  margin: 10px 0px 5px 0px;
+}
+
+.images{
+  display: inline-flex;
+  flex-direction: row;
+  align-items: start;
+  flex-wrap: wrap;
+  gap: 40px;
+  background-color: grey;
+  justify-content: center;
 }
