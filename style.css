@@ -14,8 +14,12 @@ a{
 }
 
 @font-face {
-  font-family: 'Kanit';
+  font-family: 'Kanit-bold';
   src: url(/res/Kanit/Kanit-Bold.ttf);
+}
+@font-face {
+  font-family: 'Kanit';
+  src: url(/res/Kanit/Kanit-Light.ttf);
 }
 
 header{
@@ -82,7 +86,7 @@ li a:hover{
 }
 
 .title{
-  font-family: 'Kanit', sans-serif;
+  font-family: 'Kanit-bold', sans-serif;
   font-weight: 900;
   font-size: 26pt;
 }
@@ -117,6 +121,7 @@ a{
   transform: translate(-50%, 0);
   top:20vh;
   text-align: center;
+  width: 70%;
 }
 
 .main-img{
@@ -128,7 +133,7 @@ a{
 
 .main-title{
   color: white;
-  font-family: 'Kanit', sans-serif;
+  font-family: 'Kanit-bold', sans-serif;
   font-size: 64pt;
   letter-spacing: 0.1em;
   margin-bottom: 0px;
@@ -328,7 +333,7 @@ section p{
 }
 
 .subscribe {
-  font-family: 'Kanit', sans-serif;
+  font-family: 'Kanit-bold', sans-serif;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -349,7 +354,7 @@ section p{
 }
 
 .subscribe__copy {
-	max-width: 450px;
+	max-width: 70%;
 	text-align: center;
 	margin-bottom: 20px;
 	line-height: 1.5;
@@ -502,7 +507,7 @@ section p{
 .card p{
   color: black;
   font-size:14pt;
-  font-family: 'Kanit', sans-serif;
+  font-family: 'Kanit-bold', sans-serif;
   font-weight: 400;
   text-align: center;
 }
