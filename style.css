@@ -714,8 +714,11 @@ section p{
   .expanded-right{
     width: 435px;
   }
-  section .left .right{
-    height: 50%;
+  .cards-grid section{
+    height: fit-content;
+  }
+  .cards-grid{
+    max-width: 100%;
   }
 }
 
@@ -743,8 +746,11 @@ section p{
   .expanded-right{
     width: 435px;
   }
-  section .left .right{
-    height: 50%;
+  .cards-grid section{
+    height: fit-content;
+  }
+  .cards-grid{
+    max-width: 90%;
   }
 }
 @media (min-width: 901px) and (max-width: 1200px){
@@ -770,7 +776,11 @@ section p{
     width: 435px;
   }
 
-  section .left .right{
-    height: 50%;
+  .cards-grid section{
+    height: fit-content;
+  }
+
+  .cards-grid{
+    max-width: 90%;
   }
 }
