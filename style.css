@@ -784,3 +784,119 @@ section p{
     max-width: 90%;
   }
 }
+
+.selected {
+  padding: 5px 3px 15px 3px;
+  border-radius: 5px 5px 0px 0px;
+  color:black;
+  background-color: #F2F2F2;
+}
+
+.selected:hover {
+  color: black;
+  background-color: #ADD9FF;
+  padding:5px;
+  cursor: pointer;
+}
+
+.curiosity {
+  width:80%;
+  height: fit-content;
+  padding:20px;
+  border-radius: 30px;
+  margin: 20px 0px;
+  display:inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.first{
+  background: linear-gradient(189deg, rgba(1,163,203,.8) ,rgba(0,28,64,0.6) 70.71%),            
+  linear-gradient(127deg, rgba(0,58,102,0.5), rgba(0,62,143,0.4) 70.71%),            
+  linear-gradient(336deg,rgba(12,129,192,.8), rgba(1,163,203,0.6) 70.71%);
+}
+.second{
+  background: linear-gradient(140deg, rgba(1,163,203,.8) ,rgba(0,28,64,0.6) 70.71%),            
+  linear-gradient(230deg, rgba(0,58,102,0.5), rgba(0,62,143,0.4) 70.71%),            
+  linear-gradient(170deg,rgba(12,129,192,.8), rgba(1,163,203,0.6) 70.71%);
+}
+.third{
+  background: linear-gradient(330deg, rgba(1,163,203,.8) ,rgba(0,28,64,0.6) 70.71%),            
+  linear-gradient(157deg, rgba(0,58,102,0.5), rgba(0,62,143,0.4) 70.71%),            
+  linear-gradient(117deg,rgba(12,129,192,.8), rgba(1,163,203,0.6) 70.71%);
+}
+
+.curiosity-title{
+  width:55%;
+  margin:10px;
+}
+
+.curiosity:hover{
+  box-shadow: 0px 5px 15px rgba(0,0,0,0.25);
+  cursor: pointer;
+}
+.curiosity-link{
+  width:100%;
+  justify-content: center;
+  display: flex;
+}
+
+.curiosity .bubbles {
+  width: 200px;
+}
+.big{
+  width: 170px; /*350 160 120*/
+  height: 170px;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0px 5px 15px rgba(0,0,0,0.25);
+}
+.medium{
+  width: 110px; /*350 160 120*/
+  height: 110px;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0px 5px 15px rgba(0,0,0,0.25);
+}
+.little{
+  width: 50px; /*350 160 120*/
+  height: 50px;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0px 5px 15px rgba(0,0,0,0.25);
+}
+
+.img4{
+  transform:translate(10%, 0);
+}
+.img5{
+  transform: translate(-200%, 250%);
+}
+.bubbles .img5:hover{
+  transform: scale(1.2) translate(-170%, 205%);
+}
+
+.img6{
+  transform:translate(-10%, 0);
+}
+
+.img7{
+  transform:translate(5%, 260%);
+}
+.bubbles .img7:hover{
+  transform: scale(1.2) translate(5%, 210%);
+}
+
+.img8{
+  transform: translate(15%, 60%);
+}
+.bubbles .img8:hover{
+  transform: scale(1.2) translate(13%, 44%);
+}
+.img9{
+  transform: translate(-190%, 0);
+}
+.bubbles .img9:hover{
+  transform: scale(1.2) translate(-165%, 0);
+}
