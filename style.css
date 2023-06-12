@@ -694,10 +694,25 @@ section p{
   .floating-text{
     width:40%;
   }
+  .card{
+    width:200px;
+  }
 }
 
 @media (min-width: 601px) and (max-width: 900px) {
-
+  .main-title{
+    font-size: 60pt;
+    margin-top:0px;
+  }
+  .floating-text{
+    width:40%;
+  }
+  .cards-grid{
+    width:100%;
+  }
+  .card{
+    width:250px;
+  }
 }
 @media (min-width: 901px) {
 
