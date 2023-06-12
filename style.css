@@ -815,6 +815,7 @@ section p{
   background: linear-gradient(189deg, rgba(1,163,203,.8) ,rgba(0,28,64,0.6) 70.71%),            
   linear-gradient(127deg, rgba(0,58,102,0.5), rgba(0,62,143,0.4) 70.71%),            
   linear-gradient(336deg,rgba(12,129,192,.8), rgba(1,163,203,0.6) 70.71%);
+  
 }
 .second{
   background: linear-gradient(140deg, rgba(1,163,203,.8) ,rgba(0,28,64,0.6) 70.71%),            
@@ -830,6 +831,10 @@ section p{
 .curiosity-title{
   width:55%;
   margin:10px;
+  color:white;
+  font-family: 'Kanit', sans-serif;
+  font-size: 26pt;
+  text-align: right;
 }
 
 .curiosity:hover{
