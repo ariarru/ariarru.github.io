@@ -7,7 +7,7 @@
     <script src="script.js"></script> 
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
    </head>
-   <body class="img-background">
+   <body>
       <header style="position:unset;">
          <div class="menu">
             <ul>
@@ -40,8 +40,8 @@
          </div>
       </header>
       
-      <main class="cards-grid">
-        
+      <main>
+        <article class="cards-grid">
         <section class="help">
             <button id="helpbtn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 48 48"><g fill="none"><path stroke="#DFF1F6" stroke-linejoin="round" stroke-width="4" 
@@ -197,11 +197,11 @@
                 </div>
             </div>
         </section>
-
         
+    </article>
       </main>
-
-      <div class="doc" style="position:relative; left:43%; top:30px; width: fit-content;" >
+      <div style="display:flex; flex-direction: row; width:100%; height:fit-content; margin:0px; justify-content: center; margin-top:20px;">
+      <div class="doc" style="width: fit-content;" >
         <a href="documentazione.html">
         <button id="btn">
            <img src="images/black-whale.svg" width="30" height="30">
@@ -209,6 +209,8 @@
          </button>
         </a>
      </div>
+    </div>
+      
    </body>
 
 </html>

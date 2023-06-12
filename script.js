@@ -23,6 +23,10 @@ function expandSection(button) {
    }
 
    //elimina effetto precedente
+   const sectionsLeft = document.getElementsByClassName("expanded-left-section");
+   if (sectionsLeft.length > 0) {
+      sectionsLeft[0].classList.remove("expanded-left-section");
+   }
    const elementsLeft = document.getElementsByClassName("expanded-left");
    if (elementsLeft.length > 0) {
       elementsLeft[0].classList.remove("expanded-left");
@@ -31,11 +35,6 @@ function expandSection(button) {
    const elementsRight = document.getElementsByClassName("expanded-right");
    if (elementsRight.length > 0) {
       elementsRight[0].classList.remove("expanded-right");   
-   }
-
-   const sectionsLeft = document.getElementsByClassName("expanded-left-section");
-   if (sectionsLeft.length > 0) {
-      sectionsLeft[0].classList.remove("expanded-left-section");
    }
 
    const sectionsRight = document.getElementsByClassName("expanded-right-section");
