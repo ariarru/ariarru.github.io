@@ -720,6 +720,9 @@ section p{
   .cards-grid{
     max-width: 100%;
   }
+  .second .bubbles{
+    transform: translateX(-50%);
+  }
 }
 
 @media (min-width: 601px) and (max-width: 900px) {
@@ -752,6 +755,9 @@ section p{
   .cards-grid{
     max-width: 90%;
   }
+  .second .bubbles{
+    transform: translateX(-60%);
+  }
 }
 @media (min-width: 901px) and (max-width: 1200px){
   .floating-title{
@@ -782,6 +788,10 @@ section p{
 
   .cards-grid{
     max-width: 90%;
+  }
+
+  .second .bubbles{
+    transform: translateX(-50%);
   }
 }
 
