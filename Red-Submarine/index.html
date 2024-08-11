@@ -81,7 +81,7 @@
             varying float v_lightWorldIntensity;
             varying vec3 v_lightSubPos;
             varying float v_lightSubIntensity;
-            varying float v_fogDepth;       //profondità effetto nebbia
+            varying vec3 v_fogDepth;       //profondità effetto nebbia
             
 
             void main() {
@@ -103,7 +103,7 @@
                 v_surfaceToLightSub = u_lightSubPosition - worldPosition.xyz;
                 v_lightWorldIntensity = u_lightWorldIntensity;
 
-                v_fogDepth = (u_view * a_position).z;
+                v_fogDepth = (u_view * a_position).xyz;
             }
         </script>
 
@@ -119,7 +119,7 @@
             varying float v_lightWorldIntensity;
             varying vec3 v_lightSubPos;
             varying float v_lightSubIntensity;
-            varying float v_fogDepth;
+            varying vec3 v_fogDepth;
 
 
             varying vec3 v_surfaceToLight;
@@ -139,9 +139,6 @@
 
             //gestione nebbia
             uniform vec4 u_fogColor;
-            uniform float u_fogNear;
-            uniform float u_fogFar;
-
 
             uniform vec3 u_lightWorldDirection;
             uniform vec3 u_lightSubDirection;
@@ -194,13 +191,12 @@
                     effectiveOpacity);
 
                 //effetto nebbia
-
-                float fogT = (clamp(u_fogNear, u_fogFar, v_fogDepth) - u_fogNear) / (u_fogFar - u_fogNear);
-                
-
-                //float fogAmount = smoothstep(u_fogNear, u_fogFar, v_fogDepth);
-
-                gl_FragColor = gl_FragColor + (u_fogColor - gl_FragColor) * fogT;
+                float fogDistance = length(v_fogDepth);
+                float LOG2 = 1.442695;
+                float fogDensity = 0.01;
+                float fogAmount = 1. - exp2(-fogDensity * fogDensity * fogDistance * fogDistance * LOG2);
+                fogAmount = clamp(fogAmount, 0., 1.);
+                gl_FragColor= mix(gl_FragColor, u_fogColor, fogAmount);
             }
         </script>
 
@@ -233,7 +229,7 @@
         <script type="text/javascript" src="./handleMT.js"></script>
         <script type="text/javascript" src="./myutils.js"></script>
         <script type="text/javascript" src="./handleMovements.js"></script>
-        <script type="text/javascript" src="./objects.js"></script>
+        <script type="text/javascript" src="./SeaObjects.js"></script>
         <script type="text/javascript" src="./code-webgl.js"></script>
 
     <!-- 

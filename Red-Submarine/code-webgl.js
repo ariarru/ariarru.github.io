@@ -116,6 +116,7 @@ async function main() {
   /*--Dichiaro il fondale--*/
   const seabed = await generateBuffer('./res/seabed.obj');
   const bed = new SeaObject(seabed);
+  bed.translateObj(0, -5, 0);
   elementsToDraw.push(bed);
     
 
@@ -265,9 +266,7 @@ async function main() {
     m4.translate(camera, cameraPosition[0], cameraPosition[1], cameraPosition[2], camera);
     
     /*--Gestione nebbia--*/
-    var fogNear= 1.1 ;
-    var fogFar= 20.0;
-    var fogColor= [1, 67, 91, 1];
+    var fogColor= [0, 0.29, 0.38, 1]; //test in cmyk
 
     /*-- Gestione dei movimenti --*/
     moves.stopTarget();
@@ -373,8 +372,6 @@ async function main() {
       u_lightWorldDirection: [-1, 3, -3],
       u_worldInverseTraspose: u_worldInverseTraspose,
       u_fogColor: fogColor,
-      u_fogNear: fogNear,
-      u_fogFar: fogFar,
       //luce sottomarino
       u_limit: 0.39, //ampiezza di circa 20 gradi
       u_lightSubPosition: subLightPos,
@@ -440,7 +437,6 @@ async function main() {
 
     // ----- Skybox ----------
     // Turn on the position attribute
-    //gl.enableVertexAttribArray(positionLocation);
 
     //quadBufferInfo contiene le informazioni del cubo che contiene la skybox
     const quadBufferInfo =  {
