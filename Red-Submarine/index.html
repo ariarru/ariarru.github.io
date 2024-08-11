@@ -103,7 +103,7 @@
                 v_surfaceToLightSub = u_lightSubPosition - worldPosition.xyz;
                 v_lightWorldIntensity = u_lightWorldIntensity;
 
-                v_fogDepth = (u_view * a_position).xyz;
+                v_fogDepth = worldPosition.xyz;
             }
         </script>
 
@@ -120,6 +120,7 @@
             varying vec3 v_lightSubPos;
             varying float v_lightSubIntensity;
             varying vec3 v_fogDepth;
+            varying vec3 v_worldPosition;
 
 
             varying vec3 v_surfaceToLight;
@@ -149,6 +150,12 @@
                 return a + (b - a) * t;
             }
 
+            
+            float mysmoothstep(float a, float b, float x){
+                x = clamp( (x-a) / (b-a), 0., 1.);
+                return x * x *(3.0 -2.0 * x);
+            }
+            
 
             void main () {
                 vec3 normal = normalize(v_normal) * ( float( gl_FrontFacing ) * 2.0 - 1.0 );
@@ -187,15 +194,16 @@
                     (emissive +
                     ambient * u_ambientLight +                          //luce ambiente
                     effectiveDiffuse * worldLight +                     //riflessa diffusa dei materiali opachi
-                    effectiveSpecular * pow(specularLight, shininess * 10.0)), //riflessa speculare dei materiali lucidi
+                    effectiveSpecular * pow(specularLight, shininess * 20.0)), //riflessa speculare dei materiali lucidi
                     effectiveOpacity);
 
                 //effetto nebbia
                 float fogDistance = length(v_fogDepth);
-                float LOG2 = 1.442695;
-                float fogDensity = 0.01;
+                float LOG2 = 1.4427;
+                float fogDensity = 0.005;
                 float fogAmount = 1. - exp2(-fogDensity * fogDensity * fogDistance * fogDistance * LOG2);
                 fogAmount = clamp(fogAmount, 0., 1.);
+
                 gl_FragColor= mix(gl_FragColor, u_fogColor, fogAmount);
             }
         </script>

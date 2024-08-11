@@ -116,7 +116,7 @@ async function main() {
   /*--Dichiaro il fondale--*/
   const seabed = await generateBuffer('./res/seabed.obj');
   const bed = new SeaObject(seabed);
-  bed.translateObj(0, -5, 0);
+  bed.translateObj(0, -6.5, 0);
   elementsToDraw.push(bed);
     
 
@@ -127,7 +127,7 @@ async function main() {
   const totalKeys = [];
   for(let i=0; i<level; i++){
     const key = new SeaObject(singleKey);
-    key.translateObj(getRandomNumber(-100, 0), getRandomNumber(-30, 0),getRandomNumber(-100, 100));
+    key.translateObj(getRandomNumber(-100, 100), getRandomNumber(-6, 100),getRandomNumber(-100, 100));
     key.animateY=true;
     elementsToDraw.push(key);
     totalKeys.push(key);
@@ -135,11 +135,11 @@ async function main() {
 
 
   /* -- Dichiaro gli scogli-- */
-/*  const  indexes = [1, 2, 3, 4 , 5, 6, 7, 8, 9, 10, 13, 16];
+  const  indexes = [1, 2, 3, 4 , 5, 6, 7, 8, 9, 10, 13, 16];
 
 
   // prendo tutti gli obj degli scogli con i rispettivi materiali
-  const rocksObjs = [];
+ /* const rocksObjs = [];
   for(let i=1; i<(indexes.length-1); i++){
     var href ='./res/rocks/scoglio-'+i.toString()+'.obj';
     const rock = await generateBuffer(href.toString());
@@ -159,18 +159,18 @@ async function main() {
       obj: rockObject.obj,
       uniforms: uniform,
     }); 
-  }
-
+  }*/
+/*
   //definisco in base alla la densità in base a y e poi genero randomicamente uno scoglio
-  for(let y=0; y>-120; y-=3){
+  for(let y=0; y>-10; y-=3){
     let density = Math.abs( 0.5 * y- 2.5 ); 
     for(let n=0; n<density; n++){
       let randomRockNumber = Math.floor(Math.random()*rocksObjs.length);
       addRock(y, randomRockNumber);
     }
     
-  }
-*/
+  }*/
+
 
   /*-- Definisco il tesoro --*/
   const treasure = await generateBuffer('./res/treasure/treasure-closed.obj');
@@ -266,7 +266,7 @@ async function main() {
     m4.translate(camera, cameraPosition[0], cameraPosition[1], cameraPosition[2], camera);
     
     /*--Gestione nebbia--*/
-    var fogColor= [0, 0.29, 0.38, 1]; //test in cmyk
+    var fogColor= [0.0039, 0.207, 0.29, 1]; 
 
     /*-- Gestione dei movimenti --*/
     moves.stopTarget();
@@ -362,7 +362,7 @@ async function main() {
     const positionAmbientLight =[0, 20, 0];
     var ambientIntensity = 0.6 + (elementsToDraw[0].getY() / 1000);  //aumentando la profondità diminuisce l'intensità della luce
 
-    const sharedUniforms = {
+    var sharedUniforms = {
       u_view: view,
       u_projection: projection,
       u_viewWorldPosition: cameraPositionVector,
