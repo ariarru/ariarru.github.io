@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Under the Sea - CG</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <h1>Under the sea</h1>
+        <main>
+            <section>
+                <p class="first-title">Welcome! In this beautiful adventure to explore the depths of the sea.</p>
+                <p class="second-title"> Dive until the seabed collecting the keys and find the mighty treasure lost in here centuries ago.</p> 
+            </section>
+            <article class="horizontal">
+                <section>
+                    <p class="second-title">How to play:</p>
+                    <p>Move the submarine using the buttons of the control panel or the ones on your keyboard. 
+                        Your goal is to collect all the keys by touching them, but be aware and avoid the rocks (or the submarine may explode 
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+                            <path fill="currentColor" fill-rule="evenodd" d="M13.5 8a5.5 5.5 0 1 1-11 0a5.5 5.5 0 0 1 11 0M15 8A7 7 0 1 1 1 8a7 7 0 0 1 14 0m-5.67 2.835a.75.75 0 1 0
+                             1.34-.67C10.268 9.356 9.219 8.75 8 8.75s-2.267.606-2.67 1.415a.75.75 0 1 0 1.34.67c.097-.191.548-.585 1.33-.585s1.233.394 1.33.585M10 8a.75.75 0 0 1-.75-.75v-1a.75.75 
+                             0 0 1 1.5 0v1A.75.75 0 0 1 10 8m-4.75-.75a.75.75 0 0 0 1.5 0v-1a.75.75 0 0 0-1.5 0z" clip-rule="evenodd"/>
+                            </svg> ). Once you'll have find the treasure casket click on it to win.</p>
+                </section>
+                <section>
+                    <p class="second-title">Commands:</p>
+                    <div class="commands horizontal ">
+                        <ul>
+                            <li> W - move foward </li>
+                            <li> Q - dive </li>
+                            <li> E - emerge </li>
+                            <li> A - turn left </li>
+                            <li> D - turn right </li>
+                            <li> S - move backward </li>
+                        </ul>
+                        <img src="./res/keyboard.png">
+    
+                    </div>
+                </section>
+            </article>
+            
+        </main>
+        <div id="kLefts" class="center horizontal">
+            <p>Keys left to find: <p id="counter"></p></p>
+        </div>
+        <canvas id="mainCanva"></canvas>
+
+        <script id="vertex-shader" type="not-javascript">
+            attribute vec4 a_position;
+            attribute vec3 a_normal;
+            attribute vec3 a_tangent;
+            attribute vec2 a_texcoord;
+            attribute vec4 a_color;
+
+            uniform mat4 u_projection;
+            uniform mat4 u_view;
+            uniform mat4 u_world;
+            uniform vec3 u_viewWorldPosition;
+            uniform mat4 u_worldInverseTraspose;
+            
+
+            //luce del mondo
+            uniform vec3 u_lightWorldPosition;
+            uniform float u_lightWorldIntensity;
+
+            //luce del sottomarino
+            uniform vec3 u_lightSubPosition;
+            uniform float u_lightSubIntensity;
+
+            varying vec3 v_normal;
+            varying vec3 v_tangent;
+            varying vec3 v_surfaceToView;
+            varying vec2 v_texcoord;
+            varying vec4 v_color;
+            varying vec3 v_worldPosition;   // posizione nel mondo
+            varying vec3 v_worldNormal;      //normali orientate nel mondo
+            varying vec3 v_surfaceToLightWorld;   //come risponde la superficie alla luce
+            varying vec3 v_surfaceToLightSub;
+            varying vec3 v_lightWorldPos;
+            varying float v_lightWorldIntensity;
+            varying vec3 v_lightSubPos;
+            varying float v_lightSubIntensity;
+            varying float v_fogDepth;       //profondità effetto nebbia
+            
+
+            void main() {
+                vec4 worldPosition = u_world * a_position;
+                gl_Position = u_projection * u_view * worldPosition;
+                //vettore della superficie vista dalla camera
+                v_surfaceToView = u_viewWorldPosition - worldPosition.xyz;
+                mat3 normalMat = mat3(u_world);
+                v_normal = normalize(normalMat * a_normal);
+                v_tangent = normalize(normalMat * a_tangent);
+
+                v_texcoord = a_texcoord;
+                v_color = a_color;
+                v_worldPosition = (u_world * a_position).xyz;
+                v_worldNormal = mat3(u_worldInverseTraspose) * a_normal;
+                 
+                // calcolo le componenti della luce
+                v_surfaceToLightWorld = u_lightWorldPosition - v_surfaceToView;
+                v_surfaceToLightSub = u_lightSubPosition - worldPosition.xyz;
+                v_lightWorldIntensity = u_lightWorldIntensity;
+
+                v_fogDepth = (u_view * a_position).z;
+            }
+        </script>
+
+        <script id="fragment-shader" type="not-javascript">
+            precision highp float;
+
+            varying vec3 v_normal;
+            varying vec3 v_tangent;
+            varying vec3 v_surfaceToView;
+            varying vec2 v_texcoord;
+            varying vec4 v_color;
+            varying vec3 v_lightWorldPos;
+            varying float v_lightWorldIntensity;
+            varying vec3 v_lightSubPos;
+            varying float v_lightSubIntensity;
+            varying float v_fogDepth;
+
+
+            varying vec3 v_surfaceToLight;
+            varying vec3 v_surfaceToLightSub;
+
+
+            uniform vec3 diffuse;
+            uniform sampler2D diffuseMap;
+            uniform vec3 ambient;
+            uniform vec3 emissive;
+            uniform vec3 specular;
+            uniform sampler2D specularMap;
+            uniform float shininess;
+            uniform sampler2D normalMap;
+            uniform float opacity;
+            uniform vec3 u_ambientLight;
+
+            //gestione nebbia
+            uniform vec4 u_fogColor;
+            uniform float u_fogNear;
+            uniform float u_fogFar;
+
+
+            uniform vec3 u_lightWorldDirection;
+            uniform vec3 u_lightSubDirection;
+            uniform float u_limit; //ampiezza del raggio dei luce
+
+
+            float lerp(float a, float b, float t){
+                return a + (b - a) * t;
+            }
+
+
+            void main () {
+                vec3 normal = normalize(v_normal) * ( float( gl_FrontFacing ) * 2.0 - 1.0 );
+                vec3 tangent = normalize(v_tangent) * ( float( gl_FrontFacing ) * 2.0 - 1.0 );
+                vec3 bitangent = normalize(cross(normal, tangent));
+
+                mat3 tbn = mat3(tangent, bitangent, normal);
+                normal = texture2D(normalMap, v_texcoord).rgb * 2. - 1.;
+                normal = normalize(tbn * normal);
+
+                vec3 surfaceToViewDirection = normalize(v_surfaceToView);
+
+                vec3 surfaceToLightSubDirection = normalize(v_surfaceToLightSub);
+
+                vec3 halfWorldVector = normalize(u_lightWorldDirection + surfaceToViewDirection);
+                vec3 halfSubVector = normalize(surfaceToLightSubDirection + surfaceToViewDirection);
+
+
+                float worldLight = dot(u_lightWorldDirection, normal) * .5 + .5;
+                float subLight = dot(u_lightSubDirection, normal) * .5 + .5;
+                if(subLight >= u_limit){
+                    subLight = dot(surfaceToLightSubDirection, -u_lightSubDirection);
+                }
+
+                float specularLight = clamp(dot(normal, halfWorldVector), 0.0, 1.0);
+                float specularLightFromSub = clamp(dot(normal, halfSubVector), 0.0, 1.0);
+                vec4 specularMapColor = texture2D(specularMap, v_texcoord);
+                vec3 effectiveSpecular = specular * specularMapColor.rgb;
+
+                vec4 diffuseMapColor = texture2D(diffuseMap, v_texcoord);
+                vec3 effectiveDiffuse = diffuse *  v_lightWorldIntensity * diffuseMapColor.rgb * v_color.rgb;
+                float effectiveOpacity = opacity * diffuseMapColor.a * v_color.a;
+
+                //luce ambiente modello di Phong
+                gl_FragColor = vec4(
+                    (emissive +
+                    ambient * u_ambientLight +                          //luce ambiente
+                    effectiveDiffuse * worldLight +                     //riflessa diffusa dei materiali opachi
+                    effectiveSpecular * pow(specularLight, shininess * 10.0)), //riflessa speculare dei materiali lucidi
+                    effectiveOpacity);
+
+                //effetto nebbia
+
+                float fogT = (clamp(u_fogNear, u_fogFar, v_fogDepth) - u_fogNear) / (u_fogFar - u_fogNear);
+                
+
+                //float fogAmount = smoothstep(u_fogNear, u_fogFar, v_fogDepth);
+
+                gl_FragColor = gl_FragColor + (u_fogColor - gl_FragColor) * fogT;
+            }
+        </script>
+
+        <!-- vertex e fragment shader per la gestione della skybox-->
+        <script id="skybox-vertex-shader" type="not-javascript">
+            attribute vec4 a_position;
+            varying vec4 v_position;
+            void main(){
+                v_position = a_position;
+                gl_Position = a_position;
+                gl_Position.z = 1.0;
+            }
+        </script>
+        <script id="skybox-fragment-shader" type="not-javascript">
+            precision mediump float;
+
+            uniform samplerCube u_skybox;
+            uniform mat4 u_viewDirectionProjectionInverse;
+
+            varying vec4 v_position;
+            void main() {
+                vec4 t = u_viewDirectionProjectionInverse * v_position;
+                gl_FragColor = textureCube(u_skybox, normalize(t.xyz / t.w));
+            }
+        </script>
+
+        <script type="text/javascript" src="https://webglfundamentals.org/webgl/resources/webgl-utils.js"></script>
+        <script type="text/javascript" src="https://webglfundamentals.org/webgl/resources/m4.js"></script>
+       <script type="text/javascript" src="./handleOBJ.js"></script>
+        <script type="text/javascript" src="./handleMT.js"></script>
+        <script type="text/javascript" src="./myutils.js"></script>
+        <script type="text/javascript" src="./handleMovements.js"></script>
+        <script type="text/javascript" src="./objects.js"></script>
+        <script type="text/javascript" src="./code-webgl.js"></script>
+
+    <!-- 
+        <div id="btnContainer">
+            <!/-- here there will be buttons --/>
+            <!/-- se riesci a farlo vedere tipo game boy è top--/s>
+            <div class="center vertical">
+                <button id="up" class="btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24">
+                        <path fill="black" d="M10.586 3L4 9.586a2 2 0 0 0-.434 2.18l.068.145A2 2 0 0 0 5.414 13H8v7a2 2 0 0 0 2 2h4l.15-.005A2 2 0 0 0 16 20l-.001-7h2.587A2 2 0 0 0 20 9.586L13.414 3a2 2 0 0 0-2.828 0" />
+                    </svg>
+                </button>
+            </div>
+            <div class="center horizontal">
+                <button id="left" class="btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24">
+                        <path fill="black" d="M9.586 4L3 10.586a2 2 0 0 0 0 2.828L9.586 20a2 2 0 0 0 2.18.434l.145-.068A2 2 0 0 0 13 18.586V16h7a2 2 0 0 0 2-2v-4l-.005-.15A2 2 0 0 0 20 8l-7-.001V5.414A2 2 0 0 0 9.586 4" />
+                    </svg>
+                </button>
+                <button id="right" class="btn" >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24">
+                        <path fill="black" d="M12.089 3.634A2 2 0 0 0 11 5.414L10.999 8H4a2 2 0 0 0-2 2v4l.005.15A2 2 0 0 0 4 16l6.999-.001l.001 2.587A2 2 0 0 0 14.414 20L21 13.414a2 2 0 0 0 0-2.828L14.414 4a2 2 0 0 0-2.18-.434z" />
+                    </svg>
+                </button>
+            </div>
+            <div class="center vertical">
+                <button id="down" class="btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24">
+                        <path fill="black" d="m10 2l-.15.005A2 2 0 0 0 8 4v6.999L5.414 11A2 2 0 0 0 4 14.414L10.586 21a2 2 0 0 0 2.828 0L20 14.414a2 2 0 0 0 .434-2.18l-.068-.145A2 2 0 0 0 18.586 11L16 10.999V4a2 2 0 0 0-2-2z" />
+                    </svg>
+                </button>
+            </div>
+        --> 
+            
+        </div>
+        
+         </body>
+</html>
