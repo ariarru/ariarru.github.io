@@ -345,12 +345,12 @@ async function main() {
       squalo.degree = (squalo.degree + (sign ? 0.01 : -0.01));
       m4.yRotate(squalo.uniformMatrix, degToRad( squalo.degree), squalo.uniformMatrix);
       if(squalo.degree % 5 ==0){
-        m4.zRotate(squalo.uniformMatrix, degToRad( squalo.degree), squalo.uniformMatrix);
+        m4.zRotate(squalo.uniformMatrix, Math.cos(degToRad(time)), squalo.uniformMatrix);
       }
       let traslX = -squalo.radius*(Math.cos(degToRad(20))) +1;
       let traslZ = -squalo.radius*(Math.sin(degToRad(20))) +1 ;
       m4.translate(squalo.uniformMatrix, traslX * 0.03, 0, traslZ * 0.03, squalo.uniformMatrix);
-      m4.yRotate(squalo.uniformMatrix, degToRad(0.2), squalo.uniformMatrix);
+      m4.yRotate(squalo.uniformMatrix, degToRad(Math.sin(time/2)*0.5), squalo.uniformMatrix);
       
     })
     
