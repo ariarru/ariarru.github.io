@@ -116,7 +116,7 @@ async function main() {
   /*--Dichiaro il fondale--*/
   const seabed = await generateBuffer('./res/seabed.obj');
   const bed = new SeaObject(seabed);
-  bed.translateObj(0, -6.5, 0);
+  bed.translateObj(0, -10.5, 0);
   elementsToDraw.push(bed);
     
 
@@ -127,7 +127,10 @@ async function main() {
   const totalKeys = [];
   for(let i=0; i<level; i++){
     const key = new SeaObject(singleKey);
-    key.translateObj(getRandomNumber(-100, 100), getRandomNumber(-6, 100),getRandomNumber(-100, 100));
+    var x = getRandomNumber(-100, 100);
+    var y = getRandomNumber(-7, 100);
+    var z = getRandomNumber(-100, 100);
+    key.translateObj(x=0 ? x+getRandomNumber(-100, 100) : x, y ,z);
     key.animateY=true;
     elementsToDraw.push(key);
     totalKeys.push(key);
@@ -135,49 +138,17 @@ async function main() {
 
 
   /* -- Dichiaro gli scogli-- */
-  const  indexes = [1, 2, 3, 4 , 5, 6, 7, 8, 9, 10, 13, 16];
-
-
-  // prendo tutti gli obj degli scogli con i rispettivi materiali
- /* const rocksObjs = [];
-  for(let i=1; i<(indexes.length-1); i++){
-    var href ='./res/rocks/scoglio-'+i.toString()+'.obj';
-    const rock = await generateBuffer(href.toString());
-    rocksObjs.push(rock);
-  }
-
-  async function addRock(y, rockNumber){
-    var rockObject=rocksObjs[rockNumber]; 
-    let rockMatrix= m4.translation(getXRock(), y, getRandomNumber(-80, 40));
-    m4.xRotate(rockMatrix, degToRad(getRandomNumber(-20, 20)), rockMatrix);
-    m4.yRotate(rockMatrix, degToRad(getRandomNumber(-20, 20)), rockMatrix);
-    let uniform = {
-      uniformMatrix : rockMatrix,
-    }
-    elementsToDraw.push({
-      parts: rockObject.parts,
-      obj: rockObject.obj,
-      uniforms: uniform,
-    }); 
-  }*/
-/*
-  //definisco in base alla la densità in base a y e poi genero randomicamente uno scoglio
-  for(let y=0; y>-10; y-=3){
-    let density = Math.abs( 0.5 * y- 2.5 ); 
-    for(let n=0; n<density; n++){
-      let randomRockNumber = Math.floor(Math.random()*rocksObjs.length);
-      addRock(y, randomRockNumber);
-    }
-    
-  }*/
+  const sharkBuff = await generateBuffer('res/SHARK.obj');
+  const shark = new SeaObject(sharkBuff);
+  shark.translateObj(-3, 1.5, 0); //rotate rispetto a y mentre si muove in avanti e ha una leggera oscillazione in x
+  shark.degree = 0;
+  elementsToDraw.push(shark);
 
 
   /*-- Definisco il tesoro --*/
   const treasure = await generateBuffer('./res/treasure/treasure-closed.obj');
   const closedTrasure = new SeaObject(treasure);
-  closedTrasure.translateObj(getRandomNumber(0, 100), -40, getRandomNumber(-60, 60));
-  elementsToDraw.push(closedTrasure);
-  console.log(closedTrasure.getX());
+  closedTrasure.translateObj(getRandomNumber(-100, 100), 1, getRandomNumber(-100, 100));
 
   const finishTreasure = await generateBuffer('./res/treasure/treasure-open.obj');
   const openTreasure = new SeaObject(finishTreasure);
@@ -222,6 +193,7 @@ async function main() {
   totalKeys.forEach(element => {
     counter.innerHTML +=" &#128477;";
   });
+  var sign = true;
 
 
   /*-gestione evento fine gioco -*/
@@ -301,20 +273,42 @@ async function main() {
     let xTrasl = velocity * deltaTime; //quantità di spostamento
 
     let valX = submarine.getX() + xTrasl; //variabile di controllo
-    let posTreasure = closedTrasure.getX() - (3 * moves.target);
-    let highFromTreasure = Math.abs(closedTrasure.getY()-submarine.getY());
+    let posFromTreasure = m4.distance(submarine.getPos(), closedTrasure.getPos());
 
-    /*if(velocity !=0){
-      moves.target > 0 ? moves.ableBack = false : moves.ableFoward = false;
-      //TODO: fai esplodere tutto
-    } else */
-    if(velocity != 0 && ( Math.abs(valX) >= Math.abs(posTreasure)) && highFromTreasure <= 1.5){
+    totalKeys.forEach(k => {
+      //controllo che la distanza tra le due posizioni sia minore o uguale la somma degli offset
+      if(m4.distance(submarine.getPos(), k.getPos()) <= 1.5){
+        var i = totalKeys.indexOf(k);
+        totalKeys.splice(i, 1);
+        i = elementsToDraw.indexOf(k);
+        elementsToDraw.splice(i, 1);
+        counter.innerHTML ='';
+        totalKeys.forEach(element => {
+          counter.innerHTML +=" &#128477;";
+        });
+        if(totalKeys.length == 0){
+          elementsToDraw.push(closedTrasure);
+        }
+      }
+    });
+
+    //controllo rispetto agli squali
+    if(m4.distance(submarine.getPos(), shark.getPos()) <= 2.0){
+      console.log("ferma gioco");
       moves.ableFoward = false;
-      velocity = 0;
+      moves.ableBack = false;
+    }
+
+    if(submarine.getY() <= bed.getY()+1.0){ //controllo posizione rispetto al fondale
+      console.log("ferma gioco");
+      moves.ableFoward = false;
+      moves.ableBack = false;
+    } else if(velocity != 0 && posFromTreasure < 2.0){ //controllo posizione rispetto al tesoro
       treasureFound=true;
     }else{
       moves.ableFoward = true;
       moves.ableBack = true;
+      //tresureFound = false; ?
       m4.translate(elementsToDraw[0].uniformMatrix, xTrasl,0,0, elementsToDraw[0].uniformMatrix);
       elementsToDraw[1].uniformMatrix = adaptPropellersTransl(elementsToDraw[0].uniformMatrix, elementsToDraw[1].uniformMatrix);
     }
@@ -326,6 +320,16 @@ async function main() {
        m4.translate(faceBubble.uniformMatrix, 0, bubbleTrasl, 0, faceBubble.uniformMatrix);
     }
    
+    /*-- gestione movimento squali --*/
+    //squali.foreach(squalo =>{})
+    if(shark.degree > 0.1 && sign){
+      sign = false;
+    } else if(shark.degree < -0.15 && !sign){
+      sign = true;
+    }
+    shark.degree = (shark.degree + (sign ? 0.01 : -0.02));
+    m4.yRotate(shark.uniformMatrix, degToRad( shark.degree), shark.uniformMatrix);
+    m4.translate(shark.uniformMatrix, -0.1, 0, 0.05, shark.uniformMatrix);
     
 
 
