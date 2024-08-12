@@ -127,9 +127,9 @@ async function main() {
   const totalKeys = [];
   for(let i=0; i<level; i++){
     const key = new SeaObject(singleKey);
-    var x = getRandomNumber(-100, 100);
-    var y = getRandomNumber(-7, 100);
-    var z = getRandomNumber(-100, 100);
+    var x = getRandomNumber(-120, 120);
+    var y = getRandomNumber(-5, 80);
+    var z = getRandomNumber(-120, 120);
     key.translateObj(x=0 ? x+getRandomNumber(-100, 100) : x, y ,z);
     key.animateY=true;
     elementsToDraw.push(key);
@@ -137,12 +137,22 @@ async function main() {
   }
 
 
-  /* -- Dichiaro gli scogli-- */
+  /* -- Dichiaro gli squali-- */
   const sharkBuff = await generateBuffer('res/SHARK.obj');
-  const shark = new SeaObject(sharkBuff);
-  shark.translateObj(-3, 1.5, 0); //rotate rispetto a y mentre si muove in avanti e ha una leggera oscillazione in x
-  shark.degree = 0;
-  elementsToDraw.push(shark);
+  var sharks =[];
+  for(let nShark=0; nShark<15; nShark++){
+    const shark = new SeaObject(sharkBuff);
+    shark.translateObj(getRandomNumber(-80, 80), getRandomNumber(-6, 50), getRandomNumber(-80, 80));
+    shark.degree = 0;
+    if(nShark%2!=0){
+      m4.yRotate(shark.uniformMatrix, degToRad(90*nShark), shark.uniformMatrix);
+    }
+    shark.radius = getRandomNumber(2., 5.);
+    console.log("raggio:"+ shark.radius);
+    sharks.push(shark);
+    elementsToDraw.push(shark);
+  }
+  
 
 
   /*-- Definisco il tesoro --*/
@@ -293,11 +303,16 @@ async function main() {
     });
 
     //controllo rispetto agli squali
-    if(m4.distance(submarine.getPos(), shark.getPos()) <= 2.0){
-      console.log("ferma gioco");
-      moves.ableFoward = false;
-      moves.ableBack = false;
-    }
+    sharks.forEach(s =>{
+      if(m4.distance(submarine.getPos(), s.getPos()) <= 2.0){
+        console.log("ferma gioco");
+        moves.ableFoward = false;
+        moves.ableBack = false;
+      }else if(m4.distance(submarine.getPos(), s.getPos()) >= 100){
+        m4.yRotate(s.uniformMatrix, degToRad(180), s.uniformMatrix);
+      }
+    })
+    
 
     if(submarine.getY() <= bed.getY()+1.0){ //controllo posizione rispetto al fondale
       console.log("ferma gioco");
@@ -321,15 +336,23 @@ async function main() {
     }
    
     /*-- gestione movimento squali --*/
-    //squali.foreach(squalo =>{})
-    if(shark.degree > 0.1 && sign){
-      sign = false;
-    } else if(shark.degree < -0.15 && !sign){
-      sign = true;
-    }
-    shark.degree = (shark.degree + (sign ? 0.01 : -0.02));
-    m4.yRotate(shark.uniformMatrix, degToRad( shark.degree), shark.uniformMatrix);
-    m4.translate(shark.uniformMatrix, -0.1, 0, 0.05, shark.uniformMatrix);
+    sharks.forEach(squalo =>{
+      if(squalo.degree > 0.1 && sign){
+        sign = false;
+      } else if(squalo.degree < -0.15 && !sign){
+        sign = true;
+      }
+      squalo.degree = (squalo.degree + (sign ? 0.01 : -0.01));
+      m4.yRotate(squalo.uniformMatrix, degToRad( squalo.degree), squalo.uniformMatrix);
+      if(squalo.degree % 5 ==0){
+        m4.zRotate(squalo.uniformMatrix, degToRad( squalo.degree), squalo.uniformMatrix);
+      }
+      let traslX = -squalo.radius*(Math.cos(degToRad(20))) +1;
+      let traslZ = -squalo.radius*(Math.sin(degToRad(20))) +1 ;
+      m4.translate(squalo.uniformMatrix, traslX * 0.03, 0, traslZ * 0.03, squalo.uniformMatrix);
+      m4.yRotate(squalo.uniformMatrix, degToRad(0.2), squalo.uniformMatrix);
+      
+    })
     
 
 

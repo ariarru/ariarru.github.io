@@ -200,7 +200,7 @@
                 //effetto nebbia
                 float fogDistance = length(v_fogDepth);
                 float LOG2 = 1.4427;
-                float fogDensity = 0.005;
+                float fogDensity = 0.006;
                 float fogAmount = 1. - exp2(-fogDensity * fogDensity * fogDistance * fogDistance * LOG2);
                 fogAmount = clamp(fogAmount, 0., 1.);
 
