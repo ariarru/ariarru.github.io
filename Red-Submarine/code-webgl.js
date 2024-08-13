@@ -2,15 +2,77 @@
 
 
 async function main() {
-  // Get A WebGL context
+  //Definisco WebGL context
   const canvas = document.getElementById("mainCanva");
   const gl = canvas.getContext("webgl");
   if (!gl) {
     return;
   }
-  //setup program
+  //Definisco l'estensione per le ombre
+  const ext = gl.getExtension('WEBGL_depth_texture');
+  if (!ext) {
+    return alert('need WEBGL_depth_texture');
+  }
+
+  //Setup program
   const programInfo = webglUtils.createProgramInfo(gl, ["vertex-shader", "fragment-shader"]);
+  const colorProgramInfo = webglUtils.createProgramInfo(gl, ["color-vertex-shader", "color-fragment-shader"]);
   const skyboxProgramInfo = webglUtils.createProgramInfo(gl, ["skybox-vertex-shader", "skybox-fragment-shader"]);
+
+  
+  const depthTexture = gl.createTexture();
+  const depthTextureSize = 512;
+  gl.bindTexture(gl.TEXTURE_2D, depthTexture);
+  gl.texImage2D(
+      gl.TEXTURE_2D,      // target
+      0,                  // mip level
+      gl.DEPTH_COMPONENT, // internal format
+      depthTextureSize,   // width
+      depthTextureSize,   // height
+      0,                  // border
+      gl.DEPTH_COMPONENT, // format
+      gl.UNSIGNED_INT,    // type
+      null);              // data
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+  const depthFramebuffer = gl.createFramebuffer();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, depthFramebuffer);
+  gl.framebufferTexture2D(
+      gl.FRAMEBUFFER,       // target
+      gl.DEPTH_ATTACHMENT,  // attachment point
+      gl.TEXTURE_2D,        // texture target
+      depthTexture,         // texture
+      0);                   // mip level
+
+    
+  const unusedTexture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, unusedTexture);
+  gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA,
+      depthTextureSize,
+      depthTextureSize,
+      0,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      null,
+  );
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+  // attach it to the framebuffer
+  gl.framebufferTexture2D(
+      gl.FRAMEBUFFER,        // target
+      gl.COLOR_ATTACHMENT0,  // attachment point
+      gl.TEXTURE_2D,         // texture target
+      unusedTexture,         // texture
+      0);                    // mip level
 
 
   // Create a buffer for positions
@@ -24,7 +86,8 @@ async function main() {
   var normalBuffer = gl.createBuffer();
   // Bind it to ARRAY_BUFFER (think of it as ARRAY_BUFFER = normalBuffer)
   gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-  
+
+    
 
   /* -- Definisco la sky box -- */
   // Create a texture.
@@ -148,7 +211,6 @@ async function main() {
       m4.yRotate(shark.uniformMatrix, degToRad(90*nShark), shark.uniformMatrix);
     }
     shark.radius = getRandomNumber(2., 5.);
-    console.log("raggio:"+ shark.radius);
     sharks.push(shark);
     elementsToDraw.push(shark);
   }
@@ -239,14 +301,11 @@ async function main() {
     webglUtils.resizeCanvasToDisplaySize(gl.canvas);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
+    gl.enable(gl.CULL_FACE);
     gl.enable(gl.DEPTH_TEST);
     gl.clear(gl.DEPTH_TEST);
 
 
-    /*-- Gestione camera --*/
-    const camera = m4.yRotate(submarine.uniformMatrix, degToRad(90));
-    m4.translate(camera, cameraPosition[0], cameraPosition[1], cameraPosition[2], camera);
-    
     /*--Gestione nebbia--*/
     var fogColor= [0.0039, 0.207, 0.29, 1]; 
 
@@ -259,7 +318,7 @@ async function main() {
       m4.yRotate(elementsToDraw[0].uniformMatrix, degToRad(2), elementsToDraw[0].uniformMatrix);
       elementsToDraw[1].uniformMatrix = adaptPropellersRotateY(elementsToDraw[0].uniformMatrix, elementsToDraw[1].uniformMatrix);
       treasureFound=false; //se il sottomarino si sposta allora va via dal tesoro
-     } 
+      } 
     if(moves.rotateRight){
       m4.yRotate(elementsToDraw[0].uniformMatrix, degToRad(-2), elementsToDraw[0].uniformMatrix);
       elementsToDraw[1].uniformMatrix = adaptPropellersRotateY(elementsToDraw[0].uniformMatrix, elementsToDraw[1].uniformMatrix);
@@ -281,13 +340,11 @@ async function main() {
     }
     velocity = lerp(velocity, maxVelocity * moves.target, deltaTime * accelleration); //variabile velocità di spostamento
     let xTrasl = velocity * deltaTime; //quantità di spostamento
-
-    let valX = submarine.getX() + xTrasl; //variabile di controllo
-    let posFromTreasure = m4.distance(submarine.getPos(), closedTrasure.getPos());
+    let posFromTreasure = m4.distance(submarine.getPos(), closedTrasure.getPos()); //distanza del sottomatino dal tesoro
 
     totalKeys.forEach(k => {
-      //controllo che la distanza tra le due posizioni sia minore o uguale la somma degli offset
-      if(m4.distance(submarine.getPos(), k.getPos()) <= 1.5){
+      //controllo che la distanza tra le due posizioni sia minore o uguale una data dimensione
+      if(m4.distance(submarine.getPos(), k.getPos()) <= 2.0){
         var i = totalKeys.indexOf(k);
         totalKeys.splice(i, 1);
         i = elementsToDraw.indexOf(k);
@@ -304,11 +361,11 @@ async function main() {
 
     //controllo rispetto agli squali
     sharks.forEach(s =>{
-      if(m4.distance(submarine.getPos(), s.getPos()) <= 2.0){
+      if(m4.distance(submarine.getPos(), s.getPos()) <= 2.5){
         console.log("ferma gioco");
         moves.ableFoward = false;
         moves.ableBack = false;
-      }else if(m4.distance(submarine.getPos(), s.getPos()) >= 100){
+      }else if(m4.distance(submarine.getPos(), s.getPos()) >= 200){
         m4.yRotate(s.uniformMatrix, degToRad(180), s.uniformMatrix);
       }
     })
@@ -328,14 +385,14 @@ async function main() {
       elementsToDraw[1].uniformMatrix = adaptPropellersTransl(elementsToDraw[0].uniformMatrix, elementsToDraw[1].uniformMatrix);
     }
 
-    //movimenti della bolla
+    /*-- Gestione movimenti della bolla --*/
     if(faceBubble.animateY && faceBubble.getY() < (openTreasure.getY() + 2.5)){
-       bubbleVelocity = lerp(bubbleVelocity, 10, deltaTime);
-       let bubbleTrasl = bubbleVelocity * deltaTime;
-       m4.translate(faceBubble.uniformMatrix, 0, bubbleTrasl, 0, faceBubble.uniformMatrix);
+        bubbleVelocity = lerp(bubbleVelocity, 10, deltaTime);
+        let bubbleTrasl = bubbleVelocity * deltaTime;
+        m4.translate(faceBubble.uniformMatrix, 0, bubbleTrasl, 0, faceBubble.uniformMatrix);
     }
-   
-    /*-- gestione movimento squali --*/
+    
+    /*-- Gestione movimento squali --*/
     sharks.forEach(squalo =>{
       if(squalo.degree > 0.1 && sign){
         sign = false;
@@ -351,24 +408,20 @@ async function main() {
       let traslZ = -squalo.radius*(Math.sin(degToRad(20))) +1 ;
       m4.translate(squalo.uniformMatrix, traslX * 0.03, 0, traslZ * 0.03, squalo.uniformMatrix);
       m4.yRotate(squalo.uniformMatrix, degToRad(Math.sin(time/2)*0.5), squalo.uniformMatrix);
-      
-    })
-    
 
+    });
+   
+    /*-- Gestione camera --*/
+    const camera = m4.yRotate(submarine.uniformMatrix, degToRad(90));
+    m4.translate(camera, cameraPosition[0], cameraPosition[1], cameraPosition[2], camera);
 
-
-    /*-- posizione luce del sottomarino -- */
-    // definito in base alla posizione del sottomarino
-    var subLightPos = [elementsToDraw[0].getX(), elementsToDraw[0].getY(), elementsToDraw[0].getZ()];
-    var lightMatrix= submarine.uniformMatrix;
-    //inserisci comandi per ruotare la luce con il sottomarino
-    var subLightDirection = [lightMatrix[8], lightMatrix[9], lightMatrix[10]];
-    
+    /*-- Gestione frustum --*/
     //campo della vista nell'asse y in radianti
     const fovy = degToRad(60);
     //aspect ratio 
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     const projection = m4.perspective(fovy, aspect, 1, 2000);
+
     // Make a view matrix from the camera matrix.
     const view = m4.inverse(camera);
     // We only care about direction so remove the translation
@@ -382,28 +435,111 @@ async function main() {
     var viewDirectionProjectionInverseMatrix =
       m4.inverse(viewDirectionProjectionMatrix);
 
+    const positionAmbientLight =[0, 200, -4];
+
+    /*-- Gestione delle ombre - Z-Buffer--*/
+    //disegno dal POV della luce
+    const lightWorldMatrix = m4.lookAt(
+      positionAmbientLight,          // position
+      [0, 0, 0],                    // target
+      [0, 1, 0],                     // up
+    );
+    // const lightProjectionMatrix = projection; definisco la prospettiva true di default
+    // draw to the depth texture
+    gl.bindFramebuffer(gl.FRAMEBUFFER, depthFramebuffer);
+    gl.viewport(0, 0, depthTextureSize, depthTextureSize);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    gl.useProgram(colorProgramInfo.program);
+    //set le uniform della luce
+    webglUtils.setUniforms(colorProgramInfo, {
+      u_view: m4.inverse(lightWorldMatrix),
+      u_color: [1, 1, 1, 1],
+      u_projection: projection,
+      u_texture: m4.identity(),
+      u_projectedTexture: depthTexture,
+      u_reverseLightDirection: lightWorldMatrix.slice(8, 11),
+    });
+
+    elementsToDraw.forEach(function(object) {
+  
+    // definisco la matrice
+      let m = object.uniformMatrix;
+      // gestisco l'animazione delle eliche
+      if(object.animateX){
+        degreeX = (degreeX > 360 ? 0 : (degreeX + 4 + 3.5 *Math.abs(velocity/maxVelocity)));
+        m = m4.xRotate(m, degToRad(degreeX),m4.copy(m));
+      }
+      //gestisco animazione bolla
+      if(object.animateY){
+        degreeY = (degreeY > 360 ? 0 : (degreeY + 0.25));
+        m = m4.yRotate(m, degToRad(degreeY),m4.copy(m));
+      }
+      
+      // renderizzo passando più array //
+      for (const {bufferInfo, material} of object.parts) {
+        // calls gl.bindBuffer, gl.enableVertexAttribArray, gl.vertexAttribPointer
+        webglUtils.setBuffersAndAttributes(gl, colorProgramInfo, bufferInfo);
+        
+        // calls gl.uniform
+        webglUtils.setUniforms(colorProgramInfo, { u_world: m,  }, material); // come parametro solo cose scritte nel vertex shader
+
+        /* -- Qui avviene l'effettiva renderizzazione -- */
+        // calls gl.drawArrays or gl.drawElements
+        webglUtils.drawBufferInfo(gl, bufferInfo);
+      }
+
+    });
+
+
+
+    /*-- posizione luce del sottomarino -- */
+    // definito in base alla posizione del sottomarino
+    var subLightPos = [elementsToDraw[0].getX(), elementsToDraw[0].getY(), elementsToDraw[0].getZ()];
+    var lightMatrix= submarine.uniformMatrix;
+    //inserisci comandi per ruotare la luce con il sottomarino
+    var subLightDirection = [lightMatrix[8], lightMatrix[9], lightMatrix[10]];
+    
+
+
+
+
     /*-- Informazioni condivise -- */
     let u_world= m4.identity();
     const u_worldInverseTraspose = m4.transpose(m4.inverse(u_world));
-    
-    const positionAmbientLight =[0, 20, 0];
-    var ambientIntensity = 0.6 + (elementsToDraw[0].getY() / 1000);  //aumentando la profondità diminuisce l'intensità della luce
 
+    // now draw scene to the canvas projecting the depth texture into the scene
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+    gl.clearColor(0, 0, 0, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    //matrice che mi permette di trasformare i punti dal punti di vista della luce a quello dell'osservatore
+    var textureMatrix = m4.identity();
+    textureMatrix = m4.translate(textureMatrix, 0.5, 0.5, 0.5);
+    textureMatrix = m4.scale(textureMatrix, 0.5, 0.5, 0.5);
+    textureMatrix = m4.multiply(textureMatrix, projection);
+    // use the inverse of this world matrix to make
+    // a matrix that will transform other positions
+    // to be relative this world space.
+    textureMatrix = m4.multiply(
+        textureMatrix,
+        m4.inverse(lightWorldMatrix));
+    
     var sharedUniforms = {
       u_view: view,
       u_projection: projection,
       u_viewWorldPosition: cameraPositionVector,
       opacity:0.4,
       u_lightWorldPosition: positionAmbientLight,
-      u_lightWorldIntensity: ambientIntensity,
+      u_lightWorldIntensity: 0.3,
       u_lightWorldDirection: [-1, 3, -3],
       u_worldInverseTraspose: u_worldInverseTraspose,
       u_fogColor: fogColor,
-      //luce sottomarino
-      u_limit: 0.39, //ampiezza di circa 20 gradi
-      u_lightSubPosition: subLightPos,
-      u_lightSubIntensity: 0.07,
-      u_lightSubDirection: subLightDirection,
+      //uniforms per le ombre
+      u_textureMatrix: textureMatrix,
+      u_projectedTexture: depthTexture,
+      u_bias: 0.016,
     };
     gl.useProgram(programInfo.program);
     // calls gl.uniform
@@ -503,3 +639,4 @@ async function main() {
 }
 
 main();
+
