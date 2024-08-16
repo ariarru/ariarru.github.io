@@ -117,7 +117,7 @@
             varying vec3 v_fogDepth;
             varying vec3 v_worldPosition;
 
-            varying vec3 v_surfaceToLight;
+            varying vec3 v_surfaceToLightWorld;
 
             uniform vec3 diffuse;
             uniform sampler2D diffuseMap;
@@ -129,6 +129,8 @@
             uniform sampler2D normalMap;
             uniform float opacity;
             uniform vec3 u_ambientLight;
+            uniform vec3 u_lightWorldDirection;
+
             //shadows
             uniform vec4 u_colorMult;
             uniform sampler2D u_texture;
@@ -139,7 +141,6 @@
             //gestione nebbia
             uniform vec4 u_fogColor;
 
-            uniform vec3 u_lightWorldDirection;
             
 
             float lerp(float a, float b, float t){
@@ -148,7 +149,11 @@
 
 
             void main () {
+                //interpolazione delle normali
                 vec3 normal = normalize(v_normal) * ( float( gl_FrontFacing ) * 2.0 - 1.0 );
+
+
+                //calcolo delle normal map
                 vec3 tangent = normalize(v_tangent) * ( float( gl_FrontFacing ) * 2.0 - 1.0 );
                 vec3 bitangent = normalize(cross(normal, tangent));
 
@@ -156,8 +161,13 @@
                 normal = texture2D(normalMap, v_texcoord).rgb * 2. - 1.;
                 normal = normalize(tbn * normal);
 
+                vec3 surfaceToLightDirection = normalize(v_surfaceToLightWorld);
+                float dotFromDirection = dot(surfaceToLightDirection, - u_lightWorldDirection);
+
+
+                //calcolo luce speculare
                 vec3 surfaceToViewDirection = normalize(v_surfaceToView);
-                vec3 halfWorldVector = normalize(u_lightWorldDirection + surfaceToViewDirection);
+                vec3 halfWorldVector = normalize(surfaceToLightDirection + surfaceToViewDirection);
 
                 float worldLight = dot(u_lightWorldDirection, normal) * .5 + .5;
                
@@ -170,18 +180,23 @@
                 float effectiveOpacity = opacity * diffuseMapColor.a * v_color.a;
 
                 //shadows
-                float light = dot(normal, u_reverseLightDirection);
+                float light = dot(normal, surfaceToLightDirection);
 
                 vec3 projectedTexcoord = v_projectedTexcoord.xyz / v_projectedTexcoord.w;
                 float currentDepth = projectedTexcoord.z + u_bias;
+                
 
+                // the 'r' channel has the depth values
+                float projectedDepth = texture2D(u_projectedTexture, projectedTexcoord.xy).r;
+                float shadowLight = (projectedDepth <= currentDepth) ? 0.1 : 1.0; //inRange non mi serve
+                shadowLight = clamp(shadowLight, 0., 1.);
 
                 //luce ambiente modello di Phong
                 gl_FragColor = vec4(
                     (emissive +
                     ambient * u_ambientLight +                          //luce ambiente
-                    effectiveDiffuse * worldLight +                     //riflessa diffusa dei materiali opachi
-                    effectiveSpecular * pow(specularLight, shininess * 20.0)), //riflessa speculare dei materiali lucidi
+                    effectiveDiffuse * (worldLight + light) * shadowLight+                     //riflessa diffusa dei materiali opachi
+                    effectiveSpecular * shadowLight * pow(specularLight, shininess * 20.0)), //riflessa speculare dei materiali lucidi
                     effectiveOpacity);
 
                 //effetto nebbia
@@ -193,20 +208,11 @@
 
                 gl_FragColor= mix(gl_FragColor, u_fogColor, fogAmount);
 
-                bool inRange =
-                    projectedTexcoord.x >= 0.0 &&
-                    projectedTexcoord.x <= 1.0 &&
-                    projectedTexcoord.y >= 0.0 &&
-                    projectedTexcoord.y <= 1.0;
-
-                // the 'r' channel has the depth values
-                float projectedDepth = texture2D(u_projectedTexture, projectedTexcoord.xy).r;
-                float shadowLight = (projectedDepth <= currentDepth) ? 0.0 : 1.0;
-                shadowLight = clamp(shadowLight, 0., 1.);
-
+               
+                /*
                 vec4 texColor = texture2D(u_texture, v_texcoord) * u_colorMult;
                 vec4 shadows = vec4(texColor.rgb * light * shadowLight, texColor.a);
-                gl_FragColor = mix(gl_FragColor, shadows, shadowLight);
+                gl_FragColor += shadows;*/
             }
         </script>
 

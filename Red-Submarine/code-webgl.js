@@ -462,8 +462,7 @@ async function main() {
     });
 
     elementsToDraw.forEach(function(object) {
-  
-    // definisco la matrice
+      // definisco la matrice
       let m = object.uniformMatrix;
       // gestisco l'animazione delle eliche
       if(object.animateX){
@@ -490,16 +489,6 @@ async function main() {
       }
 
     });
-
-
-
-    /*-- posizione luce del sottomarino -- */
-    // definito in base alla posizione del sottomarino
-    var subLightPos = [elementsToDraw[0].getX(), elementsToDraw[0].getY(), elementsToDraw[0].getZ()];
-    var lightMatrix= submarine.uniformMatrix;
-    //inserisci comandi per ruotare la luce con il sottomarino
-    var subLightDirection = [lightMatrix[8], lightMatrix[9], lightMatrix[10]];
-    
 
 
 
@@ -532,8 +521,8 @@ async function main() {
       u_viewWorldPosition: cameraPositionVector,
       opacity:0.4,
       u_lightWorldPosition: positionAmbientLight,
-      u_lightWorldIntensity: 0.3,
-      u_lightWorldDirection: [-1, 3, -3],
+      u_lightWorldIntensity: 0.45,
+      u_lightWorldDirection: [0, 0, 0],
       u_worldInverseTraspose: u_worldInverseTraspose,
       u_fogColor: fogColor,
       //uniforms per le ombre
