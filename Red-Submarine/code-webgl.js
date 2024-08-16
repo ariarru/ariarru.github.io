@@ -435,14 +435,14 @@ async function main() {
     var viewDirectionProjectionInverseMatrix =
       m4.inverse(viewDirectionProjectionMatrix);
 
-    const positionAmbientLight =[0, 200, -4];
+    const positionAmbientLight =[0, 150, -4];
 
     /*-- Gestione delle ombre - Z-Buffer--*/
     //disegno dal POV della luce
     const lightWorldMatrix = m4.lookAt(
       positionAmbientLight,          // position
-      [0, 0, 0],                    // target
-      [0, 1, 0],                     // up
+      [0, -20, 0],                    // target
+      [0, 10, 0],                     // up
     );
     // const lightProjectionMatrix = projection; definisco la prospettiva true di default
     // draw to the depth texture
@@ -521,7 +521,7 @@ async function main() {
       u_viewWorldPosition: cameraPositionVector,
       opacity:0.4,
       u_lightWorldPosition: positionAmbientLight,
-      u_lightWorldIntensity: 0.45,
+      u_lightWorldIntensity: 1.2,//0.45,
       u_lightWorldDirection: [0, 0, 0],
       u_worldInverseTraspose: u_worldInverseTraspose,
       u_fogColor: fogColor,
