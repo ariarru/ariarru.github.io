@@ -193,7 +193,7 @@
                 gl_FragColor = vec4(
                     (emissive +
                     ambient * u_ambientLight +                          //luce ambiente
-                    effectiveDiffuse * worldLight +                     //riflessa diffusa dei materiali opachi
+                    effectiveDiffuse * worldLight * effectiveOpacity+                     //riflessa diffusa dei materiali opachi
                     effectiveSpecular * pow(specularLight, shininess * 20.0)), //riflessa speculare dei materiali lucidi
                     effectiveOpacity);
 

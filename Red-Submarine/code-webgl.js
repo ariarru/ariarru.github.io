@@ -128,7 +128,7 @@ async function main() {
   for(let i=0; i<level; i++){
     const key = new SeaObject(singleKey);
     var x = getRandomNumber(-120, 120);
-    var y = getRandomNumber(-5, 80);
+    var y = getRandomNumber(-4, 50);
     var z = getRandomNumber(-120, 120);
     key.translateObj(x=0 ? x+getRandomNumber(-100, 100) : x, y ,z);
     key.animateY=true;
@@ -250,6 +250,15 @@ async function main() {
     /*--Gestione nebbia--*/
     var fogColor= [0.0039, 0.207, 0.29, 1]; 
 
+    /*-- Gestione trasparenze --*/
+    let alphaEnable = true;
+    if (alphaEnable) {
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    } else {
+        gl.disable(gl.BLEND);
+    }
+
     /*-- Gestione dei movimenti --*/
     moves.stopTarget();
     if(moves.foward && moves.ableFoward){
@@ -287,7 +296,7 @@ async function main() {
 
     totalKeys.forEach(k => {
       //controllo che la distanza tra le due posizioni sia minore o uguale la somma degli offset
-      if(m4.distance(submarine.getPos(), k.getPos()) <= 1.5){
+      if(m4.distance(submarine.getPos(), k.getPos()) <= 2.5){
         var i = totalKeys.indexOf(k);
         totalKeys.splice(i, 1);
         i = elementsToDraw.indexOf(k);
@@ -386,7 +395,7 @@ async function main() {
     let u_world= m4.identity();
     const u_worldInverseTraspose = m4.transpose(m4.inverse(u_world));
     
-    const positionAmbientLight =[0, 20, 0];
+    const positionAmbientLight =[0, 100, -2];
     var ambientIntensity = 0.6 + (elementsToDraw[0].getY() / 1000);  //aumentando la profondità diminuisce l'intensità della luce
 
     var sharedUniforms = {
@@ -395,7 +404,7 @@ async function main() {
       u_viewWorldPosition: cameraPositionVector,
       opacity:0.4,
       u_lightWorldPosition: positionAmbientLight,
-      u_lightWorldIntensity: ambientIntensity,
+      u_lightWorldIntensity: 0.45,
       u_lightWorldDirection: [-1, 3, -3],
       u_worldInverseTraspose: u_worldInverseTraspose,
       u_fogColor: fogColor,
