@@ -8,43 +8,81 @@
     <body>
         <h1>Under the sea</h1>
         <main>
-            <section>
-                <p class="first-title">Welcome! In this beautiful adventure to explore the depths of the sea.</p>
-                <p class="second-title"> Dive until the seabed collecting the keys and find the mighty treasure lost in here centuries ago.</p> 
-            </section>
-            <article class="horizontal">
+            <div class="comContainer vertical">
                 <section>
-                    <p class="second-title">How to play:</p>
-                    <p>Move the submarine using the buttons of the control panel or the ones on your keyboard. 
-                        Your goal is to collect all the keys by touching them, but be aware and avoid the rocks (or the submarine may explode 
-                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
-                            <path fill="currentColor" fill-rule="evenodd" d="M13.5 8a5.5 5.5 0 1 1-11 0a5.5 5.5 0 0 1 11 0M15 8A7 7 0 1 1 1 8a7 7 0 0 1 14 0m-5.67 2.835a.75.75 0 1 0
-                             1.34-.67C10.268 9.356 9.219 8.75 8 8.75s-2.267.606-2.67 1.415a.75.75 0 1 0 1.34.67c.097-.191.548-.585 1.33-.585s1.233.394 1.33.585M10 8a.75.75 0 0 1-.75-.75v-1a.75.75 
-                             0 0 1 1.5 0v1A.75.75 0 0 1 10 8m-4.75-.75a.75.75 0 0 0 1.5 0v-1a.75.75 0 0 0-1.5 0z" clip-rule="evenodd"/>
-                            </svg> ). Once you'll have find the treasure casket click on it to win.</p>
+                    <p class="first-title">Welcome! In this beautiful adventure to explore the depths of the sea.</p>
+                    <p class="second-title"> Explore the seabed collecting the keys and find the mighty treasure lost in here centuries ago.</p> 
                 </section>
-                <section>
-                    <p class="second-title">Commands:</p>
-                    <div class="commands horizontal ">
-                        <ul>
-                            <li> W - move foward </li>
-                            <li> Q - dive </li>
-                            <li> E - emerge </li>
-                            <li> A - turn left </li>
-                            <li> D - turn right </li>
-                            <li> S - move backward </li>
-                        </ul>
-                        <img src="./res/keyboard.png">
-    
+                <article class="vertical">
+                    <section>
+                        <p class="second-title">How to play:</p>
+                        <p>Move the submarine using the buttons of the control panel or the ones on your keyboard. 
+                            Your goal is to collect all the keys by touching them, but be aware and avoid the sharks. Once you'll have find the treasure casket click on it to win.</p>
+                    </section>
+                    <section>
+                        <p class="second-title">Commands:</p>
+                        <div class="commands vertical ">
+                            <ul>
+                                <li> W - move foward </li>
+                                <li> Q - dive </li>
+                                <li> E - emerge </li>
+                                <li> A - turn left </li>
+                                <li> D - turn right </li>
+                                <li> S - move backward </li>
+                            </ul>
+                            <img src="./res/keyboard.png">
+        
+                        </div>
+                    </section>
+                </article>
+            </div>
+            <section class="gameBoy">
+                <canvas id="mainCanva"></canvas>
+                <section class="gameOptions">
+                    <div id="kLefts" class="center horizontal">
+                        <p>Keys left to find: <p id="counter"></p></p>
                     </div>
-                </section>
-            </article>
+        
+                    <div id="btnContainer">
+                    
+                        <div class="center vertical">
+                            <button id="up" class="btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="3.25em" height="3em" viewBox="0 0 256 256">
+                                    <path fill="#F3F0E2" d="m232.48 111.51l-96-96a12 12 0 0 0-17 0l-96 96A12 12 0 0 0 32 132h36v76a20 20 0 0 0 20 20h80a20 20 0 0 0 20-20v-76h36a12 12 0 0 0 8.48-20.49M176 108a12 12 0 0 0-12 12v84H92v-84a12 12 0 0 0-12-12H61l67-67l67 67Z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="center horizontal">
+                            <button id="left" class="btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="3.25em" height="3.25em" viewBox="0 0 256 256">
+                                    <path fill="#F3F0E2" d="M208 68h-76V32a12 12 0 0 0-20.49-8.48l-96 96a12 12 0 0 0 0 17l96 96A12 12 0 0 0 132 224v-36h76a20 20 0 0 0 20-20V88a20 20 0 0 0-20-20m-4 96h-84a12 12 0 0 0-12 12v19l-67-67l67-67v19a12 12 0 0 0 12 12h84Z"/>
+                                </svg>
+                            </button>
+                            <button id="right" class="btn" >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="3.25em" height="3.25em" viewBox="0 0 256 256">
+                                    <path fill="#F3F0E2" d="m240.49 119.51l-96-96A12 12 0 0 0 124 32v36H48a20 20 0 0 0-20 20v80a20 20 0 0 0 20 20h76v36a12 12 0 0 0 20.49 8.49l96-96a12 12 0 0 0 0-16.98M148 195v-19a12 12 0 0 0-12-12H52V92h84a12 12 0 0 0 12-12V61l67 67Z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="center vertical">
+                            <button id="down" class="btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="3.25em" height="3.25em" viewBox="0 0 256 256">
+                                    <path fill="#F3F0E2" d="M235.09 131.41A12 12 0 0 0 224 124h-36V48a20 20 0 0 0-20-20H88a20 20 0 0 0-20 20v76H32a12 12 0 0 0-8.48 20.49l96 96a12 12 0 0 0 17 0l96-96a12 12 0 0 0 2.57-13.08M128 215l-67-67h19a12 12 0 0 0 12-12V52h72v84a12 12 0 0 0 12 12h19Z"/>
+                                </svg>
+                            </button>
+                        </div> 
+                        
+                    </div>
+            </section>
+            </section>
+            
             
         </main>
-        <div id="kLefts" class="center horizontal">
-            <p>Keys left to find: <p id="counter"></p></p>
-        </div>
-        <canvas id="mainCanva"></canvas>
+        
+        
+
+        
+
 
         <script id="vertex-shader" type="not-javascript">
             attribute vec4 a_position;
@@ -240,39 +278,7 @@
         <script type="text/javascript" src="./SeaObjects.js"></script>
         <script type="text/javascript" src="./code-webgl.js"></script>
 
-    <!-- 
-        <div id="btnContainer">
-            <!/-- here there will be buttons --/>
-            <!/-- se riesci a farlo vedere tipo game boy è top--/s>
-            <div class="center vertical">
-                <button id="up" class="btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24">
-                        <path fill="black" d="M10.586 3L4 9.586a2 2 0 0 0-.434 2.18l.068.145A2 2 0 0 0 5.414 13H8v7a2 2 0 0 0 2 2h4l.15-.005A2 2 0 0 0 16 20l-.001-7h2.587A2 2 0 0 0 20 9.586L13.414 3a2 2 0 0 0-2.828 0" />
-                    </svg>
-                </button>
-            </div>
-            <div class="center horizontal">
-                <button id="left" class="btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24">
-                        <path fill="black" d="M9.586 4L3 10.586a2 2 0 0 0 0 2.828L9.586 20a2 2 0 0 0 2.18.434l.145-.068A2 2 0 0 0 13 18.586V16h7a2 2 0 0 0 2-2v-4l-.005-.15A2 2 0 0 0 20 8l-7-.001V5.414A2 2 0 0 0 9.586 4" />
-                    </svg>
-                </button>
-                <button id="right" class="btn" >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24">
-                        <path fill="black" d="M12.089 3.634A2 2 0 0 0 11 5.414L10.999 8H4a2 2 0 0 0-2 2v4l.005.15A2 2 0 0 0 4 16l6.999-.001l.001 2.587A2 2 0 0 0 14.414 20L21 13.414a2 2 0 0 0 0-2.828L14.414 4a2 2 0 0 0-2.18-.434z" />
-                    </svg>
-                </button>
-            </div>
-            <div class="center vertical">
-                <button id="down" class="btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24">
-                        <path fill="black" d="m10 2l-.15.005A2 2 0 0 0 8 4v6.999L5.414 11A2 2 0 0 0 4 14.414L10.586 21a2 2 0 0 0 2.828 0L20 14.414a2 2 0 0 0 .434-2.18l-.068-.145A2 2 0 0 0 18.586 11L16 10.999V4a2 2 0 0 0-2-2z" />
-                    </svg>
-                </button>
-            </div>
-        --> 
-            
-        </div>
-        
+    
+       
          </body>
 </html>

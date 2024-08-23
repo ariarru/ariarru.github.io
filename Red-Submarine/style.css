@@ -8,12 +8,41 @@ body{
 }
 
 #mainCanva{
-    width: 90vw;
+    width: 65vw;
     height: auto;
     margin: 2rem 0px;
+    align-self: center;
+}
+
+.gameOptions{
+    align-items: baseline;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    justify-content: center;
+    margin-top: -2.5rem;
+}
+
+.gameBoy{
+    display: flex;
+    flex-direction: column;
+    gap:2rem;
+
+}
+#kLefts{
+    font-size: 1.25rem;
+    font-family: sans-serif;
+    z-index: 3;
+    margin-top:-2.5rem;
 }
 
 main{
+    display: grid;
+    grid-template-columns: 2fr 10fr;
+    width: 100vw;
+}
+
+.comContainer{
     margin: 1.5rem;
     border: 2px solid white;
     border-radius: 20px;
@@ -24,13 +53,13 @@ main{
     box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.1), 0 2px 4px -2px rgba(255, 255, 255, 0.1);}
 
 .first-title{
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: 600;
     margin-bottom: 0px;
 }
 
 .second-title{
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: 700;
     margin-bottom: 0px;
 }
@@ -49,24 +78,25 @@ main{
 }
 
 .btn{
-    width: 5em;
-    height: 5em;
-    border-radius: 5px;
-    background-color: #c7c3c0;
-    box-shadow: rgba(0, 0, 0, 0.377) 10px 10px 8px, #ffffff 1.5px 1.5px 2px 0px inset, #c7c3c0 -3.2px -3.2px 8px 0px inset;
+    width: 4rem;
+    height: 3.75rem;
+    border:solid 2px #2F6C8D;
+    border-radius: 8px;
+    background-color: #57A0C7;
+    box-shadow:  -2px -2px 5px #001437,
+    2px 2px 5px #002a71; 
     cursor: pointer;
     margin: 0.2em 0.5em;
-    
+    align-items: center;
 }
 
 .commands{
     display: flex;
-    column-gap: 2.5rem;
     align-items: start;
 }
 
 .commands > img{
-    width: 25rem;
+    width: 20rem;
     height: auto;
 }
 
@@ -80,15 +110,13 @@ article > section:first-of-type{
     max-width: 40vw;
 }
 
-#kLefts{
-    font-size: 1.5rem;
-    font-family: sans-serif;
-    padding: 0.5rem;
-    position: absolute;
-    left:4rem;
-    z-index: 3;
-}
 
+
+
+#btnContainer > .horizontal > .btn{
+    width: 7.5rem;
+    gap:2rem;
+}
 @media screen and (max-width: 650px){
     #mainCanva{
         width: 90vw;
@@ -108,13 +136,8 @@ article > section:first-of-type{
     article > section:first-of-type{
         max-width: 70vw;
     }
-}
-
-@media screen and (min-width: 650px){
-    #mainCanva{
-        width: 90vw;
-        height: auto;
-        margin: 2rem 0px;
+    #kLefts{
+        padding: 0.5rem 1rem 0.5rem 1rem;
+        z-index: 3;
     }
-
 }

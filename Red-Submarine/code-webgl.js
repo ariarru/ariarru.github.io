@@ -148,7 +148,6 @@ async function main() {
       m4.yRotate(shark.uniformMatrix, degToRad(90*nShark), shark.uniformMatrix);
     }
     shark.radius = getRandomNumber(2., 5.);
-    console.log("raggio:"+ shark.radius);
     sharks.push(shark);
     elementsToDraw.push(shark);
   }
