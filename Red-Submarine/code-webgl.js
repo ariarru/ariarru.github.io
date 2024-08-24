@@ -176,9 +176,24 @@ async function main() {
   });
   
   /*-- Gestione bottoni --*/
-  const btnUp = document.getElementById("#up");
-  function upPressed(){moves.foward=true;}
-  function upReleased(){moves.foward = false;}
+  const btnUp = document.getElementById("up");
+  btnUp.addEventListener("mousedown", function(){moves.foward=true;});
+  btnUp.addEventListener("mouseup", function(){moves.foward = false;});
+  const btnDown = document.getElementById("down");
+  btnDown.addEventListener("mousedown", function(){moves.back=true;});
+  btnDown.addEventListener("mouseup", function(){moves.back = false;});
+  const btnLeft = document.getElementById("left");
+  btnLeft.addEventListener("mousedown", function(){moves.rotateLeft=true;});
+  btnLeft.addEventListener("mouseup", function(){moves.rotateLeft = false;});
+  const btnRight = document.getElementById("right");
+  btnRight.addEventListener("mousedown", function(){moves.rotateRight=true;});
+  btnRight.addEventListener("mouseup", function(){moves.rotateRight = false;});
+  const btnDive = document.getElementById("dive");
+  btnDive.addEventListener("mousedown", function(){moves.dive=true; moves.foward = true;});
+  btnDive.addEventListener("mouseup", function(){moves.dive = false; moves.foward = false;});
+  const btnEmerge = document.getElementById("emerge");
+  btnEmerge.addEventListener("mousedown", function(){moves.emerge=true; moves.foward=true;});
+  btnEmerge.addEventListener("mouseup", function(){moves.emerge = false; moves.foward = false;});
 
   /* -- Gestione della camera -- */
   const cameraTarget = [0, 0, 0];
@@ -229,14 +244,14 @@ async function main() {
 
 
   /*-- Variabili modificabili dall'utente --*/
-  setupSlider("#numKeys", {name:"Level:", slide: updateLevel, min: 3, max: 15, value:level, step:1});
-  setupSlider("#numSharks", {name:"Difficulty:", slide: updateSharks, min: 10, max: 30, value:sharkNumber, step:1});
+  setupSlider("#numKeys", {name:"Level:", slide: updateLevel, min: 2, max: 15, value:level, step:1});
+  setupSlider("#numSharks", {name:"Difficulty:", slide: updateSharks, min: 5, max: 50, value:sharkNumber, step:1});
   setupSlider("#light", {name:"Light:", slide: updateLight, min: 0, max: 80, value:lightIntensity, step:1});
 
   function updateLevel(event, ui) {
     let newLevel = ui.value;
     if(newLevel > level){
-      for(let j=level; j<newLevel; j++){
+      for(let j=level-1; j<newLevel; j++){
         const key = new SeaObject(singleKey);
         var x = getRandomNumber(-120, 120);
         var y = getRandomNumber(-4, 50);
@@ -248,7 +263,7 @@ async function main() {
         counter.innerHTML +=" &#128477;";
       }
     } else if(newLevel<level){
-      for(let h=level; h>newLevel; h--){
+      for(let h=level-1; h>newLevel; h--){
         let k = totalKeys.pop();
         let index = elementsToDraw.indexOf(k);
         elementsToDraw.splice(index, 1);
@@ -263,8 +278,9 @@ async function main() {
 
   function updateSharks(event, ui){
     let newDifficulty = ui.value;
+
     if(newDifficulty > sharkNumber){
-      for(let s=sharkNumber; s<newDifficulty; s++ ){
+      for(let s=sharkNumber-1; s<newDifficulty; s++ ){
         const shark = new SeaObject(sharkBuff);
         shark.translateObj(getRandomNumber(-80, 80), getRandomNumber(-6, 50), getRandomNumber(-80, 80));
         shark.degree = 0;
@@ -276,8 +292,8 @@ async function main() {
         elementsToDraw.push(shark);
       }
     } else if(newDifficulty< sharkNumber){
-      for(let n=sharkNumber; n>newDifficulty; n--){
-        let iShark = shark.pop();
+      for(let n=sharkNumber-1; n>newDifficulty; n--){
+        let iShark = sharks.pop();
         let index = elementsToDraw.indexOf(iShark);
         elementsToDraw.splice(index, 1);
       }

@@ -93,6 +93,25 @@ main{
     align-items: center;
 }
 
+.upperBtns{
+    right: -2.25rem;
+    position: relative;
+}
+
+.downerBtns{
+    right: 2.25rem;
+    position: relative;
+}
+
+.largeBtn{
+    width: 7.5rem;
+    gap:2rem;
+}
+
+.specialBtn{
+    width:3.5rem;
+
+}
 .commands{
     display: flex;
     align-items: start;
@@ -113,10 +132,7 @@ article > section:first-of-type{
     max-width: 40vw;
 }
 
-#btnContainer > .horizontal > .btn{
-    width: 7.5rem;
-    gap:2rem;
-}
+
 
 .widget-outer{
     display:flex;
@@ -137,7 +153,7 @@ article > section:first-of-type{
 .widget-slider{
 
 }
-@media screen and (max-width: 650px){
+@media screen and (max-width: 900px){
     #mainCanva{
         width: 90vw;
         height: 70vh;
@@ -159,5 +175,10 @@ article > section:first-of-type{
     #kLefts{
         padding: 0.5rem 1rem 0.5rem 1rem;
         z-index: 3;
+    }
+
+    main{
+        display:flex;
+        flex-direction: column;
     }
 }
