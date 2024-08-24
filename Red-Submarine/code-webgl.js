@@ -2,7 +2,7 @@
 
 
 async function main() {
-  // Get A WebGL context
+  // WebGL context
   const canvas = document.getElementById("mainCanva");
   const gl = canvas.getContext("webgl");
   if (!gl) {
@@ -13,21 +13,17 @@ async function main() {
   const skyboxProgramInfo = webglUtils.createProgramInfo(gl, ["skybox-vertex-shader", "skybox-fragment-shader"]);
 
 
-  // Create a buffer for positions
+  // Buffer delle posizioni
   var positionBuffer = gl.createBuffer();
-  // Bind it to ARRAY_BUFFER (think of it as ARRAY_BUFFER = positionBuffer)
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-  // Put the positions in the buffer
  
-
-  // Create a buffer to put normals in
+  // Buffer delle normali
   var normalBuffer = gl.createBuffer();
-  // Bind it to ARRAY_BUFFER (think of it as ARRAY_BUFFER = normalBuffer)
   gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
   
 
   /* -- Definisco la sky box -- */
-  // Create a texture.
+  // Crea texture
   var texture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
 
@@ -123,7 +119,7 @@ async function main() {
   /* -- Dichiaro la chiave -- */
   const singleKey = await generateBuffer('./res/key.obj');
   //Possibile implementazione: imporre un numero di chiavi in base a livello
-  const level = 3;
+  var level = 3;
   const totalKeys = [];
   for(let i=0; i<level; i++){
     const key = new SeaObject(singleKey);
@@ -140,7 +136,8 @@ async function main() {
   /* -- Dichiaro gli squali-- */
   const sharkBuff = await generateBuffer('res/SHARK.obj');
   var sharks =[];
-  for(let nShark=0; nShark<15; nShark++){
+  var sharkNumber = 15;
+  for(let nShark=0; nShark<sharkNumber; nShark++){
     const shark = new SeaObject(sharkBuff);
     shark.translateObj(getRandomNumber(-80, 80), getRandomNumber(-6, 50), getRandomNumber(-80, 80));
     shark.degree = 0;
@@ -177,8 +174,11 @@ async function main() {
   window.addEventListener("keyup", (event)=>{
     moves.releaseKey(event.keyCode);
   });
-
-
+  
+  /*-- Gestione bottoni --*/
+  const btnUp = document.getElementById("#up");
+  function upPressed(){moves.foward=true;}
+  function upReleased(){moves.foward = false;}
 
   /* -- Gestione della camera -- */
   const cameraTarget = [0, 0, 0];
@@ -203,7 +203,7 @@ async function main() {
     counter.innerHTML +=" &#128477;";
   });
   var sign = true;
-
+  let lightIntensity = 45;
 
   /*-gestione evento fine gioco -*/
   canvas.addEventListener("click", function(event){
@@ -228,6 +228,68 @@ async function main() {
   });
 
 
+  /*-- Variabili modificabili dall'utente --*/
+  setupSlider("#numKeys", {name:"Level:", slide: updateLevel, min: 3, max: 15, value:level, step:1});
+  setupSlider("#numSharks", {name:"Difficulty:", slide: updateSharks, min: 10, max: 30, value:sharkNumber, step:1});
+  setupSlider("#light", {name:"Light:", slide: updateLight, min: 0, max: 80, value:lightIntensity, step:1});
+
+  function updateLevel(event, ui) {
+    let newLevel = ui.value;
+    if(newLevel > level){
+      for(let j=level; j<newLevel; j++){
+        const key = new SeaObject(singleKey);
+        var x = getRandomNumber(-120, 120);
+        var y = getRandomNumber(-4, 50);
+        var z = getRandomNumber(-120, 120);
+        key.translateObj(x=0 ? x+getRandomNumber(-100, 100) : x, y ,z);
+        key.animateY=true;
+        elementsToDraw.push(key);
+        totalKeys.push(key);
+        counter.innerHTML +=" &#128477;";
+      }
+    } else if(newLevel<level){
+      for(let h=level; h>newLevel; h--){
+        let k = totalKeys.pop();
+        let index = elementsToDraw.indexOf(k);
+        elementsToDraw.splice(index, 1);
+      }
+      counter.innerHTML ='';
+      totalKeys.forEach(element => {
+        counter.innerHTML +=" &#128477;";
+      });
+    }
+    level = newLevel;
+  }
+
+  function updateSharks(event, ui){
+    let newDifficulty = ui.value;
+    if(newDifficulty > sharkNumber){
+      for(let s=sharkNumber; s<newDifficulty; s++ ){
+        const shark = new SeaObject(sharkBuff);
+        shark.translateObj(getRandomNumber(-80, 80), getRandomNumber(-6, 50), getRandomNumber(-80, 80));
+        shark.degree = 0;
+        if(s%2!=0){
+          m4.yRotate(shark.uniformMatrix, degToRad(90*s), shark.uniformMatrix);
+        }
+        shark.radius = getRandomNumber(2., 5.);
+        sharks.push(shark);
+        elementsToDraw.push(shark);
+      }
+    } else if(newDifficulty< sharkNumber){
+      for(let n=sharkNumber; n>newDifficulty; n--){
+        let iShark = shark.pop();
+        let index = elementsToDraw.indexOf(iShark);
+        elementsToDraw.splice(index, 1);
+      }
+    }
+    sharkNumber= newDifficulty;
+  }
+
+  function updateLight(event, ui){
+    lightIntensity = ui.value;
+  }
+
+
 
   /*-- Render Time --*/
   function render(time) {
@@ -239,7 +301,7 @@ async function main() {
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
     gl.enable(gl.DEPTH_TEST);
-    gl.clear(gl.DEPTH_TEST);
+    //gl.clear(gl.DEPTH_TEST);
 
 
     /*-- Gestione camera --*/
@@ -403,7 +465,7 @@ async function main() {
       u_viewWorldPosition: cameraPositionVector,
       opacity:0.4,
       u_lightWorldPosition: positionAmbientLight,
-      u_lightWorldIntensity: 0.45,
+      u_lightWorldIntensity: lightIntensity/100,
       u_lightWorldDirection: [-1, 3, -3],
       u_worldInverseTraspose: u_worldInverseTraspose,
       u_fogColor: fogColor,

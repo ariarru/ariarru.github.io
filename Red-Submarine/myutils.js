@@ -171,3 +171,78 @@ async function generateBuffer(url){
   return all;
 
 }
+
+
+
+//creazione dello slider
+function setupSlider(selector, options) {
+  var parent = document.getElementById(selector);
+  if (!parent) {
+    // like jquery don't fail on a bad selector
+    return;
+  }
+  if (!options.name) {
+    options.name = selector.substring(1);
+  }
+  return createSlider(parent, options); // eslint-disable-line
+}
+
+function createSlider(parent, options) {
+  var precision = options.precision || 0;
+  var min = options.min || 0;
+  var step = options.step || 1;
+  var value = options.value || 0;
+  var max = options.max || 1;
+  var fn = options.slide;
+  var name = options.name;
+  var uiPrecision = options.uiPrecision === undefined ? precision : options.uiPrecision;
+  var uiMult = options.uiMult || 1;
+
+  min /= step;
+  max /= step;
+  value /= step;
+
+  parent.innerHTML = `
+    <div class="widget-outer">
+      <div class="widget-label">${name}</div>
+      <div class="widget-value"></div>
+      <input class="widget-slider" type="range" min="${min}" max="${max}" value="${value}" />
+    </div>
+  `;
+  var valueElem = parent.querySelector(".widget-value");
+  var sliderElem = parent.querySelector(".widget-slider");
+
+  function updateValue(value) {
+    valueElem.textContent = (value * step * uiMult).toFixed(uiPrecision);
+  }
+
+  updateValue(value);
+
+  function handleChange(event) {
+    var value = parseInt(event.target.value);
+    updateValue(value);
+    fn(event, { value: value * step });
+  }
+
+  sliderElem.addEventListener('input', handleChange);
+  sliderElem.addEventListener('change', handleChange);
+
+  return {
+    elem: parent,
+    updateValue: (v) => {
+      v /= step;
+      sliderElem.value = v;
+      updateValue(v);
+    },
+  };
+}
+
+function makeSlider(options) {
+  const div = document.createElement("div");
+  return createSlider(div, options);
+}
+
+var widgetId = 0;
+function getWidgetId() {
+  return "__widget_" + widgetId++;
+}

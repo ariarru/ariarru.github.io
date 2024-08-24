@@ -13,6 +13,9 @@ body{
     margin: 2rem 0px;
     align-self: center;
 }
+#ui {
+    width: 200px;
+}
 
 .gameOptions{
     align-items: baseline;
@@ -110,12 +113,29 @@ article > section:first-of-type{
     max-width: 40vw;
 }
 
-
-
-
 #btnContainer > .horizontal > .btn{
     width: 7.5rem;
     gap:2rem;
+}
+
+.widget-outer{
+    display:flex;
+    flex-direction: row;
+    gap: 0.2rem;
+    font-family: sans-serif;
+
+}
+.widget-label{
+    font-size: 1em;
+    letter-spacing: 0.075em;
+    font-style: italic;
+}
+.widget-value{
+    font-weight: bold;
+    padding: 0px 3px;
+}
+.widget-slider{
+
 }
 @media screen and (max-width: 650px){
     #mainCanva{
