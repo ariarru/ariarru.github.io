@@ -189,7 +189,7 @@ async function main() {
   btnRight.addEventListener("mousedown", function(){moves.rotateRight=true;});
   btnRight.addEventListener("mouseup", function(){moves.rotateRight = false;});
   const btnDive = document.getElementById("dive");
-  btnDive.addEventListener("mousedown", function(){moves.dive=true; moves.foward = true;});
+  btnDive.addEventListener("mousedown", function(){moves.dive = true; moves.foward = true;});
   btnDive.addEventListener("mouseup", function(){moves.dive = false; moves.foward = false;});
   const btnEmerge = document.getElementById("emerge");
   btnEmerge.addEventListener("mousedown", function(){moves.emerge=true; moves.foward=true;});
@@ -210,6 +210,8 @@ async function main() {
   let velocity=0;   //velocità del movimento del sottomairno
   let maxVelocity = 25; //massima velocità del sottomarino
   let bubbleVelocity =0; //velocità della bolla
+
+  var positionAmbientLight =[0, 100, -2]; //posizione della luce
 
   /*-- Variabili di gioco --*/
   var treasureFound = false;
@@ -238,7 +240,12 @@ async function main() {
       if(!elementsToDraw.includes(faceBubble)){
         elementsToDraw.push(faceBubble);
       }
+
+      console.log(positionAmbientLight);
       //aggiungi luce dentro tesoro
+      positionAmbientLight[1] = openTreasure.getY()+5;
+      positionAmbientLight[2] = openTreasure.getZ();
+      console.log(positionAmbientLight);
     }
   });
 
@@ -263,7 +270,7 @@ async function main() {
         counter.innerHTML +=" &#128477;";
       }
     } else if(newLevel<level){
-      for(let h=level-1; h>newLevel; h--){
+      for(let h=level; h>newLevel; h--){
         let k = totalKeys.pop();
         let index = elementsToDraw.indexOf(k);
         elementsToDraw.splice(index, 1);
@@ -292,7 +299,7 @@ async function main() {
         elementsToDraw.push(shark);
       }
     } else if(newDifficulty< sharkNumber){
-      for(let n=sharkNumber-1; n>newDifficulty; n--){
+      for(let n=sharkNumber; n>newDifficulty; n--){
         let iShark = sharks.pop();
         let index = elementsToDraw.indexOf(iShark);
         elementsToDraw.splice(index, 1);
@@ -472,8 +479,6 @@ async function main() {
     let u_world= m4.identity();
     const u_worldInverseTraspose = m4.transpose(m4.inverse(u_world));
     
-    const positionAmbientLight =[0, 100, -2];
-    var ambientIntensity = 0.6 + (elementsToDraw[0].getY() / 1000);  //aumentando la profondità diminuisce l'intensità della luce
 
     var sharedUniforms = {
       u_view: view,

@@ -21,7 +21,7 @@ body{
     align-items: baseline;
     display: flex;
     flex-direction: row;
-    gap: 2rem;
+    gap: 9rem;
     justify-content: center;
     margin-top: -2.5rem;
 }
@@ -180,5 +180,8 @@ article > section:first-of-type{
     main{
         display:flex;
         flex-direction: column;
+    }
+    .gameOptions{
+        gap:2rem;
     }
 }
