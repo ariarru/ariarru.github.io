@@ -278,8 +278,8 @@ async function main() {
 
 
   /*-- Gestione della luce --*/
-  var positionAmbientLight =[1, -17, 10]; //posizione della luce - z: -2
-  var target = [-1, 0, 2];
+  var positionAmbientLight =[0, 20, -2]; //posizione della luce - z: -2
+  var target = [0, 1, 0];
 
 
   /*-- Variabili di gioco --*/
@@ -642,7 +642,7 @@ async function main() {
         -50,  // bottom
         50,  // top
         0.1,          // near
-       175);          // far dalla luce
+       160);          // far dalla luce
 
     // draw to the depth texture
     gl.bindFramebuffer(gl.FRAMEBUFFER, depthFramebuffer);
