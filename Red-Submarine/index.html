@@ -133,29 +133,23 @@
             uniform mat4 u_world;
             uniform vec3 u_viewWorldPosition;
             uniform mat4 u_worldInverseTraspose;
+            uniform mat4 u_textureMatrix;
             
-
             //luce del mondo
             uniform vec3 u_lightWorldPosition;
             uniform float u_lightWorldIntensity;
-
-            //luce del sottomarino
-            uniform vec3 u_lightSubPosition;
-            uniform float u_lightSubIntensity;
 
             varying vec3 v_normal;
             varying vec3 v_tangent;
             varying vec3 v_surfaceToView;
             varying vec2 v_texcoord;
+            varying vec4 v_projectedTexcoord;
             varying vec4 v_color;
             varying vec3 v_worldPosition;   // posizione nel mondo
             varying vec3 v_worldNormal;      //normali orientate nel mondo
             varying vec3 v_surfaceToLightWorld;   //come risponde la superficie alla luce
-            varying vec3 v_surfaceToLightSub;
             varying vec3 v_lightWorldPos;
             varying float v_lightWorldIntensity;
-            varying vec3 v_lightSubPos;
-            varying float v_lightSubIntensity;
             varying vec3 v_fogDepth;       //profondità effetto nebbia
             
 
@@ -169,13 +163,13 @@
                 v_tangent = normalize(normalMat * a_tangent);
 
                 v_texcoord = a_texcoord;
+                v_projectedTexcoord = u_textureMatrix * worldPosition;
                 v_color = a_color;
                 v_worldPosition = (u_world * a_position).xyz;
                 v_worldNormal = mat3(u_worldInverseTraspose) * a_normal;
                  
                 // calcolo le componenti della luce
                 v_surfaceToLightWorld = u_lightWorldPosition - v_surfaceToView;
-                v_surfaceToLightSub = u_lightSubPosition - worldPosition.xyz;
                 v_lightWorldIntensity = u_lightWorldIntensity;
 
                 v_fogDepth = worldPosition.xyz;
@@ -189,6 +183,7 @@
             varying vec3 v_tangent;
             varying vec3 v_surfaceToView;
             varying vec2 v_texcoord;
+            varying vec4 v_projectedTexcoord;
             varying vec4 v_color;
             varying vec3 v_lightWorldPos;
             varying float v_lightWorldIntensity;
@@ -197,10 +192,7 @@
             varying vec3 v_fogDepth;
             varying vec3 v_worldPosition;
 
-
-            varying vec3 v_surfaceToLight;
-            varying vec3 v_surfaceToLightSub;
-
+            varying vec3 v_surfaceToLightWorld;
 
             uniform vec3 diffuse;
             uniform sampler2D diffuseMap;
@@ -212,28 +204,31 @@
             uniform sampler2D normalMap;
             uniform float opacity;
             uniform vec3 u_ambientLight;
+            uniform vec3 u_lightWorldDirection;
+
+            //shadows
+            uniform vec4 u_colorMult;
+            uniform sampler2D u_texture;
+            uniform sampler2D u_projectedTexture;
+            uniform float u_bias;
+            uniform vec3 u_reverseLightDirection;
 
             //gestione nebbia
             uniform vec4 u_fogColor;
 
-            uniform vec3 u_lightWorldDirection;
-            uniform vec3 u_lightSubDirection;
-            uniform float u_limit; //ampiezza del raggio dei luce
-
+            
 
             float lerp(float a, float b, float t){
                 return a + (b - a) * t;
             }
 
-            
-            float mysmoothstep(float a, float b, float x){
-                x = clamp( (x-a) / (b-a), 0., 1.);
-                return x * x *(3.0 -2.0 * x);
-            }
-            
 
             void main () {
+                //interpolazione delle normali
                 vec3 normal = normalize(v_normal) * ( float( gl_FrontFacing ) * 2.0 - 1.0 );
+
+
+                //calcolo delle normal map
                 vec3 tangent = normalize(v_tangent) * ( float( gl_FrontFacing ) * 2.0 - 1.0 );
                 vec3 bitangent = normalize(cross(normal, tangent));
 
@@ -241,22 +236,17 @@
                 normal = texture2D(normalMap, v_texcoord).rgb * 2. - 1.;
                 normal = normalize(tbn * normal);
 
+                vec3 surfaceToLightDirection = normalize(v_surfaceToLightWorld);
+                float dotFromDirection = dot(surfaceToLightDirection, - u_lightWorldDirection);
+
+
+                //calcolo luce speculare
                 vec3 surfaceToViewDirection = normalize(v_surfaceToView);
-
-                vec3 surfaceToLightSubDirection = normalize(v_surfaceToLightSub);
-
-                vec3 halfWorldVector = normalize(u_lightWorldDirection + surfaceToViewDirection);
-                vec3 halfSubVector = normalize(surfaceToLightSubDirection + surfaceToViewDirection);
-
+                vec3 halfWorldVector = normalize(surfaceToLightDirection + surfaceToViewDirection);
 
                 float worldLight = dot(u_lightWorldDirection, normal) * .5 + .5;
-                float subLight = dot(u_lightSubDirection, normal) * .5 + .5;
-                if(subLight >= u_limit){
-                    subLight = dot(surfaceToLightSubDirection, -u_lightSubDirection);
-                }
-
+               
                 float specularLight = clamp(dot(normal, halfWorldVector), 0.0, 1.0);
-                float specularLightFromSub = clamp(dot(normal, halfSubVector), 0.0, 1.0);
                 vec4 specularMapColor = texture2D(specularMap, v_texcoord);
                 vec3 effectiveSpecular = specular * specularMapColor.rgb;
 
@@ -264,12 +254,25 @@
                 vec3 effectiveDiffuse = diffuse *  v_lightWorldIntensity * diffuseMapColor.rgb * v_color.rgb;
                 float effectiveOpacity = opacity * diffuseMapColor.a * v_color.a;
 
+                //shadows
+                float light = dot(normal, surfaceToLightDirection);
+
+                vec3 projectedTexcoord = v_projectedTexcoord.xyz / v_projectedTexcoord.w;
+                float currentDepth = projectedTexcoord.z + u_bias;
+                
+
+                // the 'r' channel has the depth values
+                float projectedDepth = texture2D(u_projectedTexture, projectedTexcoord.xy).r;
+                float shadowLight = (projectedDepth <= currentDepth) ? 0.1 : 1.0; //inRange non mi serve
+                shadowLight = clamp(shadowLight, 0., 1.);
+
                 //luce ambiente modello di Phong
                 gl_FragColor = vec4(
                     (emissive +
                     ambient * u_ambientLight +                          //luce ambiente
                     effectiveDiffuse * worldLight * effectiveOpacity+                     //riflessa diffusa dei materiali opachi
                     effectiveSpecular * pow(specularLight, shininess * 20.0)), //riflessa speculare dei materiali lucidi
+
                     effectiveOpacity);
 
                 //effetto nebbia
@@ -280,6 +283,35 @@
                 fogAmount = clamp(fogAmount, 0., 1.);
 
                 gl_FragColor= mix(gl_FragColor, u_fogColor, fogAmount);
+
+               
+                /*
+                vec4 texColor = texture2D(u_texture, v_texcoord) * u_colorMult;
+                vec4 shadows = vec4(texColor.rgb * light * shadowLight, texColor.a);
+                gl_FragColor += shadows;*/
+            }
+        </script>
+
+        <!--vertex e fragment shader per la gestione delle ombre-->
+        <script  id="color-vertex-shader" type="not-javascript">
+            attribute vec4 a_position;
+            
+            uniform mat4 u_projection;
+            uniform mat4 u_view;
+            uniform mat4 u_world;
+            
+            void main() {
+              // Multiply the position by the matrices.
+              gl_Position = u_projection * u_view * u_world * a_position;
+            }
+        </script>
+            
+        <script  id="color-fragment-shader" type="not-javascript">
+            precision mediump float;
+            
+            uniform vec4 u_color;
+            void main() {
+                gl_FragColor = u_color;
             }
         </script>
 
