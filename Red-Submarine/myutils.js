@@ -12,14 +12,6 @@ function getRandomNumber(min, max) {
   return Math.random() * (maxFloored - minCeiled) + minCeiled; 
 }
 
-//generazione coordinate randomiche
-function generateCoordinatesRocks(){ 
-  const coord = [];
-  coord[0]= getRandomNumber(-20, 20); //definisco la x
-  coord[1]= getRandomNumber(-20, 0);  //definisco la y
-  coord[2]= getRandomNumber(-20, 20);  //definisco la z
-}
-
 
 //calcolo delle matrici
 function computeMatrix(viewProjectionMatrix, translation, xRotation, yRotation, zRotation) {
@@ -43,13 +35,14 @@ function adaptPropellersTransl(src, dst){
 }
 function adaptPropellersRotateY(src, dst){
   dst[0]= src[0];
-  dst[1]= src[1];
   dst[2]=src[2];
-  dst[3]=src[3];
+  dst[4]=src[4];
+  dst[6]=src[6];
   dst[8]= src[8];
-  dst[9] = src[9];
   dst[10]=src[10];
-  dst[11]=src[11];
+  dst[12]=src[12];
+  dst[13]= src[13];
+  dst[14]=src[14];
   return dst;
 }
 
@@ -59,115 +52,102 @@ function lerp(a, b, t) {
   return a + (b - a) * t;
 }
 
-//formula per distribuzione rocce 
-//y=60 * sin(0.05 *  (x-30))
-function getXRock(){
-  let x = getRandomNumber(-60, 60);
-  let y = Math.sin(0.5 * (x-30)) * 60;
-  return y;
-}
 
-//generazione dei buffer da obj
-async function generateBuffer(url){
-  // Get A WebGL context
-  const canvas = document.getElementById("mainCanva");
-  const gl = canvas.getContext("webgl");
-  if (!gl) {
+
+//Creazione dello slider
+function setupSlider(selector, options) {
+  var parent = document.getElementById(selector);
+  if (!parent) {
+    // like jquery don't fail on a bad selector
     return;
   }
+  if (!options.name) {
+    options.name = selector.substring(1);
+  }
+  return createSlider(parent, options); // eslint-disable-line
+}
 
-  //setup program
-  // compiles and links the shaders, looks up attribute and uniform locations
-  const obj = await importOBJ(url);
-  const materials = await importMT(url, obj);
+function createSlider(parent, options) {
+  var precision = options.precision || 0;
+  var min = options.min || 0;
+  var step = options.step || 1;
+  var value = options.value || 0;
+  var max = options.max || 1;
+  var fn = options.slide;
+  var name = options.name;
+  var uiPrecision = options.uiPrecision === undefined ? precision : options.uiPrecision;
+  var uiMult = options.uiMult || 1;
 
-  //capisci come inserire transizioni
+  min /= step;
+  max /= step;
+  value /= step;
 
-  const textures = {
-    defaultWhite: create1PixelTexture(gl, [255, 255, 255, 255]),
-    defaultNormal: create1PixelTexture(gl, [127, 127, 255, 0]),
-  };
-  
-  const defaultMaterial = {
-    diffuse: [1, 1, 1],
-    diffuseMap: textures.defaultWhite,
-    normalMap: textures.defaultNormal,
-    ambient: [0, 0, 0],
-    specular: [1, 1, 1],
-    specularMap: textures.defaultWhite,
-    shininess: 400,
-    opacity: 1,
-  };
-  
+  parent.innerHTML = `
+    <div class="widget-outer">
+      <div class="widget-label">${name}</div>
+      <div class="widget-value"></div>
+      <input class="widget-slider" type="range" min="${min}" max="${max}" value="${value}" />
+    </div>
+  `;
+  var valueElem = parent.querySelector(".widget-value");
+  var sliderElem = parent.querySelector(".widget-slider");
 
-  // load texture for materials
-  for (const material of Object.values(materials)) {
-    Object.entries(material)
-      .filter(([key]) => key.endsWith('Map'))
-      .forEach(([key, filename]) => {
-        let texture = textures[filename];
-        if (!texture) {
-          const baseHref = new URL(url, window.location.href);
-          const textureHref = new URL(filename, baseHref).href;
-          texture = createTexture(gl, textureHref);
-          textures[filename] = texture;
-        }
-        material[key] = texture;
-      });
+  function updateValue(value) {
+    valueElem.textContent = (value * step * uiMult).toFixed(uiPrecision);
   }
 
-  // hack the materials so we can see the specular map
-  Object.values(materials).forEach(m => {
-    m.shininess = 25;
-    m.specular = [3, 2, 1];
-  });
+  updateValue(value);
 
-  const parts = obj.geometries.map(({material, data}) => {
-
-    if (data.color) {
-      if (data.position.length === data.color.length) {
-        // it's 3. The our helper library assumes 4 so we need
-        // to tell it there are only 3.
-        data.color = { numComponents: 3, data: data.color };
-      }
-    } else {
-      // there are no vertex colors so just use constant white
-      data.color = { value: [1, 1, 1, 1] };
-    }
-
-    // generate tangents if we have the data to do so.
-    if (data.texcoord && data.normal) {
-      data.tangent = generateTangents(data.position, data.texcoord);
-    } else {
-      // There are no tangents
-      data.tangent = { value: [1, 0, 0] };
-    }
-
-    if (!data.texcoord) {
-      data.texcoord = { value: [0, 0] };
-    }
-
-    if (!data.normal) {
-      // we probably want to generate normals if there are none
-      data.normal = { value: [0, 0, 1] };
-    }
-
-    // create a buffer for each array by calling
-    // gl.createBuffer, gl.bindBuffer, gl.bufferData
-    const bufferInfo = webglUtils.createBufferInfoFromArrays(gl, data);
-    return {
-      material: {
-        ...defaultMaterial,
-        ...materials[material],
-      },
-      bufferInfo,
-    };
-  });
-
-  var all = {
-    parts,
-    obj,
+  function handleChange(event) {
+    var value = parseInt(event.target.value);
+    updateValue(value);
+    fn(event, { value: value * step });
   }
-  return all;
 
+  sliderElem.addEventListener('input', handleChange);
+  sliderElem.addEventListener('change', handleChange);
+
+  return {
+    elem: parent,
+    updateValue: (v) => {
+      v /= step;
+      sliderElem.value = v;
+      updateValue(v);
+    },
+  };
+}
+
+function makeSlider(options) {
+  const div = document.createElement("div");
+  return createSlider(div, options);
+}
+
+var widgetId = 0;
+function getWidgetId() {
+  return "__widget_" + widgetId++;
+}
+
+
+
+/*Funzione per la gestione delle rotazioni applicate rispettando
+* gli assi globali, invece che gli assi dell'oggetto.
+* In questo modo il sottomarino ruota a destra e sinistra mantendo un'allineamento costante.*/
+function yRotateMatrix(m, angleInRadians, dst) {
+  dst = dst || new MatType(16);
+
+  var c = Math.cos(angleInRadians);
+  var s = Math.sin(angleInRadians);
+
+  var matrixY = [c, 0, s, 0,
+                0, 1, 0, 0, 
+                -s, 0, c, 0,
+                m[12], m[13], m[14], 1];
+  
+  //necesario per evitare che la rotazione sia rispetto al centro degli assi
+  m[12]=0;
+  m[13]=0;
+  m[14]=0;
+  dst = m4.multiply(matrixY, m);
+
+  return dst;
 }

@@ -9,7 +9,6 @@ class Move{
     target;               //target di direzione di movimento  
     ableFoward;           //abilitazione movimento in avanti
     ableBack;             //abilitazione movimento indietro
-    
 
    constructor(){
     this.rotateLeft= false;           //tasto A 
@@ -30,6 +29,7 @@ class Move{
    setTarget(val){
     this.target = val;
    }
+
   
   pressKey(keyCode){
     switch(keyCode){
