@@ -222,7 +222,13 @@ async function main() {
   var sign = true;
   let lightIntensity = 45;
 
-  /*-gestione evento fine gioco -*/
+  /*-- Gestione evento fine gioco --*/
+
+  function gameOver(reason){
+    gameScreen();
+  }
+
+  /*-- Gestione ritrovamento del tesoro --*/
   canvas.addEventListener("click", function(event){
     if(treasureFound){
       console.log("apriti sesamo");
@@ -349,12 +355,12 @@ async function main() {
       moves.setTarget(-1);
     }
     if(moves.rotateLeft){
-      m4.yRotate(elementsToDraw[0].uniformMatrix, degToRad(2), elementsToDraw[0].uniformMatrix);
+      elementsToDraw[0].uniformMatrix= yRotateMatrix(elementsToDraw[0].uniformMatrix, degToRad(-2), elementsToDraw[0].uniformMatrix);
       elementsToDraw[1].uniformMatrix = adaptPropellersRotateY(elementsToDraw[0].uniformMatrix, elementsToDraw[1].uniformMatrix);
       treasureFound=false; //se il sottomarino si sposta allora va via dal tesoro
      } 
     if(moves.rotateRight){
-      m4.yRotate(elementsToDraw[0].uniformMatrix, degToRad(-2), elementsToDraw[0].uniformMatrix);
+      elementsToDraw[0].uniformMatrix= yRotateMatrix(elementsToDraw[0].uniformMatrix, degToRad(2), elementsToDraw[0].uniformMatrix);
       elementsToDraw[1].uniformMatrix = adaptPropellersRotateY(elementsToDraw[0].uniformMatrix, elementsToDraw[1].uniformMatrix);
       treasureFound=false;
     }
@@ -373,9 +379,9 @@ async function main() {
       treasureFound=false;
     }
     velocity = lerp(velocity, maxVelocity * moves.target, deltaTime * accelleration); //variabile velocità di spostamento
-    let xTrasl = velocity * deltaTime; //quantità di spostamento
+    let trasl = velocity * deltaTime; //quantità di spostamento
 
-    let valX = submarine.getX() + xTrasl; //variabile di controllo
+    let valY = submarine.getY() + trasl; //variabile di controllo
     let posFromTreasure = m4.distance(submarine.getPos(), closedTrasure.getPos());
 
     totalKeys.forEach(k => {
@@ -406,18 +412,19 @@ async function main() {
       }
     })
     
-
-    if(submarine.getY() <= bed.getY()+1.0){ //controllo posizione rispetto al fondale
+    //controllo rispetto al fondale
+    if(valY <= bed.getY()+2.0){ //controllo posizione rispetto al fondale
       console.log("ferma gioco");
       moves.ableFoward = false;
       moves.ableBack = false;
+      gameOver("seabed");
     } else if(velocity != 0 && posFromTreasure < 2.0){ //controllo posizione rispetto al tesoro
       treasureFound=true;
     }else{
       moves.ableFoward = true;
       moves.ableBack = true;
       //tresureFound = false; ?
-      m4.translate(elementsToDraw[0].uniformMatrix, xTrasl,0,0, elementsToDraw[0].uniformMatrix);
+      m4.translate(elementsToDraw[0].uniformMatrix, trasl,0,0, elementsToDraw[0].uniformMatrix);
       elementsToDraw[1].uniformMatrix = adaptPropellersTransl(elementsToDraw[0].uniformMatrix, elementsToDraw[1].uniformMatrix);
     }
 
