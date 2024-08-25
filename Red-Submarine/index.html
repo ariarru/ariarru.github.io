@@ -11,7 +11,7 @@
             <div class="comContainer vertical">
                 <section>
                     <p class="first-title">Welcome! In this beautiful adventure to explore the depths of the sea.</p>
-                    <p class="second-title"> Explore the seabed collecting the keys and find the mighty treasure lost in here centuries ago.</p> 
+                    <p class="sub-title"> Explore the seabed collecting the keys and find the mighty treasure lost in here centuries ago.</p> 
                 </section>
                 <article class="vertical">
                     <section>
@@ -37,6 +37,10 @@
                 </article>
             </div>
             <section class="gameBoy">
+                <div id="endTitle">
+                    <p id="endGame"></p>
+                    <p id="endSubtitle"></p>
+                </div>
                 <canvas id="mainCanva"></canvas>
                 <section class="gameOptions">
                     <div class="controlPanel">
@@ -50,11 +54,10 @@
                     </div>
                     
                     <div id="kLefts" class="center horizontal">
-                        <p>Keys left to find: <p id="counter"></p></p>
+                        <nobr>Keys left to find:</nobr> <p id="counter"></p>
                     </div>
         
-                    <div id="btnContainer">
-                    
+                    <div id="btnContainer">                 
                         <div class="center horizontal upperBtns">
                             <button id="up" class="btn">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="3.25em" height="3.25em" viewBox="0 0 256 256">

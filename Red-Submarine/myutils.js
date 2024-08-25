@@ -34,8 +34,6 @@ function adaptPropellersTransl(src, dst){
   return dst;
 }
 function adaptPropellersRotateY(src, dst){
-  console.log(src);
-  console.log(dst);
   dst[0]= src[0];
   dst[2]=src[2];
   dst[4]=src[4];

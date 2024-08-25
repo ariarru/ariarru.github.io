@@ -15,13 +15,16 @@ body{
 }
 #ui {
     width: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
 }
 
 .gameOptions{
     align-items: baseline;
-    display: flex;
-    flex-direction: row;
-    gap: 9rem;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    margin: 0px 3rem;
     justify-content: center;
     margin-top: -2.5rem;
 }
@@ -30,19 +33,21 @@ body{
     display: flex;
     flex-direction: column;
     gap:2rem;
-
+    margin-top: 5rem;
 }
+
 #kLefts{
     font-size: 1.25rem;
     font-family: sans-serif;
     z-index: 3;
     margin-top:-2.5rem;
+    padding: 2.5rem;
 }
 
 main{
     display: grid;
     grid-template-columns: 2fr 10fr;
-    width: 100vw;
+    width: 98vw;
 }
 
 .comContainer{
@@ -51,6 +56,7 @@ main{
     border-radius: 20px;
     font-size: 1rem;
     padding: 1.5rem;
+    width: 80%;
     font-family: sans-serif;
     background-color: rgba(255, 255, 255, 0.15);
     box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.1), 0 2px 4px -2px rgba(255, 255, 255, 0.1);}
@@ -63,7 +69,7 @@ main{
 
 .second-title{
     font-size: 1rem;
-    font-weight: 700;
+    font-weight: bold;
     margin-bottom: 0px;
 }
 
@@ -83,23 +89,28 @@ main{
 .btn{
     width: 4rem;
     height: 3.75rem;
-    border:solid 2px #2F6C8D;
-    border-radius: 8px;
-    background-color: #57A0C7;
+    border:solid 2px #9D2319;
+    border-radius: 20px;
+    background-color: #B0281C;
     box-shadow:  -2px -2px 5px #001437,
     2px 2px 5px #002a71; 
     cursor: pointer;
-    margin: 0.2em 0.5em;
+    margin: 0.2em 0.3em;
     align-items: center;
+    opacity: 0.9;
+}
+
+.btn:hover{
+    opacity: 1;
 }
 
 .upperBtns{
-    right: -2.25rem;
+    right: -2.1rem;
     position: relative;
 }
 
 .downerBtns{
-    right: 2.25rem;
+    right: 2.1rem;
     position: relative;
 }
 
@@ -132,6 +143,9 @@ article > section:first-of-type{
     max-width: 40vw;
 }
 
+.controlPanel{
+    width: fit-content;
+}
 
 
 .widget-outer{
@@ -139,7 +153,7 @@ article > section:first-of-type{
     flex-direction: row;
     gap: 0.2rem;
     font-family: sans-serif;
-
+    align-items: center;
 }
 .widget-label{
     font-size: 1em;
@@ -151,7 +165,48 @@ article > section:first-of-type{
     padding: 0px 3px;
 }
 .widget-slider{
+    -webkit-appearance: none;
+    width: 100%;
+    height: 15px;
+    background: #65A7CD;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    border-radius: 10px;
+}
+.widget-slider:hover {
+    opacity: 1;
+}
+.widget-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
+    background: #F3F0E2;
+    cursor: pointer;
+  }
 
+
+#endTitle{
+    position: relative;
+    margin-bottom: -11rem;
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+}
+#endGame{
+    font-size: 20pt;
+    margin-bottom: 0px;
+    font-weight: bold;
+}
+
+#endSubtitle{
+    font-size: 16pt;
+    margin-top: 0.75rem;
 }
 @media screen and (max-width: 900px){
     #mainCanva{
@@ -175,6 +230,10 @@ article > section:first-of-type{
     #kLefts{
         padding: 0.5rem 1rem 0.5rem 1rem;
         z-index: 3;
+        grid-row: 1;
+        grid-column: 1;
+        display: flex;
+        flex-direction: column;
     }
 
     main{
@@ -183,5 +242,31 @@ article > section:first-of-type{
     }
     .gameOptions{
         gap:2rem;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 0.5fr 0.5fr 1fr;
+    }
+    #btnContainer{
+        grid-row: 1;
+        grid-column: 2;
+    }
+
+}
+
+@media screen and (max-width: 600px){
+    #btnContainer{
+        grid-row: 1;
+        grid-column: 2;
+    }
+    #kLefts{
+        padding: 1rem;
+        z-index: 3;
+        grid-row: 1;
+        grid-column: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .controlPanel{
+        grid-row: 2;
     }
 }
