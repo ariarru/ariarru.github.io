@@ -147,14 +147,14 @@
 
             varying vec3 v_normal;
             varying vec3 v_tangent;
-            varying vec3 v_surfaceToView;
             varying vec2 v_texcoord;
             varying vec4 v_projectedTexcoord;
             varying vec4 v_color;
+            
+            varying vec3 v_surfaceToView;
+            varying vec3 v_surfaceToLight;   //come risponde la superficie alla luce
             varying vec3 v_worldPosition;   // posizione nel mondo
             varying vec3 v_worldNormal;      //normali orientate nel mondo
-            varying vec3 v_surfaceToLight;   //come risponde la superficie alla luce
-            varying vec3 v_lightWorldPos;
             varying float v_lightWorldIntensity;
             varying vec3 v_fogDepth;       //profondità effetto nebbia
             
@@ -162,8 +162,10 @@
             void main() {
                 vec4 worldPosition = u_world * a_position;
                 gl_Position = u_projection * u_view * worldPosition;
+
                 //vettore dalla superficie alla camera
                 v_surfaceToView = u_viewWorldPosition - worldPosition.xyz;
+
                 mat3 normalMat = mat3(u_world);
                 v_normal = normalize(normalMat * a_normal);
                 v_tangent = normalize(normalMat * a_tangent);
@@ -184,19 +186,6 @@
 
         <script id="fragment-shader" type="not-javascript">
             precision highp float;
-
-            varying vec3 v_normal;
-            varying vec3 v_tangent;
-            varying vec3 v_surfaceToView;
-            varying vec2 v_texcoord;
-            varying vec4 v_projectedTexcoord;
-            varying vec4 v_color;
-            varying vec3 v_lightWorldPos;
-            varying float v_lightWorldIntensity;
-            varying vec3 v_fogDepth;
-            varying vec3 v_worldPosition;
-
-            varying vec3 v_surfaceToLight;
 
             uniform vec3 diffuse;
             uniform sampler2D diffuseMap;
@@ -219,6 +208,20 @@
 
             //gestione nebbia
             uniform vec4 u_fogColor;
+
+            varying vec3 v_normal;
+            varying vec3 v_tangent;
+            varying vec3 v_surfaceToView;
+            varying vec2 v_texcoord;
+            varying vec4 v_projectedTexcoord;
+            varying vec4 v_color;
+            varying float v_lightWorldIntensity;
+            varying vec3 v_fogDepth;
+            varying vec3 v_worldPosition;
+
+            varying vec3 v_surfaceToLight;
+
+            
 
 
             float lerp(float a, float b, float t){

@@ -275,11 +275,13 @@ async function main() {
   const cameraTarget = [0, 0, 0];
   const cameraPosition= [0, 2, 8];
   const cameraPositionVector = m4.addVectors(cameraTarget, cameraPosition);
-
-
+/* =========================================================================================== */
+/* =========================================================================================== */
   /*-- Gestione della luce --*/
-  var positionAmbientLight =[0, 20, -2]; //posizione della luce - z: -2
-  var target = [0, 1, 0];
+  var positionAmbientLight =[2.5, 98, 4.3]; //posizione della luce - z: -2
+  var target = [2.5, 95, 3.5];
+/* =========================================================================================== */
+/* =========================================================================================== */
 
 
   /*-- Variabili di gioco --*/
@@ -371,9 +373,9 @@ async function main() {
   setupSlider("#numKeys", {name:"Level:", slide: updateLevel, min: 2, max: 15, value:level, step:1});
   setupSlider("#numSharks", {name:"Difficulty:", slide: updateSharks, min: 5, max: 50, value:sharkNumber, step:1});
   setupSlider("#light", {name:"Light:", slide: updateLight, min: 0, max: 80, value:lightIntensity, step:1});
-  setupSlider("#posX", {name:"PosX:", slide: upPx, min: -30, max: 30, value:positionAmbientLight[0], step:1});
-  setupSlider("#posY", {name:"PosY:", slide: upPy, min: -300, max: 30, value:positionAmbientLight[1], step:1});
-  setupSlider("#posZ", {name:"PosZ:", slide: upPz, min: -30, max: 30, value:positionAmbientLight[2], step:1});
+  setupSlider("#posX", {name:"PosX:", slide: upPx, min: -100, max: 100, value:positionAmbientLight[0], step:1});
+  setupSlider("#posY", {name:"PosY:", slide: upPy, min: -300, max: 100, value:positionAmbientLight[1], step:1});
+  setupSlider("#posZ", {name:"PosZ:", slide: upPz, min: -100, max: 100, value:positionAmbientLight[2], step:1});
   setupSlider("#directionX", {name:"DirectionX:", slide: upDx, min: -100, max: 100, value:target[0], step:0.1, precision:0.1});
   setupSlider("#directionY", {name:"DirectionY:", slide: upDy, min: -100, max: 100, value:target[1], step:0.1});
   setupSlider("#directionZ", {name:"DirectionZ:", slide: upDz, min: -100, max: 100, value:target[2], step:0.1});
@@ -632,17 +634,22 @@ async function main() {
     var viewDirectionProjectionInverseMatrix =
       m4.inverse(viewDirectionProjectionMatrix);
 
+/* =========================================================================================== */
+/* =========================================================================================== */
 
     /*-- Gestione delle ombre - Z-Buffer--*/
     //disegno dal POV della luce
     const lightWorldMatrix =m4.lookAt(positionAmbientLight, target,  [0, 1, 0],);
     const lightProjectionMatrix = m4.orthographic(
-        -50,   // left
-        50,   // right
-        -50,  // bottom
-        50,  // top
-        0.1,          // near
-       160);          // far dalla luce
+      -100,  // left
+       100, // right
+       -100, // bottom
+       100,    // top
+        0.1, // near
+      200// far dalla luce
+        );          
+/* =========================================================================================== */
+/* =========================================================================================== */
 
     // draw to the depth texture
     gl.bindFramebuffer(gl.FRAMEBUFFER, depthFramebuffer);
@@ -658,7 +665,7 @@ async function main() {
       u_textureMatrix: m4.identity(),
       u_projectedTexture: depthTexture,
       u_reverseLightDirection: lightWorldMatrix.slice(8, 11),
-      u_bias: 0.16,
+      u_bias: 0.016,
       u_lightDirection: lightWorldMatrix.slice(8, 11).map(v => -v),
       u_lightWorldPosition: positionAmbientLight,
       u_viewWorldPosition: lightWorldMatrix.slice(12, 15),
@@ -692,15 +699,15 @@ async function main() {
     var sharedUniforms = {
       u_view: view,
       u_projection: projection,
-      u_viewWorldPosition: cameraPositionVector,
-      opacity:0.4,
+      u_viewWorldPosition: camera.slice(12, 15),//cameraPositionVector,
       u_lightWorldPosition: positionAmbientLight,
       u_lightWorldIntensity: lightIntensity/100,
       u_lightDirection: lightWorldMatrix.slice(8, 11).map(v => -v),
       u_worldInverseTraspose: u_worldInverseTraspose,
       u_projectedTexture: depthTexture,
       u_textureMatrix: textureMatrix,
-      u_bias: 0.16,
+      opacity:0.4,
+      u_bias: 0.016,
       u_fogColor: fogColor,
     };
     gl.useProgram(programInfo.program);
