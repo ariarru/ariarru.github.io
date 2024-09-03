@@ -173,6 +173,7 @@ async function main() {
   /* -- Dichiaro il sottomarino -- */
   const subBody = await generateBuffer('./res/sub-body.obj');
   const submarine = new SeaObject(subBody);
+  submarine.translateObj(0, 200, 0);
   elementsToDraw.push(submarine);  
 
   /* -- Dichiaro le eliche -- */
@@ -278,8 +279,8 @@ async function main() {
 /* =========================================================================================== */
 /* =========================================================================================== */
   /*-- Gestione della luce --*/
-  var positionAmbientLight =[2.5, 98, 4.3]; //posizione della luce - z: -2
-  var target = [2.5, 95, 3.5];
+  var positionAmbientLight =[0.1, 186, -6]; //posizione della luce - z: -2
+  var target = [0.1, 143, 2];
 /* =========================================================================================== */
 /* =========================================================================================== */
 
@@ -373,12 +374,12 @@ async function main() {
   setupSlider("#numKeys", {name:"Level:", slide: updateLevel, min: 2, max: 15, value:level, step:1});
   setupSlider("#numSharks", {name:"Difficulty:", slide: updateSharks, min: 5, max: 50, value:sharkNumber, step:1});
   setupSlider("#light", {name:"Light:", slide: updateLight, min: 0, max: 80, value:lightIntensity, step:1});
-  setupSlider("#posX", {name:"PosX:", slide: upPx, min: -100, max: 100, value:positionAmbientLight[0], step:1});
-  setupSlider("#posY", {name:"PosY:", slide: upPy, min: -300, max: 100, value:positionAmbientLight[1], step:1});
-  setupSlider("#posZ", {name:"PosZ:", slide: upPz, min: -100, max: 100, value:positionAmbientLight[2], step:1});
-  setupSlider("#directionX", {name:"DirectionX:", slide: upDx, min: -100, max: 100, value:target[0], step:0.1, precision:0.1});
-  setupSlider("#directionY", {name:"DirectionY:", slide: upDy, min: -100, max: 100, value:target[1], step:0.1});
-  setupSlider("#directionZ", {name:"DirectionZ:", slide: upDz, min: -100, max: 100, value:target[2], step:0.1});
+  setupSlider("#posX", {name:"PosX:", slide: upPx, min: -200, max: 200, value:positionAmbientLight[0], step:1});
+  setupSlider("#posY", {name:"PosY:", slide: upPy, min: -200, max: 200, value:positionAmbientLight[1], step:1});
+  setupSlider("#posZ", {name:"PosZ:", slide: upPz, min: -200, max: 200, value:positionAmbientLight[2], step:1});
+  setupSlider("#directionX", {name:"DirectionX:", slide: upDx, min: -200, max: 200, value:target[0], step:0.1, precision:0.1});
+  setupSlider("#directionY", {name:"DirectionY:", slide: upDy, min: -200, max: 200, value:target[1], step:0.1});
+  setupSlider("#directionZ", {name:"DirectionZ:", slide: upDz, min: -200, max: 200, value:target[2], step:0.1});
 
   function updateLevel(event, ui) {
     let newLevel = ui.value;
@@ -755,6 +756,59 @@ async function main() {
       webglUtils.drawBufferInfo(gl, bufferSkybox);
       
     }
+     // ------ Draw the frustum ------
+     const cubeLinesBufferInfo = webglUtils.createBufferInfoFromArrays(gl, {
+      position: [
+        -1, -1, -1,
+         1, -1, -1,
+        -1,  1, -1,
+         1,  1, -1,
+        -1, -1,  1,
+         1, -1,  1,
+        -1,  1,  1,
+         1,  1,  1,
+      ],
+      indices: [
+        0, 1,
+        1, 3,
+        3, 2,
+        2, 0,
+  
+        4, 5,
+        5, 7,
+        7, 6,
+        6, 4,
+  
+        0, 4,
+        1, 5,
+        3, 7,
+        2, 6,
+      ],
+    });
+    
+      const viewMatrix = m4.inverse(camera);
+
+      gl.useProgram(colorProgramInfo.program);
+
+      // Setup all the needed attributes.
+      webglUtils.setBuffersAndAttributes(gl, colorProgramInfo, cubeLinesBufferInfo);
+
+      // scale the cube in Z so it's really long
+      // to represent the texture is being projected to
+      // infinity
+      const mat = m4.multiply(
+          lightWorldMatrix, m4.inverse(lightProjectionMatrix));
+
+      // Set the uniforms we just computed
+      webglUtils.setUniforms(colorProgramInfo, {
+        u_color: [1, 1, 1, 1],
+        u_view: viewMatrix,
+        u_projection: projection,
+        u_world: mat,
+      });
+
+      // calls gl.drawArrays or gl.drawElements
+      webglUtils.drawBufferInfo(gl, cubeLinesBufferInfo, gl.LINES);
     
     requestAnimationFrame(render);
   }
