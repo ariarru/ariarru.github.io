@@ -30,7 +30,6 @@ function adaptPropellersTransl(src, dst){
   dst[12]= src[12];
   dst[13]=src[13];
   dst[14]= src[14];
-  dst[15]=src[15];
   return dst;
 }
 function adaptPropellersRotateY(src, dst){
@@ -117,6 +116,7 @@ function createSlider(parent, options) {
   };
 }
 
+/*
 function makeSlider(options) {
   const div = document.createElement("div");
   return createSlider(div, options);
@@ -126,7 +126,7 @@ var widgetId = 0;
 function getWidgetId() {
   return "__widget_" + widgetId++;
 }
-
+*/
 
 
 /*Funzione per la gestione delle rotazioni applicate rispettando
@@ -151,3 +151,5 @@ function yRotateMatrix(m, angleInRadians, dst) {
 
   return dst;
 }
+
+export {degToRad, getRandomNumber, computeMatrix, adaptPropellersTransl, adaptPropellersRotateY, lerp, setupSlider, yRotateMatrix};
