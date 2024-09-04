@@ -17,7 +17,7 @@
                     <section>
                         <p class="second-title">How to play:</p>
                         <p>Move the submarine using the buttons of the control panel or the ones on your keyboard. 
-                            Your goal is to collect all the keys by touching them, but be aware and avoid the sharks. Once you'll have find the treasure casket click on it to win.</p>
+                            Your goal is to collect all the keys by touching them, but be aware and avoid the sharks. Once you'll have find the treasure casket stay put and click on it to win.</p>
                     </section>
                     <section>
                         <p class="second-title">Commands:</p>
@@ -46,18 +46,19 @@
                     <div class="controlPanel">
                         <div id="uiContainer">
                             <div id="ui">
-                                <!-- 
-                                <div id="#numKeys"></div>
-                                <div id="#numSharks"></div>
-                                <div id="#light"></div> -->
-                                <div id="#posX"></div>
-                                <div id="#posY"></div>
-                                <div id="#posZ"></div>
-                                <div id="#directionX"></div>
-                                <div id="#directionY"></div>
-                                <div id="#directionZ"></div>
-                                <div id="#b"></div>
-                                <!-- da rimuovere -->
+                                
+                                <div id="numKeys"></div>
+                                <div id="numSharks"></div>
+                                <div id="light"></div>
+                                <!-- da rimuovere-->
+                                <div id="posX"></div>
+                                <div id="posY"></div>
+                                <div id="posZ"></div>
+                                <div id="directionX"></div>
+                                <div id="directionY"></div>
+                                <div id="directionZ"></div>
+                                <div id="b"></div>
+                                 
                                 <div id="projW"></div>
                                 <div id="projH"></div>
                                 <div id="near"></div>
@@ -151,7 +152,6 @@
             uniform vec3 u_viewWorldPosition;
             uniform mat4 u_worldInverseTraspose;
             
-
             varying vec3 v_normal;
             varying vec3 v_tangent;
             varying vec2 v_texcoord;
@@ -159,7 +159,9 @@
             varying vec4 v_color;
             varying vec3 v_surfaceToView;
             varying vec3 v_surfaceToLight;
-            varying vec3 v_fogDepth;       //profondità effetto nebbia
+
+            //profondità effetto nebbia
+            varying vec3 v_fogDepth;       
             
 
             void main() {
@@ -226,21 +228,14 @@
             uniform sampler2D u_projectedTexture;
             uniform float u_bias;
             uniform float u_shininess;
-            uniform float u_innerLimit;          // in dot space
-            uniform float u_outerLimit;          // in dot space
-
+            
             //Uniform per la gestione della nebbia
             uniform vec4 u_fogColor;
 
 
-            float lerp(float a, float b, float t){
-                return a + (b - a) * t;
-            }
-
-
             void main () {
                 // Interpolazione delle normali
-                vec3 normal = normalize(v_normal) * ( float( gl_FrontFacing ) * 2.0 - 1.0 );
+                vec3 normal = normalize(v_normal) * ( float( gl_FrontFacing ) * 5.0 - 1.0 );
                 vec3 tangent = normalize(v_tangent) * ( float( gl_FrontFacing ) * 2.0 - 1.0 );
                 vec3 bitangent = normalize(cross(normal, tangent));
             
@@ -255,29 +250,22 @@
                 vec3 halfVector = normalize(surfaceToLightDirection + surfaceToViewDirection);
             
                 // Calcolo dell'illuminazione
-                float dotFromDirection = dot(surfaceToLightDirection, -u_lightDirection);
-                float limitRange = u_innerLimit - u_outerLimit;
-                float inLight = clamp((dotFromDirection - u_outerLimit) / limitRange, 0.0, 1.0);
-                float light = inLight * dot(normal, surfaceToLightDirection);
-                float specularLight = clamp(dot(normal, halfVector), 0.0, 1.0);
-                float effectiveSpecularLight = inLight * pow(specularLight, u_shininess);
+                float light = dot(surfaceToLightDirection, -u_lightDirection);
+                float specularLight = clamp(dot(normal, halfVector), 0.0001, 1.0);
+                vec4 specularMapColor = texture2D(specularMap, v_texcoord);
+                vec3 effectiveSpecular = specular * specularMapColor.rgb;
             
                 // Calcolo del colore della texture e delle ombre
                 vec3 projectedTexcoord = v_projectedTexcoord.xyz / v_projectedTexcoord.w;
                 float currentDepth = projectedTexcoord.z + u_bias;
-                bool inRange =
-                        projectedTexcoord.x >= 0.0 &&
-                        projectedTexcoord.x <= 1.0 &&
-                        projectedTexcoord.y >= 0.0 &&
-                        projectedTexcoord.y <= 1.0;
             
                 // La componente 'r' contiene i valori di profondità
                 float projectedDepth = texture2D(u_projectedTexture, projectedTexcoord.xy).r;
-                float shadowLight = (inRange && projectedDepth <= currentDepth) ? 0.0 : 1.0;
+                float shadowLight = (projectedDepth <= currentDepth) ? 0.01 : 1.0;
             
                 // Colore della texture e blending finale
                 vec4 diffuseMapColor = texture2D(diffuseMap, v_texcoord);
-                vec3 effectiveDiffuse = diffuse  * diffuseMapColor.rgb * v_color.rgb;
+                vec3 effectiveDiffuse = diffuse * diffuseMapColor.rgb  * v_color.rgb;
                 float effectiveOpacity = opacity * diffuseMapColor.a * v_color.a;
             
                 vec4 texColor = texture2D(u_texture, v_texcoord) * u_colorMult;
@@ -286,9 +274,11 @@
                 gl_FragColor = vec4(
                     emissive +
                     ambient * u_ambientLight +
-                    effectiveDiffuse * light * shadowLight +
-                    specular * effectiveSpecularLight * shadowLight,
-                    texColor.a * effectiveOpacity);
+                    effectiveDiffuse * light * u_lightWorldIntensity +    //materiali opachi
+                    effectiveSpecular * pow(specularLight, u_shininess),                    //materiali lucidi
+                    effectiveOpacity);
+
+                gl_FragColor= vec4(gl_FragColor.rgb * shadowLight, gl_FragColor.a);
                 
                 //Aggiungo effetto nebbia
                 float fogDistance = length(v_fogDepth);

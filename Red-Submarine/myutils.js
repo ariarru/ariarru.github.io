@@ -13,18 +13,6 @@ function getRandomNumber(min, max) {
 }
 
 
-//calcolo delle matrici
-function computeMatrix(viewProjectionMatrix, translation, xRotation, yRotation, zRotation) {
-  var matrix = m4.translate(viewProjectionMatrix,
-      translation[0],
-      translation[1],
-      translation[2]);
-  matrix =m4.yRotate(matrix, yRotation);
-  matrix = m4.xRotate(matrix, xRotation);
-  matrix = m4.zRotate(matrix, zRotation);
-  return matrix;
-}
-
 //assegno solo determinati valori da una matrice all'altra per definire la traslazione senza incidere sulla rotazione dell'elica
 function adaptPropellersTransl(src, dst){
   dst[12]= src[12];
@@ -152,4 +140,24 @@ function yRotateMatrix(m, angleInRadians, dst) {
   return dst;
 }
 
-export {degToRad, getRandomNumber, computeMatrix, adaptPropellersTransl, adaptPropellersRotateY, lerp, setupSlider, yRotateMatrix};
+function xRotateMatrix(m, angleInRadians, dst) {
+  dst = dst || new MatType(16);
+
+  var c = Math.cos(angleInRadians);
+  var s = Math.sin(angleInRadians);
+
+  var matrixY = [1, 0, 0, 0,
+                0, c, -s, 0, 
+                0, s, c, 0,
+                m[12], m[13], m[14], 1];
+  
+  //necesario per evitare che la rotazione sia rispetto al centro degli assi
+  m[12]=0;
+  m[13]=0;
+  m[14]=0;
+  dst = m4.multiply(matrixY, m);
+
+  return dst;
+}
+
+export {degToRad, getRandomNumber, adaptPropellersTransl, adaptPropellersRotateY, lerp, setupSlider, yRotateMatrix, xRotateMatrix};

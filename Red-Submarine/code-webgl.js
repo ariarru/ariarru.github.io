@@ -1,6 +1,6 @@
 "use strict";
 
-import {degToRad, getRandomNumber, computeMatrix, adaptPropellersTransl, adaptPropellersRotateY, lerp, setupSlider, yRotateMatrix} from './myutils.js';
+import {degToRad, getRandomNumber, adaptPropellersTransl, adaptPropellersRotateY, lerp, setupSlider, yRotateMatrix,xRotateMatrix} from './myutils.js';
 import { draw } from './drawScene.js';
 
 async function main() {
@@ -172,12 +172,15 @@ async function main() {
   const subPropellers = await generateBuffer('./res/sub-eliche.obj');
   const propellers = new SeaObject(subPropellers);
   propellers.animateX=true;
+  //variabile cumulativa di gradi di rotazione delle eliche
+  propellers.degreeX =0;
   elementsToDraw.push(propellers);  
 
   /*--Dichiaro il fondale--*/
   const seabed = await generateBuffer('./res/seabed.obj');
   const bed = new SeaObject(seabed);
   bed.translateObj(0, -10.5, 0);
+  elementsToDraw.push(bed);
     
 
   /* -- Dichiaro la chiave -- */
@@ -191,6 +194,7 @@ async function main() {
     var z = getRandomNumber(-120, 120);
     key.translateObj(x=0 ? x+getRandomNumber(-100, 100) : x, y ,z);
     key.animateY=true;
+    key.degreeY =0;
     elementsToDraw.push(key);
     totalKeys.push(key);
   }
@@ -217,7 +221,7 @@ async function main() {
   /*-- Definisco il tesoro --*/
   const treasure = await generateBuffer('./res/treasure/treasure-closed.obj');
   const closedTrasure = new SeaObject(treasure);
-  closedTrasure.translateObj(getRandomNumber(-100, 100), 1, getRandomNumber(-100, 100));
+  closedTrasure.translateObj(getRandomNumber(-100, 100), -7, getRandomNumber(-100, 100));
 
   const finishTreasure = await generateBuffer('./res/treasure/treasure-open.obj');
   const openTreasure = new SeaObject(finishTreasure);
@@ -264,16 +268,11 @@ async function main() {
 
 
   /* -- Gestione della camera -- */
-  const cameraTarget = [0, 0, 0];
   const cameraPosition= [0, 2, 8];
-  const cameraPositionVector = m4.addVectors(cameraTarget, cameraPosition);
-/* =========================================================================================== */
-/* =========================================================================================== */
+
   /*-- Gestione della luce --*/
-  var positionAmbientLight =[-1, 150, -1.2]; //posizione della luce - z: -2
-  var target = [-1, 0, 1];
-/* =========================================================================================== */
-/* =========================================================================================== */
+  var positionAmbientLight =[-5, 150, -10]; //posizione della luce - z: -2
+  var target = [-1, 0, 8];
 
 
   /*-- Variabili di gioco --*/
@@ -282,13 +281,14 @@ async function main() {
   totalKeys.forEach(element => {
     counter.innerHTML +=" &#128477;";
   });
-  var sign = true;
-  let lightIntensity = 45;
+  var sign = true; //flag per gestire verso degli squali
 
   /*-- Gestione evento fine gioco --*/
   var showSkybox = true;
   var endGame = false;
   function gameOver(reason){
+    moves.stopTarget();
+    velocity = 0;
     const endTitle = document.getElementById("endGame");
     const endSubtitle = document.getElementById("endSubtitle");
     
@@ -297,7 +297,8 @@ async function main() {
     showSkybox = false;
     endGame = true;
     submarine.uniformMatrix = m4.identity();
-    propellers.uniformMatrix = m4.identity();
+    propellers.animateX= false;
+    propellers.uniformMatrix = m4.copy(submarine.uniformMatrix);
     elementsToDraw.push(submarine);
     elementsToDraw.push(propellers);
 
@@ -306,14 +307,18 @@ async function main() {
       shark.translateObj(-2.5, 0, 0);
       m4.yRotate(shark.uniformMatrix, degToRad(90), shark.uniformMatrix);
       elementsToDraw.push(shark);
-      positionAmbientLight = [0, 2, -6];
-      target = [0, 1, 7];
+      positionAmbientLight = [-3, 20, 14];
+      target = [0, 0, 0];
+      projWidth= 20;
+      projHeight = 20;
       endTitle.innerHTML = 'Game Over';
       endSubtitle.innerHTML = "Oh no, you've hit a shark!";
 
     } else if(reason === "seabed"){
-      positionAmbientLight = [0, 5, 0];
-      target = [-2, 2, 0];
+      positionAmbientLight = [-1, 15, 14];
+      target = [-1, 0, -3];
+      projWidth= 20;
+      projHeight = 20;
       endTitle.innerHTML = 'Game Over';
       endSubtitle.innerHTML = "Oh no, you crushed into the seabed, pay more attention!";
 
@@ -323,7 +328,7 @@ async function main() {
       faceBubble.uniformMatrix = m4.identity();
       faceBubble.translateObj(2, 2, 1);
       elementsToDraw.push(faceBubble);
-      positionAmbientLight = [0, 10, 0];
+      positionAmbientLight = [0, 150, 1];
       target = [4, 3, 0];
 
       endTitle.innerHTML = 'Congrats!';
@@ -337,7 +342,7 @@ async function main() {
   var count = false;
   canvas.addEventListener("click", function(event){
     if(treasureFound){
-      console.log("apriti sesamo");
+      console.log("Apriti sesamo!");
       //tesoro diventa aperto
       let t = elementsToDraw.pop();
       openTreasure.uniformMatrix = m4.copy(t.uniformMatrix);
@@ -349,12 +354,14 @@ async function main() {
       //bolla compare
       faceBubble.translateObj(openTreasure.getX(), openTreasure.getY(), openTreasure.getZ());
       faceBubble.animateY=true;
+      faceBubble.degreeY = 0;
       if(!elementsToDraw.includes(faceBubble)){
         elementsToDraw.push(faceBubble);
       }
 
       //aggiungi luce dentro tesoro
       positionAmbientLight = [openTreasure.getX(), 10, openTreasure.getZ()];
+      target = [0, 20, 0];
       count= true;
       treasureFound =false;
     }
@@ -362,16 +369,20 @@ async function main() {
 
 
   /*-- Variabili modificabili dall'utente --*/
-  var bias = -0.0035;
+  var bias = -0.0093;
   var projWidth = 245;
   var projHeight = 245;
   var near = 0.1;
   var far = 200;
+  let lightIntensity = 45;
+
+  
+
   setupSlider("numKeys", {name:"Level:", slide: updateLevel, min: 2, max: 15, value:level, step:1});
   setupSlider("numSharks", {name:"Difficulty:", slide: updateSharks, min: 5, max: 50, value:sharkNumber, step:1});
-  setupSlider("light", {name:"Light:", slide: updateLight, min: 0, max: 80, value:lightIntensity, step:1});
-  
-  
+  setupSlider("light", {name:"Light:", slide: updateLight, min: 0, max: 100, value:lightIntensity, step:1});
+
+  /* */
   setupSlider("posX", {name:"PosX:", slide: upPx, min: -200, max: 200, value:positionAmbientLight[0], step:1});
   setupSlider("posY", {name:"PosY:", slide: upPy, min: -200, max: 200, value:positionAmbientLight[1], step:1});
   setupSlider("posZ", {name:"PosZ:", slide: upPz, min: -200, max: 200, value:positionAmbientLight[2], step:1});
@@ -383,9 +394,12 @@ async function main() {
   setupSlider("projH", {name:"ProjHeight:", slide: upProjH, min: 0, max: 500, value:projHeight, step:1, precision: 1});
   setupSlider("near", {name:"Near:", slide: upBias, min: -10, max: 10, value:near, step:0.1, precision: 2});
   setupSlider("far", {name:"Far:", slide: upBias, min: -10, max: 200, value:far, step:1, precision: 1});
-
+/* */
 
   function updateLevel(event, ui) {
+    if(endGame){
+      return;
+    }
     let newLevel = ui.value;
     if(newLevel > level){
       while(totalKeys.length != newLevel){
@@ -396,6 +410,7 @@ async function main() {
         key.translateObj(x=0 ? x+getRandomNumber(-100, 100) : x, y ,z);
         key.animateY=true;
         elementsToDraw.push(key);
+        console.log(elementsToDraw);
         totalKeys.push(key);
         counter.innerHTML +=" &#128477;";
       }
@@ -404,7 +419,6 @@ async function main() {
         let k = totalKeys.pop();
         let index = elementsToDraw.indexOf(k);
         elementsToDraw.splice(index, 1);
-        
       }
 
       counter.innerHTML = "";
@@ -416,6 +430,9 @@ async function main() {
   }
 
   function updateSharks(event, ui){
+    if(endGame){
+      return;
+    }
     let newDifficulty = ui.value;
 
     if(newDifficulty > sharkNumber){
@@ -442,9 +459,13 @@ async function main() {
   }
 
   function updateLight(event, ui){
+    if(endGame){
+      return;
+    }
     lightIntensity = ui.value;
   }
 
+  /**/
   function upDx(event, ui){
     target[0]= ui.value;
   }
@@ -479,23 +500,30 @@ async function main() {
   function upFar(event, ui){
     far = ui.value;
   }
+  /* */
+  
 
-  /* -- Variabili per la gestione dei movimenti -- */
-  var degreeX=0;     //variabile cumulativa di gradi di rotazione delle eliche
-  var degreeY=0;     //variabile cumulativa di gradi di rotazione delle chiavi e della bolla
+  /* -- Variabili per la gestione dei movimenti -- */    
   let then = 0;     //variabile per il calcolo del deltaTime
-
-  let accelleration = 1.25; //accellerazione movimento
+  let accelleration = 0.9; //accellerazione movimento
   let velocity=0;   //velocità del movimento del sottomairno
-  let maxVelocity = 25; //massima velocità del sottomarino
+  let maxVelocity = 20; //massima velocità del sottomarino
   let bubbleVelocity =0; //velocità della bolla
 
-  let inBed = false;
+  
 /*--------- Render Time ----------*/
   function render(time) {
     time *= 0.001;  // convert to seconds
     const deltaTime = time-then;
     then = time;
+
+    //timer per schermata di fine gioco
+    if(count){
+      timer++;
+    } 
+    if(timer > 5000){
+      gameOver("treasure");
+    }
 
     webglUtils.resizeCanvasToDisplaySize(gl.canvas);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
@@ -503,6 +531,10 @@ async function main() {
     gl.enable(gl.CULL_FACE);
     gl.enable(gl.DEPTH_TEST);
     gl.clear(gl.DEPTH_TEST);
+
+    /*-- Gestione trasparenze --*/
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
 
     /*-- Gestione camera --*/
@@ -514,18 +546,7 @@ async function main() {
       camera = m4.lookAt(cameraPosition, [submarine.getX(), submarine.getY(), submarine.getZ()], [0, 1, 0]);
     }
     
-    /*--Gestione nebbia--*/
-    var fogColor= [0.0039, 0.207, 0.29, 1]; 
-
-    /*-- Gestione trasparenze --*/
-    let alphaEnable = true;
-    if (alphaEnable) {
-        gl.enable(gl.BLEND);
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    } else {
-        gl.disable(gl.BLEND);
-    }
-
+   
   /*== Gestione delle dinamiche di gioco ==*/
     /*-- Gestione dei movimenti --*/
     moves.stopTarget();
@@ -533,18 +554,62 @@ async function main() {
       if(moves.foward && moves.ableFoward){
         moves.setTarget(-1);
       }
+      if(moves.back && moves.ableBack){
+        moves.setTarget(1);
+        treasureFound=false;
+      }
+      
+      velocity = lerp(velocity, maxVelocity * moves.target, deltaTime * accelleration); //variabile velocità di spostamento
+      let trasl = velocity * deltaTime; //quantità di spostamento
+
+      let valY = submarine.getY() + trasl; //variabile di controllo
+      let posFromTreasure = m4.distance(submarine.getPos(), closedTrasure.getPos());
+
+
+      //controllo la distanza dalle chiavi
+      totalKeys.forEach(k => {
+        if(m4.distance(submarine.getPos(), k.getPos()) <= 2.5){
+
+          var i = totalKeys.indexOf(k);
+          totalKeys.splice(i, 1);
+          i = elementsToDraw.indexOf(k);
+          elementsToDraw.splice(i, 1);
+          counter.innerHTML ='';
+          totalKeys.forEach(element => {
+            counter.innerHTML +=" &#128477;";
+          });
+          console.log(totalKeys.length);
+          if(totalKeys.length == 0){
+            elementsToDraw.push(closedTrasure);
+          }
+        }
+      });
+
+      //controllo rispetto agli squali
+      sharks.forEach(s =>{
+        if(m4.distance(submarine.getPos(), s.getPos()) <= 2.0){
+          gameOver("shark");
+          
+        }else if(m4.distance(submarine.getPos(), s.getPos()) >= 150){
+          m4.yRotate(s.uniformMatrix, degToRad(180), s.uniformMatrix);
+        }
+      });
+    
+      //controllo rispetto al fondale
+      if(valY <= bed.getY()+2.0){ //controllo posizione rispetto al fondale
+        gameOver("seabed");
+      } else if(velocity != 0 && posFromTreasure < 2.0){ //controllo posizione rispetto al tesoro
+        treasureFound=true;
+      }
+           
       if(moves.rotateLeft){
         elementsToDraw[0].uniformMatrix= yRotateMatrix(elementsToDraw[0].uniformMatrix, degToRad(-2), elementsToDraw[0].uniformMatrix);
         elementsToDraw[1].uniformMatrix = adaptPropellersRotateY(elementsToDraw[0].uniformMatrix, elementsToDraw[1].uniformMatrix);
-        treasureFound=false; //se il sottomarino si sposta allora va via dal tesoro
+        treasureFound=false;
       }
       if(moves.rotateRight){
         elementsToDraw[0].uniformMatrix= yRotateMatrix(elementsToDraw[0].uniformMatrix, degToRad(2), elementsToDraw[0].uniformMatrix);
         elementsToDraw[1].uniformMatrix = adaptPropellersRotateY(elementsToDraw[0].uniformMatrix, elementsToDraw[1].uniformMatrix);
-        treasureFound=false;
-      }
-      if(moves.back && moves.ableBack){
-        moves.setTarget(1);
         treasureFound=false;
       }
       if(moves.dive){
@@ -558,76 +623,20 @@ async function main() {
         treasureFound=false;
       }
 
-    }
-
-    velocity = lerp(velocity, maxVelocity * moves.target, deltaTime * accelleration); //variabile velocità di spostamento
-    let trasl = velocity * deltaTime; //quantità di spostamento
-
-    let valY = submarine.getY() + trasl; //variabile di controllo
-    let posFromTreasure = m4.distance(submarine.getPos(), closedTrasure.getPos());
-
-
-    //controllo la distanza dalle chiavi
-    totalKeys.forEach(k => {
-      if(m4.distance(submarine.getPos(), k.getPos()) <= 2.5){
-
-        var i = totalKeys.indexOf(k);
-        totalKeys.splice(i, 1);
-        i = elementsToDraw.indexOf(k);
-        elementsToDraw.splice(i, 1);
-        counter.innerHTML ='';
-        totalKeys.forEach(element => {
-          counter.innerHTML +=" &#128477;";
-        });
-        if(totalKeys.length == 0){
-          elementsToDraw.push(closedTrasure);
-        }
-      }
-    });
-
-    //controllo rispetto agli squali
-    sharks.forEach(s =>{
-      if(m4.distance(submarine.getPos(), s.getPos()) <= 2.0){
-        gameOver("shark");
-        moves.stopTarget();
-        velocity = 0;
-      }else if(m4.distance(submarine.getPos(), s.getPos()) >= 150){
-        m4.yRotate(s.uniformMatrix, degToRad(180), s.uniformMatrix);
-      }
-    })
-    
-    //controllo rispetto al fondale
-    if(valY <= bed.getY()+2.0){ //controllo posizione rispetto al fondale
-      moves.stopTarget();
-      velocity = 0;
-      gameOver("seabed");
-    } else if(velocity != 0 && posFromTreasure < 2.0){ //controllo posizione rispetto al tesoro
-      treasureFound=true;
-    } else{
-      moves.ableFoward = true;
-      moves.ableBack = true;
-      //tresureFound = false; ?
-      m4.translate(elementsToDraw[0].uniformMatrix, trasl,0,0, elementsToDraw[0].uniformMatrix);
+      //se non ha gestito cose precedentemente allora calcolo la traslazione 
+      m4.translate(elementsToDraw[0].uniformMatrix, trasl, 0, 0, elementsToDraw[0].uniformMatrix);
       elementsToDraw[1].uniformMatrix = adaptPropellersTransl(elementsToDraw[0].uniformMatrix, elementsToDraw[1].uniformMatrix);
+      
     }
 
-    /*-- Gestione rotazioni continue --*/
-    updateVars();
-
+    
     /*-- Gestione movimenti della bolla --*/
-    if(faceBubble.animateY && faceBubble.getY() < (openTreasure.getY() + 2.5)){
+    if(treasureFound && faceBubble.animateY && faceBubble.getY() < (openTreasure.getY() + 2.5)){
         bubbleVelocity = lerp(bubbleVelocity, 10, deltaTime);
         let bubbleTrasl = bubbleVelocity * deltaTime;
         m4.translate(faceBubble.uniformMatrix, 0, bubbleTrasl, 0, faceBubble.uniformMatrix);
     }
 
-    //timer per schermata di fine gioco
-    if(count){
-      timer++;
-    } 
-    if(timer > 6000){
-      gameOver("treasure");
-    }
  
     /*-- Gestione movimento squali --*/
     sharks.forEach(squalo =>{
@@ -663,40 +672,21 @@ async function main() {
     viewDirectionMatrix[13] = 0;
     viewDirectionMatrix[14] = 0;
 
-    var viewDirectionProjectionMatrix = m4.multiply(
-      projection, viewDirectionMatrix);
-    var viewDirectionProjectionInverseMatrix =
-      m4.inverse(viewDirectionProjectionMatrix);
-
-/* =========================================================================================== */
-/* =========================================================================================== */
+    
 
     /*-- Gestione delle ombre - Z-Buffer--*/
     //disegno dal POV della luce
     const lightWorldMatrix =m4.lookAt(positionAmbientLight, target,  [0, 1, 0],);
-    const lightProjectionMatrix = m4.orthographic(
-      -projWidth,  // left
-       projWidth, // right
-       -projHeight, // bottom
-       projHeight,    // top
-        near, // near
-      far// far dalla luce
-        );          
-/* =========================================================================================== */
-/* =========================================================================================== */
+    const lightProjectionMatrix = m4.orthographic(-projWidth, projWidth, -projHeight, projHeight, near, far);          
 
     // draw to the depth texture
     gl.bindFramebuffer(gl.FRAMEBUFFER, depthFramebuffer);
     gl.viewport(0, 0, depthTextureSize, depthTextureSize);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    if(inBed){
-      elementsToDraw.pop();
-      inBed = false;
-    }
 
     draw(lightProjectionMatrix, lightWorldMatrix, m4.identity, lightWorldMatrix, colorProgramInfo, gl, elementsToDraw, 
-      {fogColor : fogColor,
+      {
         bias: bias,
         depthTexture : depthTexture,
         lightPosition: positionAmbientLight,
@@ -720,19 +710,17 @@ async function main() {
     textureMatrix = m4.multiply(
         textureMatrix,
         m4.inverse(lightWorldMatrix));
-
         
-        if(!inBed){
-          elementsToDraw.push(bed);
-          inBed = true;
-        }
+  
+
     draw(projection, camera, textureMatrix, lightWorldMatrix, programInfo, gl, elementsToDraw, 
-      { fogColor : fogColor,
+      {
         bias: bias,
         depthTexture : depthTexture,
         lightPosition: positionAmbientLight,
         lightIntensity: lightIntensity/100,
-    });
+        velocity: velocity,
+    }, true);
 
 
     // ----- Skybox ----------
@@ -754,6 +742,9 @@ async function main() {
     
       gl.depthFunc(gl.LEQUAL);
 
+      var viewDirectionProjectionMatrix = m4.multiply(projection, viewDirectionMatrix);
+      var viewDirectionProjectionInverseMatrix = m4.inverse(viewDirectionProjectionMatrix);
+  
 
       //cambio il program per lavorare sulla skybox
       gl.useProgram(skyboxProgramInfo.program);
@@ -824,16 +815,6 @@ async function main() {
       webglUtils.drawBufferInfo(gl, cubeLinesBufferInfo, gl.LINES);
     
     requestAnimationFrame(render);
-  }
-
-  function updateVars(){
-    // gestisco l'animazione delle eliche
-    degreeX = (degreeX > 360 ? 0 : (degreeX + 2 *Math.abs(velocity/maxVelocity)));
-    propellers.uniformMatrix = m4.xRotate(propellers.uniformMatrix, degToRad(degreeX), m4.copy(propellers.uniformMatrix));
-  
-    //gestisco animazione bolla
-    degreeY = (degreeY > 360 ? 0 : (degreeY + 0.25));
-    faceBubble.uniformMatrix = m4.yRotate(faceBubble.uniformMatrix, degToRad(degreeY),m4.copy(faceBubble.uniformMatrix));
   }
 
   requestAnimationFrame(render);
