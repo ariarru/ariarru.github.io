@@ -1,4 +1,6 @@
-class SeaObject{
+import { getGeometriesExtents } from "./handleOBJ.js";
+
+export class SeaObject{
     /*-- Variabili dell'oggetto --*/
     obj;
     parts;

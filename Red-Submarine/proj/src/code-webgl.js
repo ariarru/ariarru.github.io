@@ -1,7 +1,12 @@
 "use strict";
 
+import { generateBuffer } from './handleOBJ.js';
+import { isPowerOf2 } from './handleMT.js';
+import { SeaObject } from './SeaObjects.js';
+import { Move } from './handleMovements.js';
 import {degToRad, getRandomNumber, adaptPropellersTransl, adaptPropellersRotateY, lerp, setupSlider, yRotateMatrix,xRotateMatrix} from './myutils.js';
 import { draw } from './drawScene.js';
+
 
 async function main() {
   //Definisco WebGL context
@@ -164,12 +169,12 @@ async function main() {
   var elementsToDraw =[];
 
   /* -- Dichiaro il sottomarino -- */
-  const subBody = await generateBuffer('./res/sub-body.obj');
+  const subBody = await generateBuffer('./res/sub-body.obj', "mainCanva");
   const submarine = new SeaObject(subBody);
   elementsToDraw.push(submarine);  
 
   /* -- Dichiaro le eliche -- */
-  const subPropellers = await generateBuffer('./res/sub-eliche.obj');
+  const subPropellers = await generateBuffer('./res/sub-eliche.obj', "mainCanva");
   const propellers = new SeaObject(subPropellers);
   propellers.animateX=true;
   //variabile cumulativa di gradi di rotazione delle eliche
@@ -177,14 +182,14 @@ async function main() {
   elementsToDraw.push(propellers);  
 
   /*--Dichiaro il fondale--*/
-  const seabed = await generateBuffer('./res/seabed.obj');
+  const seabed = await generateBuffer('./res/seabed.obj', "mainCanva");
   const bed = new SeaObject(seabed);
   bed.translateObj(0, -10.5, 0);
   elementsToDraw.push(bed);
     
 
   /* -- Dichiaro la chiave -- */
-  const singleKey = await generateBuffer('./res/key.obj');
+  const singleKey = await generateBuffer('./res/key.obj', "mainCanva");
   var level = 3;
   const totalKeys = [];
   for(let i=0; i<level; i++){
@@ -201,7 +206,7 @@ async function main() {
 
 
   /* -- Dichiaro gli squali-- */
-  const sharkBuff = await generateBuffer('res/SHARK.obj');
+  const sharkBuff = await generateBuffer('res/SHARK.obj', "mainCanva");
   var sharks =[];
   var sharkNumber = 15;
   for(let nShark=0; nShark<sharkNumber; nShark++){
@@ -219,15 +224,15 @@ async function main() {
 
 
   /*-- Definisco il tesoro --*/
-  const treasure = await generateBuffer('./res/treasure/treasure-closed.obj');
+  const treasure = await generateBuffer('./res/treasure/treasure-closed.obj', "mainCanva");
   const closedTrasure = new SeaObject(treasure);
   closedTrasure.translateObj(getRandomNumber(-100, 100), -7, getRandomNumber(-100, 100));
 
-  const finishTreasure = await generateBuffer('./res/treasure/treasure-open.obj');
+  const finishTreasure = await generateBuffer('./res/treasure/treasure-open.obj', "mainCanva");
   const openTreasure = new SeaObject(finishTreasure);
 
   /*--Dichiaro la bolla dentro il tesoro-- */
-  const bubble = await generateBuffer('./res/bubble.obj');
+  const bubble = await generateBuffer('./res/bubble.obj', "mainCanva");
   const faceBubble = new SeaObject(bubble);
 
 
@@ -307,18 +312,20 @@ async function main() {
       shark.translateObj(-2.5, 0, 0);
       m4.yRotate(shark.uniformMatrix, degToRad(90), shark.uniformMatrix);
       elementsToDraw.push(shark);
-      positionAmbientLight = [-3, 20, 14];
+      positionAmbientLight = [-3, 20, 2];
       target = [0, 0, 0];
       projWidth= 20;
       projHeight = 20;
+      lightIntensity= 120;
       endTitle.innerHTML = 'Game Over';
       endSubtitle.innerHTML = "Oh no, you've hit a shark!";
 
     } else if(reason === "seabed"){
-      positionAmbientLight = [-1, 15, 14];
+      positionAmbientLight = [-1, 15, -2];
       target = [-1, 0, -3];
       projWidth= 20;
       projHeight = 20;
+      lightIntensity= 120;
       endTitle.innerHTML = 'Game Over';
       endSubtitle.innerHTML = "Oh no, you crushed into the seabed, pay more attention!";
 
@@ -382,19 +389,7 @@ async function main() {
   setupSlider("numSharks", {name:"Difficulty:", slide: updateSharks, min: 5, max: 50, value:sharkNumber, step:1});
   setupSlider("light", {name:"Light:", slide: updateLight, min: 0, max: 100, value:lightIntensity, step:1});
 
-  /* */
-  setupSlider("posX", {name:"PosX:", slide: upPx, min: -200, max: 200, value:positionAmbientLight[0], step:1});
-  setupSlider("posY", {name:"PosY:", slide: upPy, min: -200, max: 200, value:positionAmbientLight[1], step:1});
-  setupSlider("posZ", {name:"PosZ:", slide: upPz, min: -200, max: 200, value:positionAmbientLight[2], step:1});
-  setupSlider("directionX", {name:"DirectionX:", slide: upDx, min: -200, max: 200, value:target[0], step:0.1, precision:0.1});
-  setupSlider("directionY", {name:"DirectionY:", slide: upDy, min: -200, max: 200, value:target[1], step:0.1});
-  setupSlider("directionZ", {name:"DirectionZ:", slide: upDz, min: -200, max: 200, value:target[2], step:0.1});
-  setupSlider("b", {name:"Bias:", slide: upBias, min: -0.1, max: 0.01, value:bias, step:0.000001, precision: 6});
-  setupSlider("projW", {name:"ProjWidth:", slide: upProjW, min: 0, max: 500, value:projWidth, step:1, precision: 1});
-  setupSlider("projH", {name:"ProjHeight:", slide: upProjH, min: 0, max: 500, value:projHeight, step:1, precision: 1});
-  setupSlider("near", {name:"Near:", slide: upBias, min: -10, max: 10, value:near, step:0.1, precision: 2});
-  setupSlider("far", {name:"Far:", slide: upBias, min: -10, max: 200, value:far, step:1, precision: 1});
-/* */
+
 
   function updateLevel(event, ui) {
     if(endGame){
@@ -410,8 +405,9 @@ async function main() {
         key.translateObj(x=0 ? x+getRandomNumber(-100, 100) : x, y ,z);
         key.animateY=true;
         elementsToDraw.push(key);
-        console.log(elementsToDraw);
         totalKeys.push(key);
+        console.log(totalKeys.length);
+        console.log(newLevel);
         counter.innerHTML +=" &#128477;";
       }
     } else if(newLevel < level){
@@ -464,44 +460,6 @@ async function main() {
     }
     lightIntensity = ui.value;
   }
-
-  /**/
-  function upDx(event, ui){
-    target[0]= ui.value;
-  }
-  function upDy(event, ui){
-    target[1]= ui.value;
-  }
-  function upDz(event, ui){
-    target[2]= ui.value;
-  }
-  function upPx(event, ui){
-    positionAmbientLight[0]= ui.value;
-  }
-  function upPy(event, ui){
-    positionAmbientLight[1]= ui.value;
-  }
-  function upPz(event, ui){
-    positionAmbientLight[2]= ui.value;
-  }
-
-  function upBias(event, ui){
-    bias = ui.value;
-  }
-  function upProjW(event, ui){
-    projWidth = ui.value;
-  }
-  function upProjH(event, ui){
-    projHeight = ui.value;
-  }
-  function upNear(event, ui){
-    near = ui.value;
-  }
-  function upFar(event, ui){
-    far = ui.value;
-  }
-  /* */
-  
 
   /* -- Variabili per la gestione dei movimenti -- */    
   let then = 0;     //variabile per il calcolo del deltaTime
@@ -570,6 +528,7 @@ async function main() {
       totalKeys.forEach(k => {
         if(m4.distance(submarine.getPos(), k.getPos()) <= 2.5){
 
+          console.log('sono qui')
           var i = totalKeys.indexOf(k);
           totalKeys.splice(i, 1);
           i = elementsToDraw.indexOf(k);
@@ -724,7 +683,7 @@ async function main() {
 
 
     // ----- Skybox ----------
-    //Check the value
+    //Controllo il valore
     if(showSkybox){
       //quadBufferInfo contiene le informazioni del cubo che contiene la skybox
       const quadBufferInfo =  {
@@ -760,59 +719,6 @@ async function main() {
       webglUtils.drawBufferInfo(gl, bufferSkybox);
       
     }
-     // ------ Draw the frustum ------
-     const cubeLinesBufferInfo = webglUtils.createBufferInfoFromArrays(gl, {
-      position: [
-        -1, -1, -1,
-         1, -1, -1,
-        -1,  1, -1,
-         1,  1, -1,
-        -1, -1,  1,
-         1, -1,  1,
-        -1,  1,  1,
-         1,  1,  1,
-      ],
-      indices: [
-        0, 1,
-        1, 3,
-        3, 2,
-        2, 0,
-  
-        4, 5,
-        5, 7,
-        7, 6,
-        6, 4,
-  
-        0, 4,
-        1, 5,
-        3, 7,
-        2, 6,
-      ],
-    });
-    
-      const viewMatrix = m4.inverse(camera);
-
-      gl.useProgram(colorProgramInfo.program);
-
-      // Setup all the needed attributes.
-      webglUtils.setBuffersAndAttributes(gl, colorProgramInfo, cubeLinesBufferInfo);
-
-      // scale the cube in Z so it's really long
-      // to represent the texture is being projected to
-      // infinity
-      const mat = m4.multiply(
-          lightWorldMatrix, m4.inverse(lightProjectionMatrix));
-
-      // Set the uniforms we just computed
-      webglUtils.setUniforms(colorProgramInfo, {
-        u_color: [1, 1, 1, 1],
-        u_view: viewMatrix,
-        u_projection: projection,
-        u_world: mat,
-      });
-
-      // calls gl.drawArrays or gl.drawElements
-      webglUtils.drawBufferInfo(gl, cubeLinesBufferInfo, gl.LINES);
     
     requestAnimationFrame(render);
   }
@@ -823,4 +729,3 @@ async function main() {
 
 
 main();
-

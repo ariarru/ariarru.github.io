@@ -1,3 +1,5 @@
+import { parseMapArgs } from "./handleOBJ.js";
+
 function parseMTL(text) {
   const materials = {};
   let material;
@@ -165,3 +167,4 @@ async function importMT(url, obj){
     return materials;
 }
 
+export {parseMTL, isPowerOf2, create1PixelTexture, createTexture, makeIndexIterator, makeUnindexedIterator, subtractVector2, generateTangents,importMT}

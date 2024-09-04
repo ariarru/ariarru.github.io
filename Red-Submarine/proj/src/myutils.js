@@ -33,6 +33,49 @@ function adaptPropellersRotateY(src, dst){
   return dst;
 }
 
+/*Funzione per la gestione delle rotazioni applicate rispettando
+* gli assi globali, invece che gli assi dell'oggetto.
+* In questo modo il sottomarino ruota a destra e sinistra mantendo un'allineamento costante.*/
+function yRotateMatrix(m, angleInRadians, dst) {
+  dst = dst || new MatType(16);
+
+  var c = Math.cos(angleInRadians);
+  var s = Math.sin(angleInRadians);
+
+  var matrixY = [c, 0, s, 0,
+                0, 1, 0, 0, 
+                -s, 0, c, 0,
+                m[12], m[13], m[14], 1];
+  
+  //necesario per evitare che la rotazione sia rispetto al centro degli assi
+  m[12]=0;
+  m[13]=0;
+  m[14]=0;
+  dst = m4.multiply(matrixY, m);
+
+  return dst;
+}
+
+function xRotateMatrix(m, angleInRadians, dst) {
+  dst = dst || new MatType(16);
+
+  var c = Math.cos(angleInRadians);
+  var s = Math.sin(angleInRadians);
+
+  var matrixY = [1, 0, 0, 0,
+                0, c, -s, 0, 
+                0, s, c, 0,
+                m[12], m[13], m[14], 1];
+  
+  //necesario per evitare che la rotazione sia rispetto al centro degli assi
+  m[12]=0;
+  m[13]=0;
+  m[14]=0;
+  dst = m4.multiply(matrixY, m);
+
+  return dst;
+}
+
 //linear interpolation
 // a - valore inizio / b-valore fine / t - interpolation factor
 function lerp(a, b, t) {
@@ -104,60 +147,7 @@ function createSlider(parent, options) {
   };
 }
 
-/*
-function makeSlider(options) {
-  const div = document.createElement("div");
-  return createSlider(div, options);
-}
-
-var widgetId = 0;
-function getWidgetId() {
-  return "__widget_" + widgetId++;
-}
-*/
 
 
-/*Funzione per la gestione delle rotazioni applicate rispettando
-* gli assi globali, invece che gli assi dell'oggetto.
-* In questo modo il sottomarino ruota a destra e sinistra mantendo un'allineamento costante.*/
-function yRotateMatrix(m, angleInRadians, dst) {
-  dst = dst || new MatType(16);
-
-  var c = Math.cos(angleInRadians);
-  var s = Math.sin(angleInRadians);
-
-  var matrixY = [c, 0, s, 0,
-                0, 1, 0, 0, 
-                -s, 0, c, 0,
-                m[12], m[13], m[14], 1];
-  
-  //necesario per evitare che la rotazione sia rispetto al centro degli assi
-  m[12]=0;
-  m[13]=0;
-  m[14]=0;
-  dst = m4.multiply(matrixY, m);
-
-  return dst;
-}
-
-function xRotateMatrix(m, angleInRadians, dst) {
-  dst = dst || new MatType(16);
-
-  var c = Math.cos(angleInRadians);
-  var s = Math.sin(angleInRadians);
-
-  var matrixY = [1, 0, 0, 0,
-                0, c, -s, 0, 
-                0, s, c, 0,
-                m[12], m[13], m[14], 1];
-  
-  //necesario per evitare che la rotazione sia rispetto al centro degli assi
-  m[12]=0;
-  m[13]=0;
-  m[14]=0;
-  dst = m4.multiply(matrixY, m);
-
-  return dst;
-}
 
 export {degToRad, getRandomNumber, adaptPropellersTransl, adaptPropellersRotateY, lerp, setupSlider, yRotateMatrix, xRotateMatrix};

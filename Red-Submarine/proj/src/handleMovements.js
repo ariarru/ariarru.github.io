@@ -1,4 +1,4 @@
-class Move{
+export class Move{
     /* -- Gestione della navigazione -- */
     rotateLeft;           //tasto A 
     rotateRight;          //tasto D

@@ -26,7 +26,7 @@ export function draw(
         u_projection: projectionMatrix,
         u_bias: otherElements.bias,
         u_textureMatrix: textureMatrix,
-        u_shininess: 400,
+        u_shininess: 20,
         u_projectedTexture: otherElements.depthTexture,
         u_lightDirection: lightWorldMatrix.slice(8, 11).map(v => -v),
         u_lightWorldPosition: otherElements.lightPosition,
@@ -40,6 +40,8 @@ export function draw(
     
     var lastUsedProgramInfo = null;
     var lastUsedBufferInfo = null;
+
+    
 
     elementsToDraw.forEach(function(object) {
         var objBufferInfo = object.bufferInfo;

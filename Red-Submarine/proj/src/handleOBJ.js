@@ -1,7 +1,10 @@
+import { importMT, create1PixelTexture, generateTangents, createTexture } from "./handleMT.js";
+
+
 //Generazione dei buffer da obj
-async function generateBuffer(url){
+async function generateBuffer(url, id){
   // Get A WebGL context
-  const canvas = document.getElementById("mainCanva");
+  const canvas = document.getElementById(id);
   const gl = canvas.getContext("webgl");
   if (!gl) {
     return;
@@ -308,3 +311,5 @@ function getGeometriesExtents(geometries) {
   });
 }
 
+
+export {generateBuffer, parseOBJ, parseMapArgs, importOBJ, getExtents, getGeometriesExtents}

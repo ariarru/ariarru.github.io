@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Under the Sea - Documentation</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="./style-doc.css">
+        <script>
+            function menuOpen(topic){
+                var content = topic.nextElementSibling;
+                content.classList.toggle('open');
+             
+                if(topic.style.backgroundColor != 'rgb(7, 112, 176)'){
+                   topic.style.backgroundColor = '#0770B0';
+                   topic.style.color='white';
+                } else {
+                   topic.style.backgroundColor = 'transparent';
+                   topic.style.color='black';
+                }
+              }
+        </script>
+    </head>
+    <body>
+        <header>
+            <a href="../proj/index.html" style="position: absolute; left: 1.5rem;">
+               <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 16 16"><path fill="#F3F0E2" fill-rule="evenodd" d="m2.87 7.75l1.97 1.97a.75.75 0 1 1-1.06 1.06L.53 7.53L0 7l.53-.53l3.25-3.25a.75.75 0 0 1 1.06 1.06L2.87 6.25h9.88a3.25 3.25 0 0 1 0 6.5h-2a.75.75 0 0 1 0-1.5h2a1.75 1.75 0 1 0 0-3.5z" clip-rule="evenodd"/></svg>
+            </a>
+            <h1>Under the Sea</h1>
+         </header>
+         
+         <main class="main-doc">
+            
+            <ul>
+               <li>
+                  <div class="abs">
+                     <p>Progetto implementato da Arianna Arruzzoli - 0001145336</p>
+                 </div>
+               </li>
+               <li >
+                  <p class="bigger">Descrizione del progetto</p>
+                  <hr>
+               </li>
+               
+               <li>
+                <button class="topic" onclick="menuOpen(this)">
+                    <p>Introduzione</p>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="3em" viewBox="0 0 24 24">
+                        <path fill="black" 
+                       d="M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z"/>
+                    </svg>
+                 </button>
+                 <div class="content">
+                    <p>Il progetto "Red Submarine - Under the Sea" qui presentato è stato sviluppato per l'esame di Computer Graphics (Anno Accademico 2023/2024).</p>
+                    <p>Il progetto prevede lo sviluppo di un'applicazione interattiva implementata utilizzando la grafica 3D, tramite la libreria grafica WebGL.</p>
+                    <p>In particolare in questo progetto si è scelto di sviluppare un semplice minigioco, all'interno del quale l'utente deve controllare il 
+                     sottomarino rosso per muoversi nel fondale oceanico e recuperare tesori.</p>
+                 </div>
+               </li>
+               <li>
+                  <p class="bigger">Under the Sea</p>
+                  <hr>
+               </li>
+               <li>
+                  <button class="topic" onclick="menuOpen(this)">
+                     <p>Regole del Gioco</p>
+                     <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="3em" viewBox="0 0 24 24"><path fill="black" 
+                        d="M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z"/></svg>
+                  </button>
+               <div class="content">
+                  <p>L'obbiettivo del gioco è di esplorare i fondali oceanici alla ricerca delle chiavi perdute, indispensabili per aprire un antico forziere del tesoro nascosto. </p>
+                  <p>L'utente dovrà quindi governare il sottomarino utilizzando la tastiera o i pulsanti messi a disposizione, cercando di districarsi tra i vari ostacoli che si presenteranno. 
+                     In particolare in questa prima versione si è scelto di utilizzare come ostacoli mobili degli squali, che se entrano a contatto con il sottomarino, causano la fine del gioco.</p>
+                  <p>Una volta raccolte tutte le chiavi, comparirà sul fondale un forziere, il quale può essere aperto esclusivamente quando il sottomarino si trova di fronte al forziere, cliccando sul tesoro.</p>
+                  <p>L'interfaccia di gioco presenta inoltre, degli slider che possono essere utilizzati dall'utente per selezionare: 
+                     <ul style="list-style-type:none;">
+                        <li>- il numero di chiavi necessarie per la comparsa del tesoro;</li>
+                        <li>- il livello di difficoltà dell'impresa, ovvero il numero di squali presenti;</li>
+                        <li>- infine è possibile regolare l'intensità della luce, per individuare al meglio le chiavi oppure aumentando la difficoltà di gioco.</li>
+                     </ul> 
+                  </p>
+                  </div>
+               </li>
+               <li>
+                  <button class="topic" onclick="menuOpen(this)">
+                     <p>Interfaccia</p>
+                     <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="3em" viewBox="0 0 24 24"><path fill="black" 
+                        d="M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z"/></svg>
+                  </button>
+                  
+               <div class="content">
+                  <p> La schermata principale del gioco è suddivisa in tre parti prinicipali:
+                     <ul>
+                        <li>A sinitra è possibile trovare una colonna di introduzione al contesto che illustra i comandi di gioco;</li>
+                        <li>In alto a destra è possibile trovare il canvas utilizzato per l'implementazione della grafica 3D;</li>
+                        <li>In basso a destra è invece presente la console di gioco che contiene al suo interno degli slider per regolare e controllare le variabili di gioco, 
+                           una legenda per ricordare all'utente quante chiavi del tesoro devono ancora essere raccolte ed infine la pulsantiera per muovere il sottomarino nel caso 
+                           si scegliesse di non voler utilizzare la tastiera.</li>
+                     </ul>
+                  </p>
+                  <img src="./interfaccia.png" alt="Schermata con riquadri" width="500" height="auto" style="margin:1rem; margin-left: 15%; "/>
+                  <p>La sezione di destra tenta di emulare una console di videogioco simile al GameBoy. Mantenendo i pulsanti per lo spostamento a destra e i regolatori a sinistra.</p>
+                  
+               </div>
+               </li>
+              
+               <li>
+                  <button class="topic" onclick="menuOpen(this)">
+                     <p>Comandi di gioco</p>
+                     <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="3em" viewBox="0 0 24 24"><path fill="black" 
+                        d="M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z"/></svg>
+                     </button>
+               <div class="content">
+                  <p>Per l'implementazione dei comandi di gioco, si è scelto di utilizzare i comandi più comunemente diffusi all'interno dei videogiochi: i tasti WASD. </p>
+                  <p>Oltre ai soliti movimenti di avanzamento e retrocessione sono state aggiunte le funzionalità di immersione (dive) ed emersione (emerge) per permettere una rappresentazione più realistica dei movimenti di un sottomarino.</p>
+                  <ul>
+                     <li> W - avanzare </li>
+                     <li> Q - immergersi, quindi avanzare in direzione di y negativa </li>
+                     <li> E - emergere, quindi avanzare in direzione di y positiva </li>
+                     <li> A - ruotare verso sinistra </li>
+                     <li> D - ruotare verso destra </li>
+                     <li> S - retrocedere </li>
+                 </ul>
+                  <p>Per permettere anche a coloro che preferiscano l'uso del mouse, oppure che si connettono tramite dispositivo mobile, l'interfaccia mette a disposizione dei pulsanti che permettono di muovere il sottomarino senza la necessità di una tastiera.</p>
+               </div>
+               </li>
+               <li>
+                  <p class="bigger">Struttura del progetto</p>
+                  <hr>
+               </li>
+               <li>
+                  <button class="topic" onclick="menuOpen(this)">
+                     <p>File principali</p>
+                     <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="3em" viewBox="0 0 24 24"><path fill="black" 
+                        d="M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z"/></svg>
+                     </button>
+               <div class="content">
+                  <p>Il file <a class="code">index.html</a>  rappresenta l'unico punto di accesso al videogioco. La pagina comprende il canvas all'interno del quale viene reindirizzata la grafica, le istruzioni per il gioco e i controller per utilizzarlo.</p>
+                  <p>All'interno della pagina sono definiti i Vertex Shader e i Fragment Shader utilizzati durante il rendering. Inoltre, sono richiamate le due librerie utilizzare, ovvero <a class="code">webgl-utils.js</a> e <a class="code">m4.js</a>, assieme allo script principale, ovvero il file <a class="code">code-webgl.js</a> .</p>
+                  <p>Il file <a class="code">code-webgl.js</a>, presente all'interno della cartella <a class="code">src</a>, contiene la funzione main() e la funzione render(), utilizzate per il disegno all'interno del canvas.</p>
+
+               </div>
+               </li>
+               <li>
+                  <button class="topic" onclick="menuOpen(this)">
+                     <p>Cartella src</p>
+                     <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="3em" viewBox="0 0 24 24"><path fill="black" 
+                        d="M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z"/></svg>
+                     </button>
+               <div class="content">
+                  <p>La cartella <a class="code">src</a> contiene al suo interno tutti gli script javascript necessari per il funzionamento dell'applicazione.</p>
+                  <p>Come introdotto precedentemente il file che unisce la gestione degli elementi grafici e la logica con la quali questi sono gestiti è il file  <a class="code">code-webgl.js</a></p>
+                  <p>Per rendere più modulare il codice, sono stati generati degli script ausiliari al fine di delegare i compiti all'interno delle funzioni e rendere il codice più organizzato.</p>
+                  <ul class="fileElenco">
+                     <li>Il file <a class="code">handleOBJ.js</a> contiene al suo interno tutte le funzioni necessarie per la lettura dei file .obj;</li>
+                     <li>Il file <a class="code">handleMT.js</a> contiene al suo interno tutte le funzioni necessarie per la lettura ed interpretazione dei file .mtl. 
+                        Questo file viene richiamato da <a class="code">handleOBJ.js</a> per restituire all'interno del main un oggetto comprendente tutte le informazioni necessarie per la resa delle mesh;</li>
+                     <li>Il file <a class="code">SeaObjects.js</a> definisce al suo interno una classe di oggetti le quali proprietà rendono più semplice la manipolazione delle mesh e delle loro matrici;</li>
+                     <li>Il file <a class="code">handleMovements.js</a> definisce al suo interno una classe di oggetti le quali proprietà sono utilizzate esclusivamente per la gestione dei movimenti del sottomarino;</li>
+                     <li>Il file <a class="code">drawScene.js</a> definisce al suo interno la function draw(), la quale si occupa di impostare le uniformi globali e specifiche per ogni oggetto, gestire le animazioni, e eseguire il rendering degli elementi grafici passati come input. 
+                        Viene richiamata all'interno della funzione di rendering due volte, la prima per memorizzare la scena dal punto di vista della luce, successivamente viene utilizzata per disegnare la scena dal punto di vista dell'osservatore;</li>
+                     <li>Il file <a class="code">myutils.js</a> contiene al suo interno svariate funzioni ausiliarie, tra cui le funzioni per la gestione delle rotazioni  stabilizzate del sottomarino e il rispettivo adattamento delle eliche.</li>
+                  </ul>
+
+               </div>
+               </li>
+               <li>
+                  <button class="topic" onclick="menuOpen(this)">
+                     <p>Cartella res</p>
+                     <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="3em" viewBox="0 0 24 24"><path fill="black" 
+                        d="M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z"/></svg>
+                     </button>
+               <div class="content">
+                  <p>La cartella <a class="code">res</a> contiene al suo interno tutti i file inerenti alle mesh renderizzate.</p>
+                  <p>Sono presenti tutti i file .obj e .mtl dei singoli oggetti. Questi file sono stati tutti creati tramite blender, utilizzando delle texture scaricate dal sito <a href="https://polyhaven.com" style="text-decoration: underline !important;">Poly Haven</a>.</p>
+                  <p>L'unica mesh scaricata dal sito <a href="https://free3d.com/" style="text-decoration: underline !important;">Free3D</a> è la mesh dello squalo, visualizzabile  <a href="https://free3d.com/3d-model/shark-74434.html" style="text-decoration: underline !important;">qui</a>.</p>
+                  <p>Per gestire al meglio le animazioni del sottomarino, il corpo del sottomarino e le eliche sono state definite come due mesh separate che si muovono l'una in funzione dell'altra.</p>
+                  <p>Le mesh della chiave del tesoro e dello squalo vengono lette una singola volta e poi moltiplicate a richiesta.</p>
+                  <p>La cartella <a class="code">res</a> contiene al suo interno:</p>
+                  <ul>
+                     <li>La cartella <a class="code">skybox</a>, la quale contiene al suo interno le singole facce della skybox;</li>
+                     <li>La cartella <a class="code">texture</a>, la quale contiene al suo interno le texture applicate al fondale marino;</li>
+                     <li>La cartella <a class="code">trasure</a>, la quale contiene al suo interno i file relativi allo scrigno aperto e allo scrigno chiuso;</li>
+                  </ul>
+
+               </div>
+               </li>
+               <li>
+                  <p class="bigger">Funzionalità WebGL utilizzate</p>
+                  <hr>
+                  <p style="font-family: sans-serif; font-size: 10pt; color: #666565;">Le funzionalità implementate sono state sviluppate seguendo le guide di <a href="https://webglfundamentals.org" style="text-decoration: underline !important;">WebGL Fundamentals</a></p>
+               </li>
+               <li>
+                     <button class="topic" onclick="menuOpen(this)">
+                        <p>Normal Map</p>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="3em" viewBox="0 0 24 24"><path fill="black" 
+                           d="M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z"/></svg>
+                        </button>
+               <div class="content">
+                  <p>Il normal mapping è una tecnica utilizzata per aggiungere dettagli superficiali (come rugosità e imperfezioni) senza aumentare il numero di poligoni. 
+                     Il frammento legge i valori dalla normal map, una texture che contiene vettori normali perturbati in spazio tangente. 
+                     Questi vettori sono trasformati nello spazio del mondo mediante la matrice TBN. Il risultato è una normale dettagliata che varia in base alla texture, 
+                     simulando dettagli complessi sulla superficie del modello.</p>
+                  </div>
+               </li>
+               <li>
+                     <button class="topic" onclick="menuOpen(this)">
+                        <p>Illuminazione di Phong</p>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="3em" viewBox="0 0 24 24"><path fill="black" 
+                           d="M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z"/></svg>
+                        </button>
+               <div class="content">
+                  <p>Per l'illuminazione della scena, viene utilizzato il modello di Phong, il quale è composto da varie componenti:</p>
+                  <p>Emessive e ambient light sono parametri presi dal materiale, che mostrano come il materiale reagisce rispetto all'ambienete in cui è insierito.</p>
+                  <p>Illuminazione Diffusa: Viene calcolata come il prodotto scalare tra la normale della superficie e la direzione della luce. Questo prodotto scalare rappresenta l'intensità della luce che colpisce direttamente la superficie, influenzando la luminosità del frammento.</p>
+                  <p>Illuminazione Speculare (Specular Lighting): È calcolata usando il vettore "mezzo" (half-vector), che è la direzione a metà tra la direzione della luce e quella della vista. L'intensità della componente speculare dipende dall'angolo di riflessione rispetto all'osservatore ed è controllata dal parametro di lucentezza (u_shininess), che determina la concentrazione del riflesso. Il risultato è una brillantezza simile a quella del metallo o di superfici lucide.</p>
+               </div>
+               </li>
+               <li>
+                  <button class="topic" onclick="menuOpen(this)">
+                     <p>Shadow Mapping</p>
+                     <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="3em" viewBox="0 0 24 24"><path fill="black" 
+                        d="M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z"/></svg>
+                     </button>
+               <div class="content">
+                  <p>Per ottenere la resa delle ombre proiettate dagli oggetti su una superficie, si è scelto di utilizzare l'algoritmo Shadow Buffer.</p>
+                  <p>L'algoritmo prevede la memorizzazione della profondità degli oggetti rispetto il punto di vista della luce. 
+                     Successivamente, viene effettuato il rendering dal punto di vista dell'osservatore, ovvero della camera.</p>
+                     <p>Al momento del rendering si va a verificare se il punto considerato sia presente o meno all'interno dello Z-Buffer della luce, nel caso in cui questo non sia presente significherà che il punto non è visibile dal punto di vista della luce e risulta quindi essere in ombra.</p>
+               </div>
+               </li>
+            </li>
+            <li>  
+               <button class="topic" onclick="menuOpen(this)">
+                  <p>Effetto Nebbia</p>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="3em" viewBox="0 0 24 24"><path fill="black" 
+                     d="M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z"/></svg>
+                  </button>
+            <div class="content">
+               <p>L'effetto nebbia prevede l'aggiunta di un colore che incrementa di opacità rispetto alla distanza. Poichè il fondale è finito come oggetto, l'effetto nebbia permette di contenere le possibili mosse dell'utente riducendo la visibilità man a mano che ci si avvicina ai confini del fondale.</p>
+               <p>Nelle ultime righe del Fragment Shader viene aggiunto questo color Indigo, simile al colore della Skybox utilizzata, per creare l'illusione di un fondale infinito.</p>
+            </div>
+            </li>
+            
+   
+            </ul>
+         </main>
+    </body>
+</html>
