@@ -150,7 +150,7 @@ article > section:first-of-type{
 
 .controlPanel{
     width: fit-content;
-    grid-row: 2;
+   margin:2rem;
 
 }
 

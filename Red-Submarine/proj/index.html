@@ -8,6 +8,7 @@
     <body>
         <h1>Under the sea</h1>
         <main>
+            <div class="vertical">
             <div class="comContainer vertical">
                 <section>
                     <p class="first-title">Welcome! In this beautiful adventure to explore the depths of the sea.</p>
@@ -39,6 +40,19 @@
                     </section>
                 </article>
             </div>
+            <div class="controlPanel">
+                <div id="uiContainer">
+                    <div id="ui">
+                        
+                        <div id="numKeys"></div>
+                        <div id="numSharks"></div>
+                        <div id="light"></div>
+                        <div id="shadow"></div>
+                        <div id="ghost"></div>
+                    </div>
+                  </div>
+            </div>
+        </div>
             <section class="gameBoy">
                 <div id="endTitle">
                     <p id="endGame"></p>
@@ -46,18 +60,7 @@
                 </div>
                 <canvas id="mainCanva"></canvas>
                 <section class="gameOptions">
-                    <div class="controlPanel">
-                        <div id="uiContainer">
-                            <div id="ui">
-                                
-                                <div id="numKeys"></div>
-                                <div id="numSharks"></div>
-                                <div id="light"></div>
-                                <div id="shadow"></div>
-                                <div id="ghost"></div>
-                            </div>
-                          </div>
-                    </div>
+                    
                     
                     <div id="kLefts" class="center horizontal">
                         <nobr>Keys left to find:</nobr> <p id="counter"></p>
