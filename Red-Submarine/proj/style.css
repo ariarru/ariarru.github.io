@@ -209,7 +209,7 @@ article > section:first-of-type{
     font-size: 16pt;
     margin-top: 0.75rem;
 }
-@media screen and (max-width: 900px){
+@media screen and (max-width: 970px){
     #mainCanva{
         width: 90vw;
         height: 70vh;

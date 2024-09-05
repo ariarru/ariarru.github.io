@@ -49,7 +49,7 @@
                     </svg>
                  </button>
                  <div class="content">
-                    <p>Il progetto "Red Submarine - Under the Sea" qui presentato è stato sviluppato per l'esame di Computer Graphics (Anno Accademico 2023/2024).</p>
+                    <p>Il progetto "Red Submarine - Under the Sea" qui presentato è stato sviluppato per l'esame di Computer Graphics nel corso dell'Anno Accademico 2023/2024.</p>
                     <p>Il progetto prevede lo sviluppo di un'applicazione interattiva implementata utilizzando la grafica 3D, tramite la libreria grafica WebGL.</p>
                     <p>In particolare in questo progetto si è scelto di sviluppare un semplice minigioco, all'interno del quale l'utente deve controllare il 
                      sottomarino rosso per muoversi nel fondale oceanico e recuperare tesori.</p>
@@ -69,7 +69,7 @@
                   <p>L'obbiettivo del gioco è di esplorare i fondali oceanici alla ricerca delle chiavi perdute, indispensabili per aprire un antico forziere del tesoro nascosto. </p>
                   <p>L'utente dovrà quindi governare il sottomarino utilizzando la tastiera o i pulsanti messi a disposizione, cercando di districarsi tra i vari ostacoli che si presenteranno. 
                      In particolare in questa prima versione si è scelto di utilizzare come ostacoli mobili degli squali, che se entrano a contatto con il sottomarino, causano la fine del gioco.</p>
-                  <p>Una volta raccolte tutte le chiavi, comparirà sul fondale un forziere, il quale può essere aperto esclusivamente quando il sottomarino si trova di fronte al forziere, cliccando sul tesoro.</p>
+                  <p>Una volta raccolte tutte le chiavi, comparirà sul fondale un forziere, il quale può essere aperto esclusivamente quando il sottomarino si trova di fronte ad esso, cliccando sul tesoro.</p>
                   <p>L'interfaccia di gioco presenta inoltre, degli slider che possono essere utilizzati dall'utente per selezionare: 
                      <ul style="list-style-type:none;">
                         <li>- il numero di chiavi necessarie per la comparsa del tesoro;</li>
@@ -128,6 +128,24 @@
                </li>
                <li>
                   <button class="topic" onclick="menuOpen(this)">
+                     <p>Folder tree</p>
+                     <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="3em" viewBox="0 0 24 24"><path fill="black" 
+                        d="M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z"/></svg>
+                     </button>
+               <div class="content">
+                  <div class="divide">
+                     <img src="./tree.png" alt="Folder tree" width="250" height="auto"/>
+
+                     <div>
+                        <p>Il codice è diviso in due rami principali: il ramo per la gestione della documentazione e il ramo per la gestione del codice.</p>
+                        <p>Il codice a sua volta è organizzato in due ramificazioni (<a class="code">res</a> e <a class="code">src</a>), le quali contengono rispettivamente le risorse grafiche e la logica di disegno e gestione del gioco.</p>   
+                     </div>
+                  </div>
+                  
+               </div>
+               </li>
+               <li>
+                  <button class="topic" onclick="menuOpen(this)">
                      <p>File principali</p>
                      <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="3em" viewBox="0 0 24 24"><path fill="black" 
                         d="M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z"/></svg>
@@ -155,7 +173,7 @@
                         Questo file viene richiamato da <a class="code">handleOBJ.js</a> per restituire all'interno del main un oggetto comprendente tutte le informazioni necessarie per la resa delle mesh;</li>
                      <li>Il file <a class="code">SeaObjects.js</a> definisce al suo interno una classe di oggetti le quali proprietà rendono più semplice la manipolazione delle mesh e delle loro matrici;</li>
                      <li>Il file <a class="code">handleMovements.js</a> definisce al suo interno una classe di oggetti le quali proprietà sono utilizzate esclusivamente per la gestione dei movimenti del sottomarino;</li>
-                     <li>Il file <a class="code">drawScene.js</a> definisce al suo interno la function draw(), la quale si occupa di impostare le uniformi globali e specifiche per ogni oggetto, gestire le animazioni, e eseguire il rendering degli elementi grafici passati come input. 
+                     <li>Il file <a class="code">drawScene.js</a> definisce al suo interno la function draw(), la quale si occupa di impostare le uniforms globali e specifiche per ogni oggetto, gestire le animazioni, e eseguire il rendering degli elementi grafici passati come input. 
                         Viene richiamata all'interno della funzione di rendering due volte, la prima per memorizzare la scena dal punto di vista della luce, successivamente viene utilizzata per disegnare la scena dal punto di vista dell'osservatore;</li>
                      <li>Il file <a class="code">myutils.js</a> contiene al suo interno svariate funzioni ausiliarie, tra cui le funzioni per la gestione delle rotazioni  stabilizzate del sottomarino e il rispettivo adattamento delle eliche.</li>
                   </ul>
@@ -208,10 +226,12 @@
                            d="M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z"/></svg>
                         </button>
                <div class="content">
-                  <p>Per l'illuminazione della scena, viene utilizzato il modello di Phong, il quale è composto da varie componenti:</p>
-                  <p>Emessive e ambient light sono parametri presi dal materiale, che mostrano come il materiale reagisce rispetto all'ambienete in cui è insierito.</p>
-                  <p>Illuminazione Diffusa: Viene calcolata come il prodotto scalare tra la normale della superficie e la direzione della luce. Questo prodotto scalare rappresenta l'intensità della luce che colpisce direttamente la superficie, influenzando la luminosità del frammento.</p>
-                  <p>Illuminazione Speculare (Specular Lighting): È calcolata usando il vettore "mezzo" (half-vector), che è la direzione a metà tra la direzione della luce e quella della vista. L'intensità della componente speculare dipende dall'angolo di riflessione rispetto all'osservatore ed è controllata dal parametro di lucentezza (u_shininess), che determina la concentrazione del riflesso. Il risultato è una brillantezza simile a quella del metallo o di superfici lucide.</p>
+                  <p>Per l'illuminazione della scena, viene utilizzato il modello di illuminazione di Phong, al fine di avere una resa più completa della scena.</p>
+                  <p>Il modello viene implementato mantenendo la il paradigma dei tre componenti: luce ambiente, componente della riflessione diffusa e componente della riflessione speculare.</p>
+
+                  <p>Il fattore ambient light fornisce una base luminosa costante.</p>
+                  <p>La componente di illuminazione diffusa viene calcolata come il prodotto scalare tra la normale della superficie e la direzione della luce. Rappresenta l'intensità della luce che colpisce direttamente la superficie, influenzando la luminosità del frammento. Viene utilizzata per la resa dei materiali opachi.</p>
+                  <p>La componente di illuminazione speculare viene calcolata usando l'half-vector, che è la direzione a metà tra la direzione della luce e quella della vista. L'intensità della componente speculare dipende dall'angolo di riflessione rispetto all'osservatore ed è controllata dal parametro di lucentezza (o esponente di Phong), che determina la concentrazione del riflesso. Il risultato è una brillantezza simile a quella del metallo o di superfici lucide.</p>
                </div>
                </li>
                <li>
