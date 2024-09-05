@@ -62,7 +62,7 @@ export function draw(
     
         //Gestisco le animazioni
         if(animate && object.animateX){
-          object.degreeX = (object.degreeX > 360 ? 0 : (object.degreeX + otherElements.velocity));
+          object.degreeX = (object.degreeX > 360 ? 0 : (object.degreeX + otherElements.velocity * 0.3));
           m = m4.xRotate(m, degToRad(object.degreeX),m4.copy(m));
         }
         if(animate && object.animateY){
