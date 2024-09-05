@@ -40,7 +40,11 @@ body{
     font-size: 1.25rem;
     font-family: sans-serif;
     margin-top:-2.5rem;
-    padding: 2.5rem;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    grid-row: 1;
+    grid-column: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 main{
@@ -146,6 +150,8 @@ article > section:first-of-type{
 
 .controlPanel{
     width: fit-content;
+    grid-row: 2;
+
 }
 
 
@@ -204,11 +210,24 @@ article > section:first-of-type{
     margin-bottom: 0px;
     font-weight: bold;
 }
+.gameOptions{
+    gap:2rem;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 0.5fr 0.5fr 1fr;
+}
+#btnContainer{
+    grid-row: 1;
+    grid-column: 2;
+}
 
 #endSubtitle{
     font-size: 16pt;
     margin-top: 0.75rem;
 }
+
+
+
+
 @media (max-width:970px){
     #mainCanva{
         width: 90vw;
@@ -230,45 +249,12 @@ article > section:first-of-type{
     }
     #kLefts{
         padding: 0.5rem 1rem 0.5rem 1rem;
-        grid-row: 1;
-        grid-column: 1;
-        display: flex;
-        flex-direction: column;
     }
 
     main{
         display:flex;
         flex-direction: column;
     }
-    .gameOptions{
-        gap:2rem;
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: 0.5fr 0.5fr 1fr;
-    }
-    #btnContainer{
-        grid-row: 1;
-        grid-column: 2;
-    }
-
+    
 }
-
-@media (max-width: 600px){
-    #btnContainer{
-        grid-row: 1;
-        grid-column: 2;
-    }
-    #kLefts{
-        padding: 1rem;
-        z-index: 3;
-        grid-row: 1;
-        grid-column: 1;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .controlPanel{
-        grid-row: 2;
-    }
-}
-
 

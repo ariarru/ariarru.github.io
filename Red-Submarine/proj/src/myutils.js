@@ -94,7 +94,7 @@ function setupSlider(selector, options) {
   if (!options.name) {
     options.name = selector.substring(1);
   }
-  return createSlider(parent, options); // eslint-disable-line
+  return createSlider(parent, options);
 }
 
 function createSlider(parent, options) {
@@ -147,7 +147,53 @@ function createSlider(parent, options) {
   };
 }
 
+//Creazione della checkbox
+function setupCheckBox(selector, options) {
+  var parent = document.getElementById(selector);
+  console.log(parent);
+  if (!parent) {
+    // like jquery don't fail on a bad selector
+    return;
+  }
+  if (!options.name) {
+    options.name = selector.substring(1);
+  }
+  return makeCheckbox(parent, selector, options);
+}
+
+function makeCheckbox(parent, id,  options) {
+  const div = document.createElement("div");
+  div.className = "widget-outer";
+  const label = document.createElement("label");
+  label.setAttribute('for', id);
+  label.textContent = options.name;
+  label.className = "gman-checkbox-label";
+  const input = document.createElement("input");
+  input.type = "checkbox";
+  input.checked = options.value;
+  input.id = id;
+  input.className = "gman-widget-checkbox";
+  div.appendChild(label);
+  div.appendChild(input);
+  input.addEventListener('change', function(e) {
+     options.change(e, {
+       value: e.target.checked,
+     });
+  });
+
+  parent.appendChild(div);
+
+  return {
+    elem: parent,
+    updateValue: function(v) {
+      input.checked = !!v;
+    },
+  };
+}
 
 
 
-export {degToRad, getRandomNumber, adaptPropellersTransl, adaptPropellersRotateY, lerp, setupSlider, yRotateMatrix, xRotateMatrix};
+
+
+
+export {degToRad, getRandomNumber, adaptPropellersTransl, adaptPropellersRotateY, lerp, setupSlider,setupCheckBox, yRotateMatrix, xRotateMatrix};

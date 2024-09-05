@@ -4,7 +4,7 @@ import { generateBuffer } from './handleOBJ.js';
 import { isPowerOf2 } from './handleMT.js';
 import { SeaObject } from './SeaObjects.js';
 import { Move } from './handleMovements.js';
-import {degToRad, getRandomNumber, adaptPropellersTransl, adaptPropellersRotateY, lerp, setupSlider, yRotateMatrix,xRotateMatrix} from './myutils.js';
+import {degToRad, getRandomNumber, adaptPropellersTransl, adaptPropellersRotateY, lerp, setupSlider, yRotateMatrix,xRotateMatrix, setupCheckBox} from './myutils.js';
 import { draw } from './drawScene.js';
 
 
@@ -378,11 +378,16 @@ async function main() {
 
   /*-- Variabili modificabili dall'utente --*/
   let lightIntensity = 0.45;
+  let ableShadows = true;
+  let ableTransparency = true;
 
   //definisco gli slider
   setupSlider("numKeys", {name:"Level:", slide: updateLevel, min: 2, max: 15, value:level, step:1});
   setupSlider("numSharks", {name:"Difficulty:", slide: updateSharks, min: 5, max: 50, value:sharkNumber, step:1});
   setupSlider("light", {name:"Light:", slide: updateLight, min: 0.0, max: 1.1, value:lightIntensity, step:0.01, precision: 2});
+  setupCheckBox("shadow", {name:"Shadows:", value: ableShadows, change:updateShadows});
+  setupCheckBox("ghost", {name:"Transparency:", value: ableTransparency, change:updateGhost});
+
 
 
   //aggiornamento numero delle chiavi da trovate
@@ -456,6 +461,15 @@ async function main() {
     }
     lightIntensity = ui.value;
   }
+  //aggiornamento visualizzazione ombre
+  function updateShadows(event, ui){
+    ableShadows = !ableShadows;
+  }
+  //aggiornamento visualizzazione trasparenze
+  function updateGhost(event, ui){
+    ableTransparency = !ableTransparency;
+  }
+
 
   /* -- Variabili per la gestione dei movimenti -- */    
   let then = 0;     //variabile per il calcolo del deltaTime
@@ -479,8 +493,12 @@ async function main() {
     gl.enable(gl.DEPTH_TEST);
 
     /*-- Gestione trasparenze --*/
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    if (ableTransparency) {
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    } else {
+        gl.disable(gl.BLEND);
+    }
 
 
     /*-- Gestione camera --*/
@@ -635,20 +653,31 @@ async function main() {
     const lightWorldMatrix =m4.lookAt(positionAmbientLight, target,  [0, 1, 0],);
     const lightProjectionMatrix = m4.orthographic(-projWidth, projWidth, -projHeight, projHeight, near, far);          
 
+    
     // draw to the depth texture
     gl.bindFramebuffer(gl.FRAMEBUFFER, depthFramebuffer);
     gl.viewport(0, 0, depthTextureSize, depthTextureSize);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+    if(ableShadows){
+        draw(lightProjectionMatrix, lightWorldMatrix, m4.identity, lightWorldMatrix, colorProgramInfo, gl, elementsToDraw, 
+          {
+            bias: bias,
+            depthTexture : depthTexture,
+            lightPosition: positionAmbientLight,
+            lightIntensity: lightIntensity,
+          });
 
-    draw(lightProjectionMatrix, lightWorldMatrix, m4.identity, lightWorldMatrix, colorProgramInfo, gl, elementsToDraw, 
-      {
-        bias: bias,
-        depthTexture : depthTexture,
-        lightPosition: positionAmbientLight,
-        lightIntensity: lightIntensity,
-      });
-  
+    } else{
+      draw(lightProjectionMatrix, lightWorldMatrix, m4.identity, lightWorldMatrix, colorProgramInfo, gl, [], 
+        {
+          bias: bias,
+          depthTexture : depthTexture,
+          lightPosition: positionAmbientLight,
+          lightIntensity: lightIntensity,
+        });
+    }
+    
     // now draw scene to the canvas projecting the depth texture into the scene
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
