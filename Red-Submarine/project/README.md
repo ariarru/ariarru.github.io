@@ -4,4 +4,4 @@ Progetto creato tramite la libreria WebGL comprendendo linguaggi HTML5, CSS, lin
 
 Il progetto prevede lo sviluppo di un minigioco 3D all'interno del quale muovere un sottomarino per la ricerca di un tesoro nascosto.
 
-È possibile giocare anche online su [ariarru.github.io](https://ariarru.github.io/Red-Submarine/proj/index.html).
+È possibile giocare anche online su [ariarru.github.io](https://ariarru.github.io/Red-Submarine/project/index.html).
