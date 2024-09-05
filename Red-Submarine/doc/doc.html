@@ -198,6 +198,42 @@
                </div>
                </li>
                <li>
+                  <p class="bigger">Scelte effettuate</p>
+                  <hr>
+               </li>
+               <li>
+                  <button class="topic" onclick="menuOpen(this)">
+                     <p>Mesh</p>
+                     <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="3em" viewBox="0 0 24 24"><path fill="black" 
+                        d="M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z"/></svg>
+                     </button>
+               <div class="content">
+                  <p>Quasi tutte le mesh sono state create su blender, al fine di ottenere dei file .obj e .mtl che fossero leggeri, data la richiesta di ottenere una consegna di al massimo 20MB.</p>
+               </div>
+               </li>
+               <li>
+                  <button class="topic" onclick="menuOpen(this)">
+                     <p>Effetti di rendering avanzato gestibili dall'utente</p>
+                     <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="3em" viewBox="0 0 24 24"><path fill="black" 
+                        d="M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z"/></svg>
+                     </button>
+               <div class="content">
+                  <p>Per pura comodità si è scelto di lasciare all'utente la possibilità di attivare e disattivare le ombre e trasparenze.</p>
+                  <p>Inoltre l'utente può impostare la luminosità della luce a suo piacimento, senza modificare o incidere sulle componenti diffuse o speculari utilizzate all'interno il calcolo del modello di illuminazione.</p>
+               </div>
+               </li>
+               <li>
+                  <button class="topic" onclick="menuOpen(this)">
+                     <p>Gestione animazioni</p>
+                     <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="3em" viewBox="0 0 24 24"><path fill="black" 
+                        d="M16.62 2.99a1.25 1.25 0 0 0-1.77 0L6.54 11.3a.996.996 0 0 0 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z"/></svg>
+                     </button>
+               <div class="content">
+                  <p>Per ottenere delle animazioni omogenee si è deciso di suddividere l'aggiornamento di eventuali traslazionio o rotazioni. </p>
+                  <p>All'interno della funzione draw() sono infatti presenti solo le rotazioni continue, relative alle eliche del sottomarino e alle chiavi fluttuanti. Le altre animazioni sono invece gestite all'interno del render per avere un maggiore controllo sui specifici oggetti.</p>            
+               </div>
+               </li>
+               <li>
                   <p class="bigger">Funzionalità WebGL utilizzate</p>
                   <hr>
                   <p style="font-family: sans-serif; font-size: 10pt; color: #666565;">Le funzionalità implementate sono state sviluppate seguendo le guide di <a href="https://webglfundamentals.org" style="text-decoration: underline !important;">WebGL Fundamentals</a></p>
