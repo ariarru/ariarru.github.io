@@ -233,7 +233,7 @@ section p{
   gap: 2rem;
 }
 
-@media screen and(max-width: 970px){
+@media (max-width: 970px){
   img{
     margin-left:unset;
   }
