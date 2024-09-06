@@ -10,4 +10,5 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 0.800000
 illum 7
-map_Kd ari-bubble.jpg
+map_Kd texture/ari-bubble.jpg
+map_Ns texture/ari-bubble.jpg

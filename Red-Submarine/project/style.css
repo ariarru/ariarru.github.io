@@ -91,6 +91,12 @@ main{
     flex-direction: row;
 }
 
+.prevent-select {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+  }
+
 .btn{
     width: 4rem;
     height: 3.75rem;
@@ -225,7 +231,10 @@ article > section:first-of-type{
     margin-top: 0.75rem;
 }
 
-
+#useMouse{
+    position: relative;
+    float: right;
+}
 
 
 @media (max-width:970px){

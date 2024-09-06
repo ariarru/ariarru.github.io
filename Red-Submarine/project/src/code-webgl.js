@@ -236,10 +236,10 @@ async function main() {
   const faceBubble = new SeaObject(bubble);
 
 
-
   /* -- Gestione della navigazione -- */
   const moves = new Move();
-  //test con tasti
+  var ableMouse = false;
+  //gestione con tasti
   window.addEventListener("keydown", (event)=>{
    moves.pressKey(event.keyCode);
   });
@@ -248,6 +248,45 @@ async function main() {
     moves.releaseKey(event.keyCode);
   });
   
+  /*--Gestione movimento con il mouse--*/
+  canvas.addEventListener("mousemove", function(e){
+    if(!ableMouse){
+      return;
+    }
+    let x = e.offsetX;
+    let y = e.offsetY;
+    let coor = "Coordinates: (" + x + "," + y + ")";
+    document.getElementById("log").innerHTML = coor;
+    var xUnity = canvas.width / 12;
+    var yUnity = canvas.height / 12;
+    moves.disable();
+    moves.foward = true;
+    //rotate left
+    if(x < (4.3 * xUnity)){
+      moves.rotateLeft = true;
+    } else {
+      moves.rotateLeft = false;
+    }
+    //rotate right
+    if( x > (7.3 * xUnity)){
+      moves.rotateRight = true;
+    } else {
+      moves.rotateRight = false;
+    }
+    //emerge
+    if(y < (5.6 * yUnity)){
+      moves.emerge = true;
+    } else{
+      moves.emerge = false;
+    }
+    //dive
+    if(y > (10.5 * yUnity)){
+      moves.dive = true; 
+    } else{
+      moves.dive = false;
+    }
+    
+  });
 
 
   /*-- Gestione bottoni --*/
@@ -296,6 +335,10 @@ async function main() {
   var showSkybox = true;
   var endGame = false;
   function gameOver(reason){
+    if(endGame){
+      return;
+    }
+    moves.disable();
     moves.stopTarget();
     velocity = 0;
     const endTitle = document.getElementById("endGame");
@@ -317,16 +360,10 @@ async function main() {
       shark.translateObj(-2.5, 0, 0);
       m4.yRotate(shark.uniformMatrix, degToRad(90), shark.uniformMatrix);
       elementsToDraw.push(shark);
-      positionAmbientLight = [-3, 20, 2];
-      target = [0, 0, 0];
-      lightIntensity= 100;
       endTitle.innerHTML = 'Game Over';
       endSubtitle.innerHTML = "Oh no, you've hit a shark!";
 
     } else if(reason === "seabed"){
-      positionAmbientLight = [-1, 15, -2];
-      target = [-1, 0, -3];
-      lightIntensity= 100;
       endTitle.innerHTML = 'Game Over';
       endSubtitle.innerHTML = "Oh no, you crushed into the seabed, pay more attention!";
 
@@ -336,10 +373,7 @@ async function main() {
       faceBubble.uniformMatrix = m4.identity();
       faceBubble.translateObj(2, 2, 1);
       elementsToDraw.push(faceBubble);
-      positionAmbientLight = [0, 150, 1];
-      target = [0, 3, 0];
-
-      console.log(openTreasure.getPos());
+     
 
       endTitle.innerHTML = 'Congrats!';
       endSubtitle.innerHTML = "You've found the treasure!";
@@ -353,6 +387,7 @@ async function main() {
   canvas.addEventListener("click", function(event){
     if(treasureFound){
       console.log("Apriti sesamo!");
+      moves.disable();
       //tesoro diventa aperto
       let t = elementsToDraw.pop();
       openTreasure.uniformMatrix = m4.copy(t.uniformMatrix);
@@ -371,7 +406,6 @@ async function main() {
       //inizia counter per arrivare alla shcermata di fine gioco
       treasureTimerCounter= true;
       treasureFound =false;
-      lightIntensity=100;
     }
   });
 
@@ -387,7 +421,7 @@ async function main() {
   setupSlider("light", {name:"Light:", slide: updateLight, min: 0.0, max: 1.1, value:lightIntensity, step:0.01, precision: 2});
   setupCheckBox("shadow", {name:"Shadows:", value: ableShadows, change:updateShadows});
   setupCheckBox("ghost", {name:"Transparency:", value: ableTransparency, change:updateGhost});
-
+  setupCheckBox("useMouse", {name: "Use Mouse:", value: ableMouse, change: updateUseMouse});
 
 
   //aggiornamento numero delle chiavi da trovate
@@ -468,6 +502,15 @@ async function main() {
   //aggiornamento visualizzazione trasparenze
   function updateGhost(event, ui){
     ableTransparency = !ableTransparency;
+  }
+  //aggiornamento uso del mouse
+  function updateUseMouse(event, ui){
+    ableMouse = !ableMouse;
+    if(ableMouse){
+      moves.foward = true;
+    } else{
+      moves.disable();
+    }
   }
 
 
@@ -570,31 +613,34 @@ async function main() {
       });
     
       //controllo rispetto al fondale
-      if(valY <= bed.getY()+2.0 && !treasureFound){ //controllo posizione rispetto al fondale
+      if(valY <= bed.getY()+2.0 && !treasureFound ){ //controllo posizione rispetto al fondale
         gameOver("seabed");
       } else if(velocity != 0 && posFromTreasure < 4.0){ //controllo posizione rispetto al tesoro
         treasureFound=true;
       }
-           
+      if(treasureFound && ableMouse && posFromTreasure <5.0){
+        moves.disable();
+      }
+      
+      let degree = ableMouse ? 0.75 : 1.75;
+    
       if(moves.rotateLeft){
-        elementsToDraw[0].uniformMatrix= yRotateMatrix(elementsToDraw[0].uniformMatrix, degToRad(-2), elementsToDraw[0].uniformMatrix);
+        elementsToDraw[0].uniformMatrix= yRotateMatrix(elementsToDraw[0].uniformMatrix, degToRad(- degree ), elementsToDraw[0].uniformMatrix);
         elementsToDraw[1].uniformMatrix = adaptPropellersRotateY(elementsToDraw[0].uniformMatrix, elementsToDraw[1].uniformMatrix);
-        treasureFound=false;
+        
       }
       if(moves.rotateRight){
-        elementsToDraw[0].uniformMatrix= yRotateMatrix(elementsToDraw[0].uniformMatrix, degToRad(2), elementsToDraw[0].uniformMatrix);
+        elementsToDraw[0].uniformMatrix= yRotateMatrix(elementsToDraw[0].uniformMatrix, degToRad(degree), elementsToDraw[0].uniformMatrix);
         elementsToDraw[1].uniformMatrix = adaptPropellersRotateY(elementsToDraw[0].uniformMatrix, elementsToDraw[1].uniformMatrix);
-        treasureFound=false;
       }
       if(moves.dive){
-        m4.zRotate(elementsToDraw[0].uniformMatrix, degToRad(2), elementsToDraw[0].uniformMatrix);
-        m4.zRotate(elementsToDraw[1].uniformMatrix, degToRad(2), elementsToDraw[1].uniformMatrix);
-        treasureFound=false;
+        m4.zRotate(elementsToDraw[0].uniformMatrix, degToRad(degree), elementsToDraw[0].uniformMatrix);
+        m4.zRotate(elementsToDraw[1].uniformMatrix, degToRad(degree), elementsToDraw[1].uniformMatrix);
+
       }
       if(moves.emerge){
-        m4.zRotate(elementsToDraw[0].uniformMatrix, degToRad(-2), elementsToDraw[0].uniformMatrix);
-        m4.zRotate(elementsToDraw[1].uniformMatrix, degToRad(-2), elementsToDraw[1].uniformMatrix);
-        treasureFound=false;
+        m4.zRotate(elementsToDraw[0].uniformMatrix, degToRad(-degree), elementsToDraw[0].uniformMatrix);
+        m4.zRotate(elementsToDraw[1].uniformMatrix, degToRad(-degree), elementsToDraw[1].uniformMatrix);
       }
 
       //se non ha gestito cose precedentemente allora calcolo la traslazione 

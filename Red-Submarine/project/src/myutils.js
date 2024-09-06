@@ -150,7 +150,6 @@ function createSlider(parent, options) {
 //Creazione della checkbox
 function setupCheckBox(selector, options) {
   var parent = document.getElementById(selector);
-  console.log(parent);
   if (!parent) {
     // like jquery don't fail on a bad selector
     return;

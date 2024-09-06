@@ -89,7 +89,15 @@ export class Move{
       }
   }
 
-  
+  disable(){
+    this.rotateLeft= false;            
+    this.rotateRight = false;         
+    this.foward = false;              
+    this.back = false;                
+    this.dive =false;                 
+    this.emerge= false;               
+    this.target =0;
+  }
   
   
 }
