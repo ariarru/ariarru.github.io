@@ -226,7 +226,7 @@ async function main() {
   /*-- Definisco il tesoro --*/
   const treasure = await generateBuffer('./res/treasure/treasure-closed.obj', "mainCanva");
   const closedTrasure = new SeaObject(treasure);
-  closedTrasure.translateObj(getRandomNumber(-100, 100), -7, getRandomNumber(-100, 100));
+  closedTrasure.translateObj(getRandomNumber(-100, 100), getRandomNumber(-6, 0), getRandomNumber(-100, 100));
 
   const finishTreasure = await generateBuffer('./res/treasure/treasure-open.obj', "mainCanva");
   const openTreasure = new SeaObject(finishTreasure);
@@ -238,7 +238,6 @@ async function main() {
 
   /* -- Gestione della navigazione -- */
   const moves = new Move();
-  var ableMouse = false;
   //gestione con tasti
   window.addEventListener("keydown", (event)=>{
    moves.pressKey(event.keyCode);
@@ -249,39 +248,54 @@ async function main() {
   });
   
   /*--Gestione movimento con il mouse--*/
+  var ableMouse = false;
+  var increase = 1;
   canvas.addEventListener("mousemove", function(e){
     if(!ableMouse){
       return;
     }
     let x = e.offsetX;
     let y = e.offsetY;
-    let coor = "Coordinates: (" + x + "," + y + ")";
-    document.getElementById("log").innerHTML = coor;
     var xUnity = canvas.width / 12;
     var yUnity = canvas.height / 12;
     moves.disable();
     moves.foward = true;
+    //definisco limiti
+    var nearRight= 6 * xUnity;
+    var farRight = 10.5 * xUnity;
+    var nearLeft = 5.5 * xUnity;
+    var farLeft = 1.5 * xUnity;
+    var nearUp = 5.8 * yUnity;
+    var nearDown = 9.3 * yUnity;
+    var farDown = 10.9 * yUnity;
+    //variabile per aumento della rapidità di rotazione in base alla distanza
+    increase = 1;
     //rotate left
-    if(x < (4.3 * xUnity)){
+    if(x < nearLeft && x > farLeft){
       moves.rotateLeft = true;
+      increase = (Math.abs(nearLeft-x))/100;
     } else {
       moves.rotateLeft = false;
     }
     //rotate right
-    if( x > (7.3 * xUnity)){
+    if( x > nearRight && x < farRight){
       moves.rotateRight = true;
+      increase = (Math.abs(nearRight-x))/100;
     } else {
       moves.rotateRight = false;
     }
     //emerge
-    if(y < (5.6 * yUnity)){
+    if(y < nearUp){
       moves.emerge = true;
+      increase = (Math.abs(nearUp-y))/100;
     } else{
       moves.emerge = false;
     }
     //dive
-    if(y > (10.5 * yUnity)){
+    if(y > nearDown && y < farDown){
       moves.dive = true; 
+      increase = (Math.abs(nearDown-y))/100;
+
     } else{
       moves.dive = false;
     }
@@ -388,6 +402,7 @@ async function main() {
     if(treasureFound){
       console.log("Apriti sesamo!");
       moves.disable();
+      moves.stopTarget();
       //tesoro diventa aperto
       let t = elementsToDraw.pop();
       openTreasure.uniformMatrix = m4.copy(t.uniformMatrix);
@@ -615,14 +630,13 @@ async function main() {
       //controllo rispetto al fondale
       if(valY <= bed.getY()+2.0 && !treasureFound ){ //controllo posizione rispetto al fondale
         gameOver("seabed");
-      } else if(velocity != 0 && posFromTreasure < 4.0){ //controllo posizione rispetto al tesoro
+      } else if(velocity != 0 && posFromTreasure < (ableMouse ? 10.0 : 5.0)){ //controllo posizione rispetto al tesoro
         treasureFound=true;
-      }
-      if(treasureFound && ableMouse && posFromTreasure <5.0){
-        moves.disable();
+        moves.stopTarget();
       }
       
-      let degree = ableMouse ? 0.75 : 1.75;
+      
+      let degree = ableMouse ? (0.75 * increase) : 1.75;
     
       if(moves.rotateLeft){
         elementsToDraw[0].uniformMatrix= yRotateMatrix(elementsToDraw[0].uniformMatrix, degToRad(- degree ), elementsToDraw[0].uniformMatrix);

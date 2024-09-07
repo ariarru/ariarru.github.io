@@ -7,7 +7,6 @@
     </head>
     <body>
         <h1>Under the sea</h1>
-        <p id="log"></p>
         <main>
             <div class="vertical">
             <div class="comContainer vertical">
@@ -33,25 +32,13 @@
                                 <li> S - move backward </li>
                             </ul>
                             <img src="./res/keyboard.png">
-        
+                            <p>Otherwise you can always choose to make the submarine follow your mouse.</p>
                         </div>
                     </section>
                     <section>
                         <p><a href="../doc/doc.html" style="text-decoration: underline; color: inherit;">Documentation - IT</a></p>
                     </section>
                 </article>
-            </div>
-            <div class="controlPanel">
-                <div id="uiContainer">
-                    <div id="ui">
-                        
-                        <div id="numKeys"></div>
-                        <div id="numSharks"></div>
-                        <div id="light"></div>
-                        <div id="shadow"></div>
-                        <div id="ghost"></div>
-                    </div>
-                  </div>
             </div>
         </div>
             <section class="gameBoy">
@@ -61,16 +48,23 @@
                 </div>
                 <canvas id="mainCanva"></canvas>
                 <section class="gameOptions">
-                    
-                    
+                        <div class="controlPanel">
+                            <div id="uiContainer">
+                                <div id="ui">
+                                    <div id="useMouse"></div>
+                                    <div id="numKeys"></div>
+                                    <div id="numSharks"></div>
+                                    <div id="light"></div>
+                                    <div id="shadow"></div>
+                                    <div id="ghost"></div>
+                                </div>
+                              </div>
+                        </div>
                     <div id="kLefts" class="center horizontal">
                         <nobr>Keys left to find:</nobr> <p id="counter"></p>
                     </div>
         
-                    <div id="btnContainer"> 
-                        <div>
-                            <div id="useMouse"></div>
-                        </div>                
+                    <div id="btnContainer">                
                         <div class="center horizontal upperBtns">
                             <button id="up" class="btn">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="3.25em" height="3.25em" viewBox="0 0 256 256">
