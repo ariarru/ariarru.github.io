@@ -261,7 +261,6 @@
                 vec3 effectiveDiffuse = diffuse * diffuseMapColor.rgb  * v_color.rgb;
                 float effectiveOpacity = opacity * diffuseMapColor.a * v_color.a;
             
-                
             
                 // Calcolo del colore finale
                 gl_FragColor = vec4(
@@ -271,7 +270,6 @@
                     effectiveSpecular * pow(specularLight, u_shininess) *shadowLight,       //materiali lucidi
                     effectiveOpacity);
 
-               // gl_FragColor= vec4(gl_FragColor.rgb * shadowLight, gl_FragColor.a);
                 
                 //Aggiungo effetto nebbia
                 float fogDistance = length(v_fogDepth);

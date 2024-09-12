@@ -4,7 +4,7 @@ import { generateBuffer } from './handleOBJ.js';
 import { isPowerOf2 } from './handleMT.js';
 import { SeaObject } from './SeaObjects.js';
 import { Move } from './handleMovements.js';
-import {degToRad, getRandomNumber, adaptPropellersTransl, adaptPropellersRotateY, lerp, setupSlider, yRotateMatrix,xRotateMatrix, setupCheckBox} from './myutils.js';
+import {degToRad, getRandomNumber, adaptPropellersTransl, adaptPropellersRotateY, lerp, setupSlider, yRotateMatrix, xRotateMatrix, setupCheckBox} from './myutils.js';
 import { draw } from './drawScene.js';
 
 
@@ -307,22 +307,36 @@ async function main() {
   const btnUp = document.getElementById("up");
   btnUp.addEventListener("mousedown", function(){moves.foward=true;});
   btnUp.addEventListener("mouseup", function(){moves.foward = false;});
+  btnUp.addEventListener("touchstart", function(){moves.foward=true;});
+  btnUp.addEventListener("touchend", function(){moves.foward = false;});
   const btnDown = document.getElementById("down");
   btnDown.addEventListener("mousedown", function(){moves.back=true;});
   btnDown.addEventListener("mouseup", function(){moves.back = false;});
+  btnDown.addEventListener("touchstart", function(){moves.back=true;});
+  btnDown.addEventListener("touchend", function(){moves.back = false;});
   const btnLeft = document.getElementById("left");
   btnLeft.addEventListener("mousedown", function(){moves.rotateLeft=true;});
   btnLeft.addEventListener("mouseup", function(){moves.rotateLeft = false;});
+  btnLeft.addEventListener("touchstart", function(){moves.rotateLeft=true;});
+  btnLeft.addEventListener("touchend", function(){moves.rotateLeft = false;});
   const btnRight = document.getElementById("right");
   btnRight.addEventListener("mousedown", function(){moves.rotateRight=true;});
   btnRight.addEventListener("mouseup", function(){moves.rotateRight = false;});
+  btnRight.addEventListener("touchstart", function(){moves.rotateRight=true;});
+  btnRight.addEventListener("touchend", function(){moves.rotateRight = false;});
   const btnDive = document.getElementById("dive");
   btnDive.addEventListener("mousedown", function(){moves.dive = true; moves.foward = true;});
   btnDive.addEventListener("mouseup", function(){moves.dive = false; moves.foward = false;});
+  btnDive.addEventListener("touchstart", function(){moves.dive = true; moves.foward = true;});
+  btnDive.addEventListener("touchend", function(){moves.dive = false; moves.foward = false;});
   const btnEmerge = document.getElementById("emerge");
   btnEmerge.addEventListener("mousedown", function(){moves.emerge=true; moves.foward=true;});
   btnEmerge.addEventListener("mouseup", function(){moves.emerge = false; moves.foward = false;});
+  btnEmerge.addEventListener("touchstart", function(){moves.emerge=true; moves.foward=true;});
+  btnEmerge.addEventListener("touchend", function(){moves.emerge = false; moves.foward = false;});
 
+
+  
 
   /* -- Gestione della camera -- */
   const cameraPosition= [0, 2, 8];
@@ -752,9 +766,7 @@ async function main() {
     // use the inverse of this world matrix to make
     // a matrix that will transform other positions
     // to be relative this world space.
-    textureMatrix = m4.multiply(
-        textureMatrix,
-        m4.inverse(lightWorldMatrix));
+    textureMatrix = m4.multiply(textureMatrix, m4.inverse(lightWorldMatrix));
         
   
 
