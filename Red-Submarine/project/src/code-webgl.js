@@ -342,7 +342,7 @@ async function main() {
   const cameraPosition= [0, 2, 8];
 
   /*-- Gestione della luce --*/
-  var positionAmbientLight =[-5, 150, -10]; //posizione della luce - z: -2
+  var positionAmbientLight =[-5, 150, -10]; 
   var target = [-1, 0, 8];
   const bias = -0.0093;
   var projWidth = 245;
@@ -401,7 +401,6 @@ async function main() {
       faceBubble.uniformMatrix = m4.identity();
       faceBubble.translateObj(2, 2, 1);
       elementsToDraw.push(faceBubble);
-     
 
       endTitle.innerHTML = 'Congrats!';
       endSubtitle.innerHTML = "You've found the treasure!";
@@ -434,7 +433,9 @@ async function main() {
       }
       //inizia counter per arrivare alla shcermata di fine gioco
       treasureTimerCounter= true;
-      treasureFound =false;
+      treasureFound =true;
+      positionAmbientLight =[0, 9, 0];
+      target = [-7, 0, 0];
     }
   });
 
@@ -742,15 +743,8 @@ async function main() {
             lightIntensity: lightIntensity,
           });
 
-    } else{
-      draw(lightProjectionMatrix, lightWorldMatrix, m4.identity, lightWorldMatrix, colorProgramInfo, gl, [], 
-        {
-          bias: bias,
-          depthTexture : depthTexture,
-          lightPosition: positionAmbientLight,
-          lightIntensity: lightIntensity,
-        });
-    }
+    } 
+
     
     // now draw scene to the canvas projecting the depth texture into the scene
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -827,3 +821,60 @@ async function main() {
 
 
 main();
+
+
+
+
+
+
+
+/* 
+
+  setupSlider("posX", {name:"PosX:", slide: upPx, min: -200, max: 200, value:positionAmbientLight[0], step:1});
+  setupSlider("posY", {name:"PosY:", slide: upPy, min: -200, max: 200, value:positionAmbientLight[1], step:1});
+  setupSlider("posZ", {name:"PosZ:", slide: upPz, min: -200, max: 200, value:positionAmbientLight[2], step:1});
+  setupSlider("directionX", {name:"DirectionX:", slide: upDx, min: -200, max: 200, value:target[0], step:0.1, precision:0.1});
+  setupSlider("directionY", {name:"DirectionY:", slide: upDy, min: -200, max: 200, value:target[1], step:0.1});
+  setupSlider("directionZ", {name:"DirectionZ:", slide: upDz, min: -200, max: 200, value:target[2], step:0.1});
+  setupSlider("b", {name:"Bias:", slide: upBias, min: -0.1, max: 0.01, value:bias, step:0.000001, precision: 6});
+  setupSlider("projW", {name:"ProjWidth:", slide: upProjW, min: 0, max: 500, value:projWidth, step:1, precision: 1});
+  setupSlider("projH", {name:"ProjHeight:", slide: upProjH, min: 0, max: 500, value:projHeight, step:1, precision: 1});
+  setupSlider("near", {name:"Near:", slide: upBias, min: -10, max: 10, value:near, step:0.1, precision: 2});
+  setupSlider("far", {name:"Far:", slide: upBias, min: -10, max: 200, value:far, step:1, precision: 1});
+
+
+   function upDx(event, ui){
+    target[0]= ui.value;
+  }
+  function upDy(event, ui){
+    target[1]= ui.value;
+  }
+  function upDz(event, ui){
+    target[2]= ui.value;
+  }
+  function upPx(event, ui){
+    positionAmbientLight[0]= ui.value;
+  }
+  function upPy(event, ui){
+    positionAmbientLight[1]= ui.value;
+  }
+  function upPz(event, ui){
+    positionAmbientLight[2]= ui.value;
+  }
+
+  function upBias(event, ui){
+    bias = ui.value;
+  }
+  function upProjW(event, ui){
+    projWidth = ui.value;
+  }
+  function upProjH(event, ui){
+    projHeight = ui.value;
+  }
+  function upNear(event, ui){
+    near = ui.value;
+  }
+  function upFar(event, ui){
+    far = ui.value;
+  }
+*/
